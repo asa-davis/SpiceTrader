@@ -8,7 +8,7 @@ import dev.asa.spicetrader.MainGame;
 
 public class DesktopLauncher {
 	
-	static float SCREEN_SIZE_RATIO = 3/4f;
+	static final float SCREEN_SIZE_RATIO = 3/4f;
 	
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
