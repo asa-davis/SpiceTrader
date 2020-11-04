@@ -13,13 +13,17 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 public class MainGame extends ApplicationAdapter {
 	
 	//game settings
-	final int NUM_COLS = 16;
-	final int NUM_ROWS = 16;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
-	final float ZOOM_LEVEL = 2;
+	final float ZOOM_LEVEL = 1;
 	private int SCREEN_WIDTH;
 	private int SCREEN_HEIGHT;
+	
+	//map settings
+	final int SMOOTHING_ITERATIONS = 7;
+	final int SEA_LEVEL_OFFSET = 2;
+	final int NUM_COLS = 128;
+	final int NUM_ROWS = 128;
 	
 	//rendering objects
 	SpriteBatch batch;
@@ -37,7 +41,7 @@ public class MainGame extends ApplicationAdapter {
 		atlas = new TextureAtlas("assets/textures.atlas");
 		batch = new SpriteBatch();
 		SpiceTraderMapGenerator mapGen = new SpiceTraderMapGenerator(atlas);
-		map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT);
+		map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
 
 		//center camera and player on map
 		camera = new OrthographicCamera();
