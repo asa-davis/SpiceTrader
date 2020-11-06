@@ -1,6 +1,7 @@
 package dev.asa.spicetrader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -38,7 +39,7 @@ public class SpiceTraderMapGenerator {
 		map.setTileIdMap(tileIdMap);
 		
 		//3
-		int[][] neighborBitmaskMap = generateNeighborTileBitmaskMap(numRows, numCols);
+		int[][] neighborBitmaskMap = generateNeighborTileBitmaskMap(numRows, numCols, tileIdMap);
 		map.setNeighborBitmaskMap(neighborBitmaskMap);
 		
 		//4
@@ -126,17 +127,83 @@ public class SpiceTraderMapGenerator {
 		}
 	}
 	
-	//generate a map of bitmasked values representing the presence of land on all 8 neighboring tiles for a given tile. 
-	private static int[][] generateNeighborTileBitmaskMap(int numRows, int numCols) {
+	//Generate a map of bitmasked values representing the presence of land on all 8 neighboring tiles for a given tile. 
+	
+	//		2^0|2^1|2^2
+	//		-----------
+	//		2^3| x |2^4
+	//		-----------
+	//	  	2^5|2^6|2^7
+	
+	//A bitmask for tile x would be calculate by adding up the values in all neighboring squares where land was present
+	
+	//Note: diagonal neighboring land will only be counted if it's two surrounding neighbors are also land. 
+	//For example, the top right neighbor is only counted if both the top and the right neighbors are land too.
+	//This is to avoid redundant values.
+	
+	private static int[][] generateNeighborTileBitmaskMap(int numRows, int numCols, int[][] tileIdMap) {
 		int[][]	neighborBitmaskMap = new int[numRows][numCols];
+
+		for(int y = 0; y < numRows; y++) {
+			for(int x = 0; x < numCols; x++) {
+				int bitmask = 0;
+				int power = 0;
+				
+				//iterate through all neighbors, starting in top left
+				//skipping, the center tile, increment power, check if in bounds, and add 2^power if land is there
+				for(int yShift = 1; yShift >= -1; yShift--) {
+					for(int xShift = -1; xShift <= 1; xShift++) {
+						//skip current tile
+						if(!(yShift == 0 && xShift == 0)) {
+							int neighborY = y + yShift;
+							int neighborX = x + xShift;
+							//check for out of bounds
+							if(neighborY >= 0 && neighborY < numRows && neighborX >= 0 && neighborX < numCols) {
+								//check for land - if so add to bitmask
+								if(tileIdMap[neighborY][neighborX] == 1) 
+									bitmask += Math.pow(2, power);
+							}
+							power++;
+						}
+					}
+				}
+				
+				//redundancy check:
+				//top left
+				if((bitmask & 1) > 0) {
+					if((bitmask & 8) == 0 || (bitmask & 2) == 0)
+						bitmask -= 1;
+				}
+				//top right
+				if((bitmask & 4) > 0) {
+					if((bitmask & 16) == 0 || (bitmask & 2) == 0)
+						bitmask -= 4;
+				}
+				//bottom left
+				if((bitmask & 32) > 0) {
+					if((bitmask & 8) == 0 || (bitmask & 64) == 0)
+						bitmask -= 32;
+				}
+				//bottom right
+				if((bitmask & 128) > 0) {
+					if((bitmask & 16) == 0 || (bitmask & 64) == 0)
+						bitmask -= 128;
+				}
+				
+				
+				neighborBitmaskMap[y][x] = bitmask;
+			}
+		}
+		
 		return neighborBitmaskMap;
 	}
 	
 	//generate the libgdx TiledMap object from the neighbor bitmask map and tileId map
 	private TiledMap generateLibgdxMap(int numCols, int numRows, int tileWidth, int tileHeight, int[][] neighborBitmaskMap, int[][] tileIdMap) {
 		TiledMap libgdxMap = new TiledMap();
-		
 		TiledMapTileLayer mapLayer = new TiledMapTileLayer(numCols, numRows, tileWidth, tileHeight);
+		
+		HashMap<Integer, Integer> beachBitmaskConverter = getBeachBitmaskConverter();
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
 				TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -144,8 +211,11 @@ public class SpiceTraderMapGenerator {
 				
 				if(tileIdMap[row][col] == 0) 
 					tile = new StaticTiledMapTile(this.atlas.findRegions("tile/water").get(0));
-				else 
-					tile = new StaticTiledMapTile(this.atlas.findRegions("tile/grass").get(0));
+				else {
+					int bitmask = neighborBitmaskMap[row][col];
+					int tileNum = beachBitmaskConverter.get(bitmask);
+					tile = new StaticTiledMapTile(this.atlas.findRegions("tile/grass").get(tileNum));
+				}
 				
 				cell.setTile(tile);
 				mapLayer.setCell(col, row, cell);
@@ -165,6 +235,16 @@ public class SpiceTraderMapGenerator {
 	
 	public List<VillageLocation> getValidVillageLocations() {
 		return new ArrayList<VillageLocation>();
+	}
+	
+	//this hashmap takes a bitmask value as a key and returns the correct grass tile number
+	private static HashMap<Integer, Integer> getBeachBitmaskConverter() {
+		HashMap<Integer, Integer> converter = new HashMap<Integer, Integer>();
+		int[] values = {2, 1, 8, 2, 10, 3, 11, 4, 16, 5, 18, 6, 22, 7, 24, 8, 26, 9, 27, 10, 30, 11, 31, 12, 64, 13, 66, 14, 72, 15, 74, 16, 75, 17, 80, 18, 82, 19, 86, 20, 88, 21, 90, 22, 91, 23, 94, 24, 95, 25, 104, 26, 106, 27, 107, 28, 120, 29, 122, 30, 123, 31, 126, 32, 127, 33, 208, 34, 210, 35, 214, 36, 216, 37, 218, 38, 219, 39, 222, 40, 223, 41, 248, 42, 250, 43, 251, 44, 254, 45, 255, 46, 0, 47};
+		for(int i = 0; i < values.length; i += 2) {
+			converter.put(values[i], values[i + 1]);
+		}
+		return converter;
 	}
 	
 	private static void debugMap(int[][] map) {
