@@ -63,8 +63,8 @@ public abstract class Entity {
 	}
 	
 	public Vector2 moveForward() {
-		float xMove = -1 * (float) Math.sin(0.0175 * this.direction);
-		float yMove = (float) Math.cos(0.0175 * this.direction);
+		float xMove = -1 * (float) Math.sin(0.0175 * this.direction) * this.speed;
+		float yMove = (float) Math.cos(0.0175 * this.direction) * this.speed;
 		
 		this.updatePosition(xMove, yMove);
 		
@@ -72,8 +72,8 @@ public abstract class Entity {
 	}
 	
 	public Vector2 moveBackward() {
-		float xMove = (float) Math.sin(0.0175 * this.direction);
-		float yMove = -1 * (float) Math.cos(0.0175 * this.direction);
+		float xMove = (float) Math.sin(0.0175 * this.direction * this.speed);
+		float yMove = -1 * (float) Math.cos(0.0175 * this.direction * this.speed);
 		
 		this.updatePosition(xMove, yMove);
 		
