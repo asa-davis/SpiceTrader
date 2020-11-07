@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 
 public class SpiceTraderMapGenerator {
 
@@ -54,7 +55,7 @@ public class SpiceTraderMapGenerator {
 		int[][] tileIdMap = new int[numRows][numCols];
 		for(int y = 0; y < numRows; y++) {
 			for(int x = 0; x < numCols; x++) {
-				tileIdMap[y][x] = MainGame.genRandomInt(min, max);
+				tileIdMap[y][x] = Utils.genRandomInt(min, max);
 			}
 		}
 		return tileIdMap;
@@ -68,27 +69,17 @@ public class SpiceTraderMapGenerator {
 		
 		for(int y = 0; y < numRows; y++) {
 			for(int x = 0; x < numCols; x++) {
-				//sum neighbors
-				//yShift, xShift used to get position of neighbor relative to current tile
-				//start in top left, work way across row then down. checking for out of bounds coordinates and skipping yShift = 0, xShift = 0 (this is curr tile)
-				int neighborY;
-				int neighborX;
+				//sum and average neighbors
 				int neighborSum = 0;
 				int neighborCount = 0;
-				for(int yShift = 1; yShift >= -1; yShift--) {
-					for(int xShift = -1; xShift <= 1; xShift++) {
-						//skip current tile
-						if(!(yShift == 0 && xShift == 0)) {
-							neighborY = y + yShift;
-							neighborX = x + xShift;
-							//check for out of bounds
-							if(neighborY >= 0 && neighborY < numRows && neighborX >= 0 && neighborX < numCols) {
-								neighborSum += tileIdMap[neighborY][neighborX];
-								neighborCount++;
-							}
-						}
+				List<Vector2> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
+				for(Vector2 currNeighbor : neighbors) {
+					if(currNeighbor != null) {
+						neighborSum += tileIdMap[(int) currNeighbor.y][(int) currNeighbor.x];
+						neighborCount++;
 					}
 				}
+				
 				int avg = neighborSum / neighborCount;
 				smoothedMap[y][x] = avg;
 			}
@@ -148,24 +139,17 @@ public class SpiceTraderMapGenerator {
 			for(int x = 0; x < numCols; x++) {
 				int bitmask = 0;
 				int power = 0;
-				
-				//iterate through all neighbors, starting in top left
-				//skipping, the center tile, increment power, check if in bounds, and add 2^power if land is there
-				for(int yShift = 1; yShift >= -1; yShift--) {
-					for(int xShift = -1; xShift <= 1; xShift++) {
-						//skip current tile
-						if(!(yShift == 0 && xShift == 0)) {
-							int neighborY = y + yShift;
-							int neighborX = x + xShift;
-							//check for out of bounds
-							if(neighborY >= 0 && neighborY < numRows && neighborX >= 0 && neighborX < numCols) {
-								//check for land - if so add to bitmask
-								if(tileIdMap[neighborY][neighborX] == 1) 
-									bitmask += Math.pow(2, power);
-							}
-							power++;
-						}
+				//iterate through all neighbors, increasing our power each time
+				//if neighbor is land, we add 2^power to our bitmask
+				List<Vector2> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
+				for(Vector2 currNeighbor : neighbors) {
+					//check for out of bounds
+					if(currNeighbor != null) {
+						if(tileIdMap[(int) currNeighbor.y][(int) currNeighbor.x] == 1) 
+							bitmask += Math.pow(2, power);
 					}
+
+					power++;
 				}
 				
 				//redundancy check:
@@ -240,7 +224,7 @@ public class SpiceTraderMapGenerator {
 	//this hashmap takes a bitmask value as a key and returns the correct grass tile number
 	private static HashMap<Integer, Integer> getBeachBitmaskConverter() {
 		HashMap<Integer, Integer> converter = new HashMap<Integer, Integer>();
-		int[] values = {2, 1, 8, 2, 10, 3, 11, 4, 16, 5, 18, 6, 22, 7, 24, 8, 26, 9, 27, 10, 30, 11, 31, 12, 64, 13, 66, 14, 72, 15, 74, 16, 75, 17, 80, 18, 82, 19, 86, 20, 88, 21, 90, 22, 91, 23, 94, 24, 95, 25, 104, 26, 106, 27, 107, 28, 120, 29, 122, 30, 123, 31, 126, 32, 127, 33, 208, 34, 210, 35, 214, 36, 216, 37, 218, 38, 219, 39, 222, 40, 223, 41, 248, 42, 250, 43, 251, 44, 254, 45, 255, 46, 0, 47};
+		int[] values = {255, 0, 2, 1, 8, 2, 10, 3, 11, 4, 16, 5, 18, 6, 22, 7, 24, 8, 26, 9, 27, 10, 30, 11, 31, 12, 64, 13, 66, 14, 72, 15, 74, 16, 75, 17, 80, 18, 82, 19, 86, 20, 88, 21, 90, 22, 91, 23, 94, 24, 95, 25, 104, 26, 106, 27, 107, 28, 120, 29, 122, 30, 123, 31, 126, 32, 127, 33, 208, 34, 210, 35, 214, 36, 216, 37, 218, 38, 219, 39, 222, 40, 223, 41, 248, 42, 250, 43, 251, 44, 254, 45, 0, 46};
 		for(int i = 0; i < values.length; i += 2) {
 			converter.put(values[i], values[i + 1]);
 		}

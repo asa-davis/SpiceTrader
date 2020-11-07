@@ -31,8 +31,8 @@ public class MainGame extends ApplicationAdapter {
 	//map settings
 	final int SMOOTHING_ITERATIONS = 7;
 	final int SEA_LEVEL_OFFSET = 2;
-	final int NUM_COLS = 32;
-	final int NUM_ROWS = 32;
+	final int NUM_COLS = 64;
+	final int NUM_ROWS = 64;
 	
 	//rendering objects
 	SpriteBatch batch;
@@ -120,10 +120,5 @@ public class MainGame extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		atlas.dispose();
-	}
-	
-	//inclusive
-	public static int genRandomInt(int min, int max) {
-		return (int) ((Math.random() * (max - min + 1)) + min);
 	}
 }
