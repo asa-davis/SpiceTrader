@@ -4,26 +4,26 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 //parent class for everything with a hitbox, position, sprite, etc.
 //children include ship (pirate, player), village, cannonball, sea monsters (?), etc.
 public abstract class Entity {
 	//in pixels not tiles
-	private float xPos;
-	private float yPos;
+	private Vector2 pos;
 	private float direction;
 	private float speed;
 	private float rotationSpeed;
 	private float spriteWidth;
 	private float spriteHeight;
 	private Polygon hitbox;
+	private Vector2 hitCenter;
 	private Sprite sprite;
 	
 	
-	public Entity(float xPos, float yPos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		this.xPos = xPos;
-		this.yPos = yPos;
+	public Entity(Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+		this.pos = pos;
 		this.sprite = sprite;
 		this.speed = speed;
 		this.rotationSpeed = rotationSpeed;
@@ -33,24 +33,26 @@ public abstract class Entity {
 		this.spriteHeight = sprite.getHeight();
 
 		this.createHitbox();
+		this.hitCenter = new Vector2((this.spriteWidth/2) + pos.x, (this.spriteHeight/2) + pos.y);
 		
-		this.hitbox.setPosition(xPos, yPos);
-		this.sprite.setPosition(xPos, yPos);
+		this.hitbox.setPosition(pos.x, pos.y);
+		this.sprite.setPosition(pos.x, pos.y);
 		this.hitbox.setRotation(direction);
 		this.sprite.setRotation(direction);
 	}
 	
-	public Entity(float xPos, float yPos, Sprite sprite) {
-		this(xPos, yPos, sprite, 1, 1, 0);
+	public Entity(Vector2 pos, Sprite sprite) {
+		this(pos, sprite, 1, 1, 0);
 	}
 	
 	//this method must instantiate our hitbox
 	abstract void createHitbox();
 	
 	private void updatePosition(float xMove, float yMove) {
-		this.xPos += xMove;
-		this.yPos += yMove;
-		
+		this.pos.x += xMove;
+		this.pos.y += yMove;
+		this.hitCenter.x += xMove;
+		this.hitCenter.y += yMove;
 		this.sprite.translate(xMove, yMove);
 		this.hitbox.translate(xMove, yMove);
 	}
@@ -94,6 +96,7 @@ public abstract class Entity {
 	
 	public void drawHitbox(ShapeRenderer renderer) {
 		renderer.polygon(this.hitbox.getTransformedVertices());
+		renderer.circle(this.hitCenter.x, this.hitCenter.y, 1);
 	}
 	
 	public float getWidth() {

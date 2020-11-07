@@ -2,11 +2,12 @@ package dev.asa.spicetrader;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 
 public class Ship extends Entity {
 
-	public Ship(float xPos, float yPos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		super(xPos, yPos, sprite, speed, rotationSpeed, initialDirection);
+	public Ship(Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+		super(pos, sprite, speed, rotationSpeed, initialDirection);
 	}
 
 	@Override

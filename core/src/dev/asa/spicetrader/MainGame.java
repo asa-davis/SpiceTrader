@@ -71,7 +71,8 @@ public class MainGame extends ApplicationAdapter {
 
 		//player
 		Sprite playerSprite = atlas.createSprite("ships/player");
-		player = new Ship(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2), playerSprite, 2, 2, 180);
+		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
+		player = new Ship(playerStartPos, playerSprite, 2, 2, 180);
 		
 		//debug
 		System.out.print("	****	screen size: (" + SCREEN_WIDTH + ", " + SCREEN_HEIGHT + ")\n");
