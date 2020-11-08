@@ -62,8 +62,15 @@ public class SpiceTraderMap {
 		hitboxRenderer.begin(ShapeType.Line);
 		for(Vector2 tile : neighbors) {
 			if(this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
-				Rectangle tileHitbox = new Rectangle(tile.x * this.tileWidth + 2, tile.y * this.tileHeight + 2, 12, 12);
-				this.hitboxRenderer.rect(tileHitbox.x, tileHitbox.y, tileHitbox.width, tileHitbox.height);
+				float xOrigin = tile.x * this.tileWidth;
+				float yOrigin = tile.y * this.tileHeight;
+				Polygon tileHitbox = new Polygon();
+				tileHitbox.setVertices(new float[] {xOrigin, yOrigin, xOrigin + 16, yOrigin, xOrigin + 16, yOrigin + 16, xOrigin, yOrigin + 16});
+				this.hitboxRenderer.polygon(tileHitbox.getVertices());
+				if(Intersector.overlapConvexPolygons(shipHitbox, tileHitbox)) {
+					hitboxRenderer.end();
+					return false;
+				}
 			}
 		}
 		hitboxRenderer.end();
