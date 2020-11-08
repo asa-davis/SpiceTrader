@@ -68,27 +68,37 @@ public abstract class Entity {
 	}
 	
 	public Vector2 moveForward() {
-		float xMove = -1 * (float) Math.sin(0.0175 * this.direction) * this.speed;
-		float yMove = (float) Math.cos(0.0175 * this.direction) * this.speed;
+		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.direction);
+		float yMoveInc = (float) Math.cos(0.0175 * this.direction);
+		float xMoveTotal = xMoveInc * this.speed;
+		float yMoveTotal = yMoveInc * this.speed;
 		
-		this.updatePosition(xMove, yMove);
+		this.updatePosition(xMoveTotal, yMoveTotal);
 		
-		//collision detection - undo move if hitting map
-		if(!this.map.validShipPosition(this.hitbox, this.hitCenter))
-			this.updatePosition(-1 * xMove, -1 * yMove);
+		//collision detection - undo move if hitting map 
+		int numMoves = (int) this.speed + 1;
+		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
+			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
+			numMoves--;
+		}
 
 		return this.hitCenter;
 	}
 	
 	public Vector2 moveBackward() {
-		float xMove = (float) Math.sin(0.0175 * this.direction) * this.speed;
-		float yMove = -1 * (float) Math.cos(0.0175 * this.direction) * this.speed;
+		float xMoveInc = (float) Math.sin(0.0175 * this.direction);
+		float yMoveInc = -1 * (float) Math.cos(0.0175 * this.direction);
+		float xMoveTotal = xMoveInc * this.speed;
+		float yMoveTotal = yMoveInc * this.speed;
 		
-		this.updatePosition(xMove, yMove);
+		this.updatePosition(xMoveTotal, yMoveTotal);
 		
-		//collision detection - undo move if hitting map
-		if(!this.map.validShipPosition(this.hitbox, this.hitCenter))
-			this.updatePosition(-1 * xMove, -1 * yMove);
+		//collision detection - undo move if hitting map 
+		int numMoves = (int) this.speed + 1;
+		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
+			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
+			numMoves--;
+		}
 
 		return this.hitCenter;
 	}
@@ -97,16 +107,22 @@ public abstract class Entity {
 		this.updateRotation(-1 * this.rotationSpeed);
 		
 		//collision detection - undo move if hitting map
-		if(!this.map.validShipPosition(this.hitbox, this.hitCenter))
-			this.updateRotation(this.rotationSpeed);
+		int numMoves = (int) (this.rotationSpeed + 1);
+		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
+			this.updateRotation(1);
+			numMoves--;
+		}
 	}
 	
 	public void turnCCW() {
 		this.updateRotation(this.rotationSpeed);
 		
 		//collision detection - undo move if hitting map
-		if(!this.map.validShipPosition(this.hitbox, this.hitCenter))
-			this.updateRotation(-1 * this.rotationSpeed);
+		int numMoves = (int) (this.rotationSpeed + 1);
+		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
+			this.updateRotation(-1);
+			numMoves--;
+		}
 	}
 	
 	public void draw(SpriteBatch batch) {

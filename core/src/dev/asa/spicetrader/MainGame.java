@@ -20,7 +20,7 @@ public class MainGame extends ApplicationAdapter {
 	
 	//game settings
 	final boolean SHOW_HITBOXES = true;
-	final boolean ROUND_CAMERA_POS = true;
+	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
 	final float ZOOM_LEVEL = 3;
@@ -74,7 +74,7 @@ public class MainGame extends ApplicationAdapter {
 		//player
 		Sprite playerSprite = atlas.createSprite("ships/player");
 		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
-		player = new Ship(map, playerStartPos, playerSprite, 2, 2, 180);
+		player = new Ship(map, playerStartPos, playerSprite, 5, 2, 180);
 		
 		//if player starting position is invalid, generate a new map
 		while(!map.validShipPosition(player.getHitbox(), player.getHitCenter())) {
