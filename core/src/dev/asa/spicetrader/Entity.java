@@ -71,36 +71,26 @@ public abstract class Entity {
 		float xMove = -1 * (float) Math.sin(0.0175 * this.direction) * this.speed;
 		float yMove = (float) Math.cos(0.0175 * this.direction) * this.speed;
 		
-		//xMove = Utils.round(xMove, 0);
-		//yMove = Utils.round(yMove, 0);
-		
 		this.updatePosition(xMove, yMove);
 		
 		//collision detection - undo move if hitting map
-		if(this.map.validShipPosition(this.hitbox, this.hitCenter))
-			return new Vector2(xMove, yMove);
-		else {
+		if(!this.map.validShipPosition(this.hitbox, this.hitCenter))
 			this.updatePosition(-1 * xMove, -1 * yMove);
-			return new Vector2(0, 0);
-		}
+
+		return this.hitCenter;
 	}
 	
 	public Vector2 moveBackward() {
 		float xMove = (float) Math.sin(0.0175 * this.direction) * this.speed;
 		float yMove = -1 * (float) Math.cos(0.0175 * this.direction) * this.speed;
 		
-		//xMove = Utils.round(xMove, 0);
-		//yMove = Utils.round(yMove, 0);
-		
 		this.updatePosition(xMove, yMove);
 		
 		//collision detection - undo move if hitting map
-		if(this.map.validShipPosition(this.hitbox, this.hitCenter))
-			return new Vector2(xMove, yMove);
-		else {
+		if(!this.map.validShipPosition(this.hitbox, this.hitCenter))
 			this.updatePosition(-1 * xMove, -1 * yMove);
-			return new Vector2(0, 0);
-		}
+
+		return this.hitCenter;
 	}
 	
 	public void turnCW() {
@@ -136,7 +126,19 @@ public abstract class Entity {
 		return this.spriteHeight;
 	}
 	
+	public Polygon getHitbox() {
+		return this.hitbox;
+	}
+	
+	public Vector2 getHitCenter() {
+		return this.hitCenter;
+	}
+	
 	public void setHitbox(Polygon p) {
 		this.hitbox = p;
+	}
+	
+	public void setMap(SpiceTraderMap map) {
+		this.map = map;
 	}
 }

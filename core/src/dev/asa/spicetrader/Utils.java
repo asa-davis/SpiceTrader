@@ -51,4 +51,25 @@ public class Utils {
 	public static float round(float val, int decimals) {
 		return (float) (Math.round(val * Math.pow(10, decimals))/Math.pow(10, decimals));
 	}
+	
+	//to round to nearest third, pass (val, 3);
+	public static float roundToNearestFraction(float val, float fraction) {
+		float valRoundedOff = (int)val;
+		double nextThresh = valRoundedOff;
+		double lastThresh = valRoundedOff;
+		for(int i = 0; i < fraction; i++) {
+			nextThresh += (1/fraction);
+			if(val < nextThresh) {
+				double split = lastThresh + ((nextThresh - lastThresh)/2);
+				if(val < split)
+					return (float) lastThresh;
+				else
+					return (float) nextThresh;
+			}
+			lastThresh = nextThresh;
+		}
+		//if for some reason things don't work out, function returns NaN
+		System.out.println("rounding function failed with arguments " + val + ", " + fraction);
+		return 1/0;
+	}
 }

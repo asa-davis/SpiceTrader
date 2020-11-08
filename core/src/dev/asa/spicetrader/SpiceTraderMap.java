@@ -61,7 +61,7 @@ public class SpiceTraderMap {
 
 		hitboxRenderer.begin(ShapeType.Line);
 		for(Vector2 tile : neighbors) {
-			if(this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
+			if(tile != null && this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
 				float xOrigin = tile.x * this.tileWidth;
 				float yOrigin = tile.y * this.tileHeight;
 				Polygon tileHitbox = new Polygon();
