@@ -47,4 +47,8 @@ public class Utils {
 			neighbors.remove(4);
 		return neighbors;
 	}
+	
+	public static float round(float val, int decimals) {
+		return (float) (Math.round(val * Math.pow(10, decimals))/Math.pow(10, decimals));
+	}
 }

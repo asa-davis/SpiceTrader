@@ -3,13 +3,19 @@ package dev.asa.spicetrader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class SpiceTraderMap {
@@ -26,12 +32,18 @@ public class SpiceTraderMap {
 	private TiledMap libgdxMap;
 	private TiledMapRenderer mapRenderer;
 	
+	//for debugging map hitboxes
+	private ShapeRenderer hitboxRenderer;
 	
 	public SpiceTraderMap(int numCols, int numRows, int tileWidth, int tileHeight) {		
 		this.numCols = numCols;
 		this.numRows = numRows;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
+		
+		//for debugging map hitboxes
+		this.hitboxRenderer = new ShapeRenderer();
+		hitboxRenderer.setColor(Color.RED);
 	}
 	
 	public void render(OrthographicCamera camera) {
@@ -46,6 +58,15 @@ public class SpiceTraderMap {
 	public boolean validShipPosition(Polygon shipHitbox, Vector2 shipCenter) {
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
 		List<Vector2> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
+
+		hitboxRenderer.begin(ShapeType.Line);
+		for(Vector2 tile : neighbors) {
+			if(this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
+				Rectangle tileHitbox = new Rectangle(tile.x * this.tileWidth + 2, tile.y * this.tileHeight + 2, 12, 12);
+				this.hitboxRenderer.rect(tileHitbox.x, tileHitbox.y, tileHitbox.width, tileHitbox.height);
+			}
+		}
+		hitboxRenderer.end();
 		return true;
 	}
 	
@@ -65,5 +86,9 @@ public class SpiceTraderMap {
 	public void setLibgdxMap(TiledMap libgdxMap) {
 		this.libgdxMap = libgdxMap;
 		this.mapRenderer = new OrthogonalTiledMapRenderer(this.libgdxMap);
+	}
+	
+	public void setProjectionMatrix(Matrix4 project) {
+		hitboxRenderer.setProjectionMatrix(project);
 	}
 }

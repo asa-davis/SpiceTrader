@@ -20,9 +20,11 @@ public abstract class Entity {
 	private Polygon hitbox;
 	private Vector2 hitCenter;
 	private Sprite sprite;
+	private SpiceTraderMap map;
 	
 	
-	public Entity(Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+		this.map = map;
 		this.pos = pos;
 		this.sprite = sprite;
 		this.speed = speed;
@@ -41,32 +43,40 @@ public abstract class Entity {
 		this.sprite.setRotation(direction);
 	}
 	
-	public Entity(Vector2 pos, Sprite sprite) {
-		this(pos, sprite, 1, 1, 0);
+	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite) {
+		this(map, pos, sprite, 1, 1, 0);
 	}
 	
 	//this method must instantiate our hitbox
 	abstract void createHitbox();
 	
-	private void updatePosition(float xMove, float yMove) {
+	private boolean updatePosition(float xMove, float yMove) {
 		this.pos.x += xMove;
 		this.pos.y += yMove;
 		this.hitCenter.x += xMove;
 		this.hitCenter.y += yMove;
+		
 		this.sprite.translate(xMove, yMove);
 		this.hitbox.translate(xMove, yMove);
+		
+		return this.map.validShipPosition(this.hitbox, this.hitCenter);
 	}
 	
-	private void updateRotation(float turnAmount) {
+	private boolean updateRotation(float turnAmount) {
 		this.direction += turnAmount;
 		
 		this.hitbox.setRotation(this.direction);
 		this.sprite.setRotation(this.direction);
+		
+		return this.map.validShipPosition(this.hitbox, this.hitCenter);
 	}
 	
 	public Vector2 moveForward() {
 		float xMove = -1 * (float) Math.sin(0.0175 * this.direction) * this.speed;
 		float yMove = (float) Math.cos(0.0175 * this.direction) * this.speed;
+		
+		xMove = Utils.round(xMove, 0);
+		yMove = Utils.round(yMove, 0);
 		
 		this.updatePosition(xMove, yMove);
 		
@@ -76,6 +86,9 @@ public abstract class Entity {
 	public Vector2 moveBackward() {
 		float xMove = (float) Math.sin(0.0175 * this.direction) * this.speed;
 		float yMove = -1 * (float) Math.cos(0.0175 * this.direction) * this.speed;
+		
+		xMove = Utils.round(xMove, 0);
+		yMove = Utils.round(yMove, 0);
 		
 		this.updatePosition(xMove, yMove);
 		

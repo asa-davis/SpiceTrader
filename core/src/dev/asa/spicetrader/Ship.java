@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Ship extends Entity {
 
-	public Ship(Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		super(pos, sprite, speed, rotationSpeed, initialDirection);
+	public Ship(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+		super(map, pos, sprite, speed, rotationSpeed, initialDirection);
 	}
 
 	@Override

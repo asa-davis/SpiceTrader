@@ -72,7 +72,7 @@ public class MainGame extends ApplicationAdapter {
 		//player
 		Sprite playerSprite = atlas.createSprite("ships/player");
 		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
-		player = new Ship(playerStartPos, playerSprite, 2, 2, 180);
+		player = new Ship(this.map, playerStartPos, playerSprite, 2, 2, 180);
 		
 		//debug
 		System.out.print("	****	screen size: (" + SCREEN_WIDTH + ", " + SCREEN_HEIGHT + ")\n");
@@ -82,6 +82,23 @@ public class MainGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		//render everything
+		map.render(camera);
+		
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		player.draw(batch);
+		batch.end();
+		
+		if(SHOW_HITBOXES) {
+			hitboxRenderer.setProjectionMatrix(camera.combined);
+			hitboxRenderer.begin(ShapeType.Line);
+			player.drawHitbox(hitboxRenderer);
+			hitboxRenderer.end();
+			
+			this.map.setProjectionMatrix(camera.combined);
+		}
 		
 		//handle input
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -100,21 +117,6 @@ public class MainGame extends ApplicationAdapter {
 		}
 			
 		camera.update();
-		
-		//render everything
-		map.render(camera);
-		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		player.draw(batch);
-		batch.end();
-		
-		if(SHOW_HITBOXES) {
-			hitboxRenderer.setProjectionMatrix(camera.combined);
-			hitboxRenderer.begin(ShapeType.Line);
-			player.drawHitbox(hitboxRenderer);
-			hitboxRenderer.end();
-		}
 	}
 	
 	@Override
