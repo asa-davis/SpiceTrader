@@ -20,6 +20,7 @@ public class MainGame extends ApplicationAdapter {
 	
 	//game settings
 	final boolean SHOW_HITBOXES = true;
+	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
 	final float ZOOM_LEVEL = 3;
@@ -39,6 +40,7 @@ public class MainGame extends ApplicationAdapter {
 	TextureAtlas atlas;
 	OrthographicCamera camera;
 	ShapeRenderer hitboxRenderer;
+	int frameCounter = 0;
 	
 	//game objects
 	SpiceTraderMap map;
@@ -72,7 +74,13 @@ public class MainGame extends ApplicationAdapter {
 		//player
 		Sprite playerSprite = atlas.createSprite("ships/player");
 		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
-		player = new Ship(playerStartPos, playerSprite, 2, 2, 180);
+		player = new Ship(map, playerStartPos, playerSprite, 5, 2, 180);
+		
+		//if player starting position is invalid, generate a new map
+		while(!map.validShipPosition(player)) {
+			map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
+			player.setMap(map);
+		}
 		
 		//debug
 		System.out.print("	****	screen size: (" + SCREEN_WIDTH + ", " + SCREEN_HEIGHT + ")\n");
@@ -82,24 +90,6 @@ public class MainGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		//handle input
-		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-			Vector2 move = player.moveForward();
-			camera.translate(move);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-			Vector2 move = player.moveBackward();
-			camera.translate(move);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.turnCW();
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			player.turnCCW();
-		}
-			
-		camera.update();
 		
 		//render everything
 		map.render(camera);
@@ -114,7 +104,35 @@ public class MainGame extends ApplicationAdapter {
 			hitboxRenderer.begin(ShapeType.Line);
 			player.drawHitbox(hitboxRenderer);
 			hitboxRenderer.end();
+			
+			map.setProjectionMatrix(camera.combined);
 		}
+		
+		//handle input
+		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+			Vector2 playerPos = player.moveForward();
+			camera.position.x = playerPos.x;
+			camera.position.y = playerPos.y;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+			Vector2 playerPos = player.moveBackward();
+			camera.position.x = playerPos.x;
+			camera.position.y = playerPos.y;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+			player.turnCW();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+			player.turnCCW();
+		}
+		
+		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
+		if(ROUND_CAMERA_POS) {
+			camera.position.x = Utils.roundToNearestFraction(camera.position.x, ZOOM_LEVEL);
+			camera.position.y = Utils.roundToNearestFraction(camera.position.y, ZOOM_LEVEL);
+		}
+
+		camera.update();
 	}
 	
 	@Override

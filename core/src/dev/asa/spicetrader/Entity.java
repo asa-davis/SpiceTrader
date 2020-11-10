@@ -20,9 +20,11 @@ public abstract class Entity {
 	private Polygon hitbox;
 	private Vector2 hitCenter;
 	private Sprite sprite;
+	private SpiceTraderMap map;
 	
 	
-	public Entity(Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
+		this.map = map;
 		this.pos = pos;
 		this.sprite = sprite;
 		this.speed = speed;
@@ -32,6 +34,7 @@ public abstract class Entity {
 		this.spriteWidth = sprite.getWidth();
 		this.spriteHeight = sprite.getHeight();
 
+		//initialize hitbox and set center point to center of sprite
 		this.createHitbox();
 		this.hitCenter = new Vector2((this.spriteWidth/2) + pos.x, (this.spriteHeight/2) + pos.y);
 		
@@ -41,53 +44,28 @@ public abstract class Entity {
 		this.sprite.setRotation(direction);
 	}
 	
-	public Entity(Vector2 pos, Sprite sprite) {
-		this(pos, sprite, 1, 1, 0);
+	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite) {
+		this(map, pos, sprite, 1, 1, 0);
 	}
 	
 	//this method must instantiate our hitbox
 	abstract void createHitbox();
 	
-	private void updatePosition(float xMove, float yMove) {
+	public void updatePosition(float xMove, float yMove) {
 		this.pos.x += xMove;
 		this.pos.y += yMove;
 		this.hitCenter.x += xMove;
 		this.hitCenter.y += yMove;
+		
 		this.sprite.translate(xMove, yMove);
 		this.hitbox.translate(xMove, yMove);
 	}
 	
-	private void updateRotation(float turnAmount) {
-		this.direction += turnAmount;
+	public void updateRotation(float turnAmount) {
+		this.setDirection(this.getDirection() + turnAmount);
 		
-		this.hitbox.setRotation(this.direction);
-		this.sprite.setRotation(this.direction);
-	}
-	
-	public Vector2 moveForward() {
-		float xMove = -1 * (float) Math.sin(0.0175 * this.direction) * this.speed;
-		float yMove = (float) Math.cos(0.0175 * this.direction) * this.speed;
-		
-		this.updatePosition(xMove, yMove);
-		
-		return new Vector2(xMove, yMove);
-	}
-	
-	public Vector2 moveBackward() {
-		float xMove = (float) Math.sin(0.0175 * this.direction) * this.speed;
-		float yMove = -1 * (float) Math.cos(0.0175 * this.direction) * this.speed;
-		
-		this.updatePosition(xMove, yMove);
-		
-		return new Vector2(xMove, yMove);
-	}
-	
-	public void turnCW() {
-		this.updateRotation(-1 * this.rotationSpeed);
-	}
-	
-	public void turnCCW() {
-		this.updateRotation(this.rotationSpeed);
+		this.hitbox.setRotation(this.getDirection());
+		this.sprite.setRotation(this.getDirection());
 	}
 	
 	public void draw(SpriteBatch batch) {
@@ -96,7 +74,7 @@ public abstract class Entity {
 	
 	public void drawHitbox(ShapeRenderer renderer) {
 		renderer.polygon(this.hitbox.getTransformedVertices());
-		renderer.circle(this.hitCenter.x, this.hitCenter.y, 1);
+		//renderer.circle(this.hitCenter.x, this.hitCenter.y, 1);
 	}
 	
 	public float getWidth() {
@@ -107,7 +85,47 @@ public abstract class Entity {
 		return this.spriteHeight;
 	}
 	
+	public Polygon getHitbox() {
+		return this.hitbox;
+	}
+	
+	public Vector2 getHitCenter() {
+		return this.hitCenter;
+	}
+	
 	public void setHitbox(Polygon p) {
 		this.hitbox = p;
+	}
+	
+	public void setMap(SpiceTraderMap map) {
+		this.map = map;
+	}
+
+	public float getDirection() {
+		return direction;
+	}
+
+	public void setDirection(float direction) {
+		this.direction = direction;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
+	public SpiceTraderMap getMap() {
+		return map;
+	}
+
+	public float getRotationSpeed() {
+		return rotationSpeed;
+	}
+
+	public void setRotationSpeed(float rotationSpeed) {
+		this.rotationSpeed = rotationSpeed;
 	}
 }
