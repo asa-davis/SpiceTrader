@@ -6,8 +6,19 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Ship extends Entity {
 
-	public Ship(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		super(map, pos, sprite, speed, rotationSpeed, initialDirection);
+	private SpiceTraderMap map;
+	private float direction;
+	private float speed;
+	private float rotationSpeed;
+	
+	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
+		super(pos, sprite);
+		this.map = map;
+		this.speed = speed;
+		this.rotationSpeed = rotationSpeed;
+		this.direction = initialDirection;
+		this.getHitbox().setRotation(direction);
+		this.getSprite().setRotation(direction);
 	}
 
 	@Override
@@ -18,16 +29,16 @@ public class Ship extends Entity {
 	}
 	
 	public Vector2 moveForward() {
-		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.getDirection());
-		float yMoveInc = (float) Math.cos(0.0175 * this.getDirection());
-		float xMoveTotal = xMoveInc * this.getSpeed();
-		float yMoveTotal = yMoveInc * this.getSpeed();
+		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.direction);
+		float yMoveInc = (float) Math.cos(0.0175 * this.direction);
+		float xMoveTotal = xMoveInc * this.speed;
+		float yMoveTotal = yMoveInc * this.speed;
 		
 		this.updatePosition(xMoveTotal, yMoveTotal);
 		
 		//collision detection - undo move if hitting map 
-		int numMoves = (int) this.getSpeed() + 1;
-		while(!this.getMap().validShipPosition(this) && numMoves >= 0) {
+		int numMoves = (int) this.speed + 1;
+		while(!this.map.validShipPosition(this) && numMoves >= 0) {
 			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
 			numMoves--;
 		}
@@ -36,16 +47,16 @@ public class Ship extends Entity {
 	}
 	
 	public Vector2 moveBackward() {
-		float xMoveInc = (float) Math.sin(0.0175 * this.getDirection());
-		float yMoveInc = -1 * (float) Math.cos(0.0175 * this.getDirection());
-		float xMoveTotal = xMoveInc * this.getSpeed();
-		float yMoveTotal = yMoveInc * this.getSpeed();
+		float xMoveInc = (float) Math.sin(0.0175 * this.direction);
+		float yMoveInc = -1 * (float) Math.cos(0.0175 * this.direction);
+		float xMoveTotal = xMoveInc * this.speed;
+		float yMoveTotal = yMoveInc * this.speed;
 		
 		this.updatePosition(xMoveTotal, yMoveTotal);
 		
 		//collision detection - undo move if hitting map 
-		int numMoves = (int) this.getSpeed() + 1;
-		while(!this.getMap().validShipPosition(this) && numMoves >= 0) {
+		int numMoves = (int) this.speed + 1;
+		while(!this.map.validShipPosition(this) && numMoves >= 0) {
 			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
 			numMoves--;
 		}
@@ -54,24 +65,35 @@ public class Ship extends Entity {
 	}
 	
 	public void turnCW() {
-		this.updateRotation(-1 * this.getRotationSpeed());
+		this.updateRotation(-1 * this.rotationSpeed);
 		
 		//collision detection - undo move if hitting map
-		int numMoves = (int) (this.getRotationSpeed() + 1);
-		while(!this.getMap().validShipPosition(this) && numMoves >= 0) {
+		int numMoves = (int) (this.rotationSpeed + 1);
+		while(!this.map.validShipPosition(this) && numMoves >= 0) {
 			this.updateRotation(1);
 			numMoves--;
 		}
 	}
 	
 	public void turnCCW() {
-		this.updateRotation(this.getRotationSpeed());
+		this.updateRotation(this.rotationSpeed);
 		
 		//collision detection - undo move if hitting map
-		int numMoves = (int) (this.getRotationSpeed() + 1);
-		while(!this.getMap().validShipPosition(this) && numMoves >= 0) {
+		int numMoves = (int) (this.rotationSpeed + 1);
+		while(!this.map.validShipPosition(this) && numMoves >= 0) {
 			this.updateRotation(-1);
 			numMoves--;
 		}
+	}
+	
+	private void updateRotation(float turnAmount) {
+		this.direction = this.direction + turnAmount;
+		
+		this.getHitbox().setRotation(this.direction);
+		this.getSprite().setRotation(this.direction);
+	}
+
+	public void setMap(SpiceTraderMap map) {
+		this.map = map;
 	}
 }
