@@ -24,23 +24,24 @@ public abstract class Entity {
 	
 	
 	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		this.setMap(map);
+		this.map = map;
 		this.pos = pos;
 		this.sprite = sprite;
-		this.setSpeed(speed);
-		this.setRotationSpeed(rotationSpeed);
-		this.setDirection(initialDirection);
+		this.speed = speed;
+		this.rotationSpeed = rotationSpeed;
+		this.direction = initialDirection;
 		
 		this.spriteWidth = sprite.getWidth();
 		this.spriteHeight = sprite.getHeight();
 
+		//initialize hitbox and set center point to center of sprite
 		this.createHitbox();
 		this.hitCenter = new Vector2((this.spriteWidth/2) + pos.x, (this.spriteHeight/2) + pos.y);
 		
 		this.hitbox.setPosition(pos.x, pos.y);
 		this.sprite.setPosition(pos.x, pos.y);
-		this.hitbox.setRotation(getDirection());
-		this.sprite.setRotation(getDirection());
+		this.hitbox.setRotation(direction);
+		this.sprite.setRotation(direction);
 	}
 	
 	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite) {
@@ -73,7 +74,7 @@ public abstract class Entity {
 	
 	public void drawHitbox(ShapeRenderer renderer) {
 		renderer.polygon(this.hitbox.getTransformedVertices());
-		renderer.circle(this.hitCenter.x, this.hitCenter.y, 1);
+		//renderer.circle(this.hitCenter.x, this.hitCenter.y, 1);
 	}
 	
 	public float getWidth() {
