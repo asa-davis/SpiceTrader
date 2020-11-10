@@ -24,12 +24,12 @@ public abstract class Entity {
 	
 	
 	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		this.map = map;
+		this.setMap(map);
 		this.pos = pos;
 		this.sprite = sprite;
-		this.speed = speed;
-		this.rotationSpeed = rotationSpeed;
-		this.direction = initialDirection;
+		this.setSpeed(speed);
+		this.setRotationSpeed(rotationSpeed);
+		this.setDirection(initialDirection);
 		
 		this.spriteWidth = sprite.getWidth();
 		this.spriteHeight = sprite.getHeight();
@@ -39,8 +39,8 @@ public abstract class Entity {
 		
 		this.hitbox.setPosition(pos.x, pos.y);
 		this.sprite.setPosition(pos.x, pos.y);
-		this.hitbox.setRotation(direction);
-		this.sprite.setRotation(direction);
+		this.hitbox.setRotation(getDirection());
+		this.sprite.setRotation(getDirection());
 	}
 	
 	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite) {
@@ -50,7 +50,7 @@ public abstract class Entity {
 	//this method must instantiate our hitbox
 	abstract void createHitbox();
 	
-	private void updatePosition(float xMove, float yMove) {
+	public void updatePosition(float xMove, float yMove) {
 		this.pos.x += xMove;
 		this.pos.y += yMove;
 		this.hitCenter.x += xMove;
@@ -60,69 +60,11 @@ public abstract class Entity {
 		this.hitbox.translate(xMove, yMove);
 	}
 	
-	private void updateRotation(float turnAmount) {
-		this.direction += turnAmount;
+	public void updateRotation(float turnAmount) {
+		this.setDirection(this.getDirection() + turnAmount);
 		
-		this.hitbox.setRotation(this.direction);
-		this.sprite.setRotation(this.direction);
-	}
-	
-	public Vector2 moveForward() {
-		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.direction);
-		float yMoveInc = (float) Math.cos(0.0175 * this.direction);
-		float xMoveTotal = xMoveInc * this.speed;
-		float yMoveTotal = yMoveInc * this.speed;
-		
-		this.updatePosition(xMoveTotal, yMoveTotal);
-		
-		//collision detection - undo move if hitting map 
-		int numMoves = (int) this.speed + 1;
-		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
-			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
-			numMoves--;
-		}
-
-		return this.hitCenter;
-	}
-	
-	public Vector2 moveBackward() {
-		float xMoveInc = (float) Math.sin(0.0175 * this.direction);
-		float yMoveInc = -1 * (float) Math.cos(0.0175 * this.direction);
-		float xMoveTotal = xMoveInc * this.speed;
-		float yMoveTotal = yMoveInc * this.speed;
-		
-		this.updatePosition(xMoveTotal, yMoveTotal);
-		
-		//collision detection - undo move if hitting map 
-		int numMoves = (int) this.speed + 1;
-		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
-			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
-			numMoves--;
-		}
-
-		return this.hitCenter;
-	}
-	
-	public void turnCW() {
-		this.updateRotation(-1 * this.rotationSpeed);
-		
-		//collision detection - undo move if hitting map
-		int numMoves = (int) (this.rotationSpeed + 1);
-		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
-			this.updateRotation(1);
-			numMoves--;
-		}
-	}
-	
-	public void turnCCW() {
-		this.updateRotation(this.rotationSpeed);
-		
-		//collision detection - undo move if hitting map
-		int numMoves = (int) (this.rotationSpeed + 1);
-		while(!this.map.validShipPosition(this.hitbox, this.hitCenter) && numMoves >= 0) {
-			this.updateRotation(-1);
-			numMoves--;
-		}
+		this.hitbox.setRotation(this.getDirection());
+		this.sprite.setRotation(this.getDirection());
 	}
 	
 	public void draw(SpriteBatch batch) {
@@ -156,5 +98,33 @@ public abstract class Entity {
 	
 	public void setMap(SpiceTraderMap map) {
 		this.map = map;
+	}
+
+	public float getDirection() {
+		return direction;
+	}
+
+	public void setDirection(float direction) {
+		this.direction = direction;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
+	public SpiceTraderMap getMap() {
+		return map;
+	}
+
+	public float getRotationSpeed() {
+		return rotationSpeed;
+	}
+
+	public void setRotationSpeed(float rotationSpeed) {
+		this.rotationSpeed = rotationSpeed;
 	}
 }

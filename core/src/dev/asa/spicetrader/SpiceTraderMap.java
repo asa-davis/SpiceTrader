@@ -55,7 +55,9 @@ public class SpiceTraderMap {
 	//first we get the tile coords that the center of the hitbox is on
 	//then we check the tile Ids of those coords and the 8 neighboring tiles
 	//if any of these are land tiles (id != 0) we fetch their appropriate hitbox using the bitmask and check it for intersections with ship hitbox
-	public boolean validShipPosition(Polygon shipHitbox, Vector2 shipCenter) {
+	public boolean validShipPosition(Ship ship) {
+		Polygon shipHitbox = ship.getHitbox();
+		Vector2 shipCenter = ship.getHitCenter();
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
 		List<Vector2> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
 

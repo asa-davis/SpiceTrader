@@ -77,7 +77,7 @@ public class MainGame extends ApplicationAdapter {
 		player = new Ship(map, playerStartPos, playerSprite, 5, 2, 180);
 		
 		//if player starting position is invalid, generate a new map
-		while(!map.validShipPosition(player.getHitbox(), player.getHitCenter())) {
+		while(!map.validShipPosition(player)) {
 			map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
 			player.setMap(map);
 		}
