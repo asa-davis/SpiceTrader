@@ -84,6 +84,8 @@ public class MainGame extends ApplicationAdapter {
 		
 		//debug
 		System.out.print("	****	screen size: (" + SCREEN_WIDTH + ", " + SCREEN_HEIGHT + ")\n");
+		//testing
+		System.out.println("testing");
 	}
 
 	@Override
