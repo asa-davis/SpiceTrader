@@ -92,7 +92,13 @@ public abstract class Ship extends Entity {
 		this.getHitbox().setRotation(this.direction);
 		this.getSprite().setRotation(this.direction);
 	}
-
+	
+	@Override
+	public void setSprite(Sprite sprite) {
+		super.setSprite(sprite);
+		this.getSprite().setRotation(this.direction);
+	}
+	
 	public void setMap(SpiceTraderMap map) {
 		this.map = map;
 	}

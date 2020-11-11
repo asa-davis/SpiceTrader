@@ -18,32 +18,37 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 public class MainGame extends ApplicationAdapter {
 	
-	//game settings
-	final boolean SHOW_HITBOXES = true;
-	final boolean ROUND_CAMERA_POS = false;
+//	--GAME SETTINGS--
+	
+	//TODO: MAKE THIS VARIABLE CONTROL MAP HITBOXES
+	final boolean SHOW_HITBOXES = false;
+	//fixes screen tearing
+	final boolean ROUND_CAMERA_POS = true;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
 	final float ZOOM_LEVEL = 3;
-	private int SCREEN_WIDTH;
-	private int SCREEN_HEIGHT;
-	private float CENTER_SCREEN_X;
-	private float CENTER_SCREEN_Y;
-	
 	//map settings
-	final int SMOOTHING_ITERATIONS = 7;
+	final int MAP_SIZE = 64;//use even numbers plz
+	final int SMOOTHING_ITERATIONS = 5;
 	final int SEA_LEVEL_OFFSET = 2;
-	final int NUM_COLS = 64;
-	final int NUM_ROWS = 64;
+
+
+//	--GAME VARIABLES--
+	
+	private Vector2 screenSize;
+	private Vector2 screenCenter;
+	int frameCounter = 0;
 	
 	//rendering objects
 	SpriteBatch batch;
 	TextureAtlas atlas;
 	OrthographicCamera camera;
 	ShapeRenderer hitboxRenderer;
-	int frameCounter = 0;
 	
 	//game objects
 	SpiceTraderMap map;
@@ -56,20 +61,18 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		SCREEN_WIDTH = Gdx.graphics.getWidth();
-		SCREEN_HEIGHT = Gdx.graphics.getHeight();
-		CENTER_SCREEN_X = (float) (NUM_COLS * TILE_WIDTH * 0.5);
-		CENTER_SCREEN_Y = (float) (NUM_ROWS * TILE_HEIGHT * 0.5);
+		screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		screenCenter = new Vector2((float) (MAP_SIZE * TILE_WIDTH * 0.5), (float) (MAP_SIZE * TILE_HEIGHT * 0.5));
 		
 		//rendering objects
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, SCREEN_WIDTH / ZOOM_LEVEL, SCREEN_HEIGHT / ZOOM_LEVEL);
-		camera.position.x = CENTER_SCREEN_X;
-		camera.position.y = CENTER_SCREEN_Y;
-		
+		camera.setToOrtho(false, screenSize.x / ZOOM_LEVEL, screenSize.y / ZOOM_LEVEL);
+		camera.position.x = screenCenter.x;
+		camera.position.y = screenCenter.y;
 		atlas = new TextureAtlas("assets/textures.atlas");
 		batch = new SpriteBatch();
 		
+		//hitboxes
 		if(SHOW_HITBOXES) {
 			hitboxRenderer = new ShapeRenderer();
 			hitboxRenderer.setColor(Color.BLUE);
@@ -77,26 +80,27 @@ public class MainGame extends ApplicationAdapter {
 		
 		//map
 		SpiceTraderMapGenerator mapGen = new SpiceTraderMapGenerator(atlas);
-		map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
+		try {
+			map = mapGen.generateMap(MAP_SIZE, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.dispose();
+			System.exit(0);
+		}
 
 		//Entities
+		EntityFactory entFactory = new EntityFactory(atlas, map, screenCenter);
 		allEntities = new ArrayList<Entity>();
 		entitiesToRemove = new ArrayList<Entity>();
 		
 		//player
-		Sprite playerSprite = atlas.createSprite("ships/player");
-		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
-		player = new Player(playerStartPos, playerSprite, map, 5, 2, 180);
+		player = entFactory.getPlayer("ships/player");
 		allEntities.add(player);
+		player.setMap(map);
 		
-		//if player starting position is invalid, generate a new map
-		while(!map.validShipPosition(player)) {
-			map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
-			player.setMap(map);
-		}
 		
 		//debug
-		System.out.print("	****	screen size: (" + SCREEN_WIDTH + ", " + SCREEN_HEIGHT + ")\n");
+		System.out.println(" ***	screen size: (" + screenSize.x + ", " + screenSize.y + ") ***");
 	}
 
 	@Override

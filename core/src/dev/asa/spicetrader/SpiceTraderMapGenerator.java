@@ -19,46 +19,69 @@ public class SpiceTraderMapGenerator {
 		this.atlas = atlas;
 	}
 	
-	public SpiceTraderMap generateMap(int numCols, int numRows, int tileWidth, int tileHeight, int smoothingIterations, int seaLevelOffset) {
+	public SpiceTraderMap generateMap(int size, int tileWidth, int tileHeight, int smoothingIterations, int seaLevelOffset) throws Exception {
 		//map generation workflow:
+		//	0. verify map variables (ensure size is even number)
 		//	1. set map variables
-		//	2. generate tile id map showing where land is
+		//	2. generate tile id map of random islands
 		//		a. randomize id map with values between 1-100
 		//		b. smooth map n times by setting each tile to avg value of it's neighbors from previous iteration
 		//		c. set all tiles with values below a certain threshold to water (id=0) and all tiles above to land (id=1)
-		//	3. generate bitmask map showing which neighboring tiles are land for every tile
-		//	4. generate libgdx TiledMap and MapRenderer
+		//		d. check if map is valid (has empty 4x4 square of water at center. If not, go back to a.
+		//	3. add starting island/village TODO
+		//	4. generate bitmask map showing which neighboring tiles are land for every tile
+		//	5. generate libgdx TiledMap and MapRenderer
+		
+		//0
+		if(size % 2 != 0) {
+			throw new Exception(" *** MAP SIZE MUST BE EVEN ***\n");
+		}
 		
 		//1
-		SpiceTraderMap map = new SpiceTraderMap(numCols, numRows, tileWidth, tileHeight);
+		int maxIterations = 10000;
+		boolean validMapGenerated = false;
+		SpiceTraderMap map = new SpiceTraderMap(size, size, tileWidth, tileHeight);
+		
 		
 		//2
-		int[][] randomTileIdMap = generateRandomTileIdMap(numRows, numCols, 1, 100);
-		int[][] tileIdMap = smoothTileIdMap(smoothingIterations, randomTileIdMap);
-		//debugMap(tileIdMap);
-		thresholdTileIdMap(tileIdMap, seaLevelOffset);
+		int[][] tileIdMap = new int[size][size];
+		int i = 0;
+		while(!validMapGenerated) {
+			randomizeTileIdMap(tileIdMap, 1, 100);
+			
+			tileIdMap = smoothTileIdMap(smoothingIterations, tileIdMap);
+
+			thresholdTileIdMap(tileIdMap, seaLevelOffset);
+			
+			validMapGenerated = checkValidTileIdMap(tileIdMap);
+			
+			i++;
+			if(i >= maxIterations) throw new Exception(" *** MAX ITERATIONS HIT - NO VALID MAP FOUND ***\n");
+		}
+		System.out.println(" *** VALID MAP FOUND ON ITERATIONS #" + i);
 		map.setTileIdMap(tileIdMap);
 		
-		//3
-		int[][] neighborBitmaskMap = generateNeighborTileBitmaskMap(numRows, numCols, tileIdMap);
-		map.setNeighborBitmaskMap(neighborBitmaskMap);
+		//3 
+		//TODO add starting island/village under player
 		
 		//4
-		TiledMap libgdxMap = generateLibgdxMap(numCols, numRows, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap);
+		int[][] neighborBitmaskMap = generateNeighborTileBitmaskMap(size, size, tileIdMap);
+		map.setNeighborBitmaskMap(neighborBitmaskMap);
+		
+		//5
+		TiledMap libgdxMap = generateLibgdxMap(size, size, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap);
 		map.setLibgdxMap(libgdxMap);
 		
 		return map;
 	}
 	
 	//sets the tile id map to random values of min - max
-	private static int[][] generateRandomTileIdMap(int numRows, int numCols, int min, int max) {
-		int[][] tileIdMap = new int[numRows][numCols];
-		for(int y = 0; y < numRows; y++) {
-			for(int x = 0; x < numCols; x++) {
+	private static void randomizeTileIdMap(int[][] tileIdMap, int min, int max) {
+		for(int y = 0; y < tileIdMap.length; y++) {
+			for(int x = 0; x < tileIdMap[0].length; x++) {
 				tileIdMap[y][x] = Utils.genRandomInt(min, max);
 			}
 		}
-		return tileIdMap;
 	}
 	
 	//smoothes land masses into clumps representing islands
@@ -86,7 +109,7 @@ public class SpiceTraderMapGenerator {
 		}
 		
 		//recursive
-		if(iterations == 1)
+		if(iterations <= 1)
 			return smoothedMap;
 		else
 			return smoothTileIdMap(iterations - 1, smoothedMap);
@@ -116,6 +139,20 @@ public class SpiceTraderMapGenerator {
 					tileIdMap[y][x] = 1;
 			}
 		}
+	}
+	
+	//checks if there is a 4x4 square of water for starting area at center of map
+	//starting are consists of a 3x2 island with home village and a dock with player next to it all surrounded by water
+	private static boolean checkValidTileIdMap(int[][] tileIdMap) {
+		int startingZoneSize = 4;//must be even
+		Vector2 startingZoneOrigin = new Vector2((tileIdMap[0].length/2) - (startingZoneSize/2), (tileIdMap.length/2) - (startingZoneSize/2));
+		for(int y = 0; y < startingZoneSize; y++) {
+			for(int x = 0; x < startingZoneSize; x++) {
+				if(tileIdMap[(int) (startingZoneOrigin.y + y)][(int) (startingZoneOrigin.x + x)] != 0)
+					return false;
+			}
+		}
+		return true;
 	}
 	
 	//Generate a map of bitmasked values representing the presence of land on all 8 neighboring tiles for a given tile. 
