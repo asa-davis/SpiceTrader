@@ -100,4 +100,8 @@ public class SpiceTraderMap {
 	public void setProjectionMatrix(Matrix4 project) {
 		hitboxRenderer.setProjectionMatrix(project);
 	}
+
+	public Vector2 getSize() {
+		return new Vector2(this.numCols * this.tileWidth, this.numRows * this.tileHeight);
+	}
 }

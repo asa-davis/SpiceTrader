@@ -58,7 +58,7 @@ public class SpiceTraderMapGenerator {
 			i++;
 			if(i >= maxIterations) throw new Exception(" *** MAX ITERATIONS HIT - NO VALID MAP FOUND ***\n");
 		}
-		System.out.println(" *** VALID MAP FOUND ON ITERATIONS #" + i);
+		System.out.println(" *** VALID MAP FOUND ON ITERATION #" + i);
 		map.setTileIdMap(tileIdMap);
 		
 		//3 

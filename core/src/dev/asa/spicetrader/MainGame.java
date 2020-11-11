@@ -26,9 +26,9 @@ public class MainGame extends ApplicationAdapter {
 //	--GAME SETTINGS--
 	
 	//TODO: MAKE THIS VARIABLE CONTROL MAP HITBOXES
-	final boolean SHOW_HITBOXES = false;
+	final boolean SHOW_HITBOXES = true;
 	//fixes screen tearing
-	final boolean ROUND_CAMERA_POS = true;
+	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
 	final float ZOOM_LEVEL = 3;
@@ -83,24 +83,25 @@ public class MainGame extends ApplicationAdapter {
 		try {
 			map = mapGen.generateMap(MAP_SIZE, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
 		} catch (Exception e) {
+			//in case of bad map settings or mapGen unable to find valid map
 			e.printStackTrace();
 			this.dispose();
 			System.exit(0);
 		}
 
 		//Entities
-		EntityFactory entFactory = new EntityFactory(atlas, map, screenCenter);
 		allEntities = new ArrayList<Entity>();
+		EntityFactory entFactory = new EntityFactory(atlas, map, screenCenter, allEntities);
 		entitiesToRemove = new ArrayList<Entity>();
 		
 		//player
-		player = entFactory.getPlayer("ships/player");
-		allEntities.add(player);
-		player.setMap(map);
+		player = entFactory.getPlayer();
 		
+		//pirates
+		entFactory.addPiratesRandomly(10);
 		
 		//debug
-		System.out.println(" ***	screen size: (" + screenSize.x + ", " + screenSize.y + ") ***");
+		System.out.println(" *** SCREEN SIZE: " + screenSize.x + "x" + screenSize.y + " ***");
 	}
 
 	@Override

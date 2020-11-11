@@ -20,13 +20,6 @@ public abstract class Ship extends Entity {
 		this.getHitbox().setRotation(direction);
 		this.getSprite().setRotation(direction);
 	}
-
-	@Override
-	void createHitbox() {
-		Polygon hitbox = new Polygon(new float[] {2, 0, this.getWidth() - 2, 0, this.getWidth() - 2, this.getHeight() - 4, this.getWidth()/2, this.getHeight(), 2, this.getHeight() - 4});
-		hitbox.setOrigin(this.getWidth()/2, this.getHeight()/2);
-		this.setHitbox(hitbox);
-	}
 	
 	public Vector2 moveForward() {
 		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.direction);
@@ -93,14 +86,16 @@ public abstract class Ship extends Entity {
 		this.getSprite().setRotation(this.direction);
 	}
 	
+	public static Polygon getShipHitbox(float spriteWidth, float spriteHeight, int xOffset) {
+		Polygon hitbox = new Polygon(new float[] {xOffset, 0, spriteWidth - xOffset, 0, spriteWidth - xOffset, spriteHeight - 4, spriteWidth/2, spriteHeight, xOffset, spriteHeight - 4});
+		hitbox.setOrigin(spriteWidth/2, spriteHeight/2);
+		return hitbox;
+	}
+	
 	@Override
 	public void setSprite(Sprite sprite) {
 		super.setSprite(sprite);
 		this.getSprite().setRotation(this.direction);
-	}
-	
-	public void setMap(SpiceTraderMap map) {
-		this.map = map;
 	}
 	
 	public float getDirection() {

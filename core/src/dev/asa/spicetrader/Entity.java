@@ -44,6 +44,14 @@ public abstract class Entity {
 	//this method is called on every frame. 
 	abstract void tick();
 	
+	public void setPosition(Vector2 pos) {
+		this.pos = pos;
+		this.createHitbox();
+		this.hitCenter = new Vector2((this.spriteWidth/2) + pos.x, (this.spriteHeight/2) + pos.y);
+		this.hitbox.setPosition(pos.x, pos.y);
+		this.sprite.setPosition(pos.x, pos.y);
+	}
+	
 	public void updatePosition(float xMove, float yMove) {
 		this.pos.x += xMove;
 		this.pos.y += yMove;
