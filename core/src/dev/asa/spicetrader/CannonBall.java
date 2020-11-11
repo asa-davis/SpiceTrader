@@ -7,7 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class CannonBall extends Entity{
 	
-	private static float INITIAL_SPEED = 5;
+	//These values need to be messed with once pirates are in the game to figure out what works best
+	private static float ACCEL = -0.2f;
+	private static float SPEED_CUTOFF = 1.5f;
+	private static float INITIAL_SPEED = 6;
 	private float direction;
 	private float currSpeed;
 	
@@ -36,9 +39,9 @@ public class CannonBall extends Entity{
 	//move cannon ball in it's direction, by current speed. 
 	@Override
 	void tick() {
-		if(this.currSpeed < 0.75)
+		if(this.currSpeed < CannonBall.SPEED_CUTOFF)
 			this.exists = false;
 		this.move();
-		this.currSpeed -= 0.08;
+		this.currSpeed += CannonBall.ACCEL;
 	}
 }

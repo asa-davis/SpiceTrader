@@ -86,4 +86,9 @@ public abstract class Entity {
 	public void setHitbox(Polygon p) {
 		this.hitbox = p;
 	}
+	
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
+		this.sprite.setPosition(pos.x, pos.y);
+	}
 }

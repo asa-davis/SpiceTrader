@@ -18,11 +18,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class MainGame extends ApplicationAdapter {
 	
 	//game settings
-	final boolean SHOW_HITBOXES = true;
+	final boolean SHOW_HITBOXES = false;
 	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
@@ -84,9 +85,12 @@ public class MainGame extends ApplicationAdapter {
 		entitiesToRemove = new ArrayList<Entity>();
 		
 		//player
-		Sprite playerSprite = atlas.createSprite("ships/player");
-		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
-		player = new Player(playerStartPos, playerSprite, map, 5, 2, 180);
+		Array<AtlasRegion> playerSpriteTextures = atlas.findRegions("ships/player");
+		Sprite[] playerSprites = new Sprite[playerSpriteTextures.size];
+		for(int i = 0; i < playerSpriteTextures.size; i++) 
+			playerSprites[i] = new Sprite(playerSpriteTextures.get(i));
+		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprites[0].getWidth() / 2), CENTER_SCREEN_Y - (playerSprites[0].getHeight() / 2));
+		player = new Player(playerStartPos, playerSprites, map, 2, 2, 0);
 		allEntities.add(player);
 		
 		//if player starting position is invalid, generate a new map
