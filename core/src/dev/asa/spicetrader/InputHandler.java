@@ -11,12 +11,12 @@ public class InputHandler {
 	
 	private Player player;
 	private Camera camera;
-	private List<Entity> allEntities;
+	private EntityManager entManager;
 	
-	public InputHandler(Player player, Camera camera, List<Entity> allEntities) {
+	public InputHandler(Player player, Camera camera, EntityManager entManager) {
 		this.player = player;
 		this.camera = camera;
-		this.allEntities = allEntities;
+		this.entManager = entManager;
 	}
 	
 	public void process() {
@@ -37,10 +37,10 @@ public class InputHandler {
 			this.player.turnCCW();
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-			this.allEntities.add(this.player.fireCannonLeft());
+			this.entManager.add(this.player.fireCannonLeft());
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-			this.allEntities.add(this.player.fireCannonRight());
+			this.entManager.add(this.player.fireCannonRight());
 		}
 	}
 }

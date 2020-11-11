@@ -14,13 +14,13 @@ public class EntityFactory {
 	TextureAtlas atlas;
 	SpiceTraderMap map;
 	Vector2 screenCenter;
-	List<Entity> allEntities;
+	EntityManager entManager;
 	
-	public EntityFactory(TextureAtlas atlas, SpiceTraderMap map, Vector2 screenCenter, List<Entity> allEntities) {
+	public EntityFactory(TextureAtlas atlas, SpiceTraderMap map, Vector2 screenCenter, EntityManager entManager) {
 		this.screenCenter = screenCenter;
 		this.atlas = atlas;
 		this.map = map;
-		this.allEntities = allEntities;
+		this.entManager = entManager;
 	}
 	
 	public Player getPlayer() {
@@ -35,15 +35,15 @@ public class EntityFactory {
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
 		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map, 5, 2, 0);
 	
-		this.allEntities.add(player);
+		this.entManager.add(player);
 		
 		return player;
 	}
 	
 	//temporary method for testing - eventually the pirate villages will generate pirates
 	//adds pirates randomly to the map
-	public List<Pirate> addPiratesRandomly(int numPirates) {
-		List<Pirate> pirates = new ArrayList<Pirate>();
+	public void addPiratesRandomly(int numPirates) {
+		List<Entity> pirates = new ArrayList<Entity>();
 		for(int i = 0; i < numPirates; i++) {
 			Sprite pirateSprite = atlas.createSprite("ships/pirate");
 			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 1, 1, 0);
@@ -52,8 +52,7 @@ public class EntityFactory {
 			}
 			pirates.add(p);
 		}
-		this.allEntities.addAll(pirates);
-		return pirates;
+		this.entManager.addAll(pirates);
 	}
 	
 	private Vector2 getRandShipPos(Sprite sprite) {

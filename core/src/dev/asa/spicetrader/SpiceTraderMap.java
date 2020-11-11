@@ -49,6 +49,7 @@ public class SpiceTraderMap {
 	public void render(OrthographicCamera camera) {
 		this.mapRenderer.setView(camera);
 		this.mapRenderer.render();
+		hitboxRenderer.setProjectionMatrix(camera.combined);
 	}
 	
 	//returns true if ship is not intersecting with shore
@@ -95,10 +96,6 @@ public class SpiceTraderMap {
 	public void setLibgdxMap(TiledMap libgdxMap) {
 		this.libgdxMap = libgdxMap;
 		this.mapRenderer = new OrthogonalTiledMapRenderer(this.libgdxMap);
-	}
-	
-	public void setProjectionMatrix(Matrix4 project) {
-		hitboxRenderer.setProjectionMatrix(project);
 	}
 
 	public Vector2 getSize() {

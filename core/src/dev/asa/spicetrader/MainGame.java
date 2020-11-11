@@ -1,24 +1,14 @@
 package dev.asa.spicetrader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
 public class MainGame extends ApplicationAdapter {
 	
@@ -41,29 +31,22 @@ public class MainGame extends ApplicationAdapter {
 	
 	private Vector2 screenSize;
 	private Vector2 screenCenter;
-	int frameCounter = 0;
 	
 	//rendering objects
-	SpriteBatch batch;
 	TextureAtlas atlas;
 	OrthographicCamera camera;
-	ShapeRenderer hitboxRenderer;
 	
 	//game objects
 	SpiceTraderMap map;
-	Player player;
-	//tracks all entities in game. ships, cannon balls, etc. must be added to this list when they are created. 
-	//used to render and update everything
-	List<Entity> allEntities;
-	//tracks which entities need to be remove. is cleared each frame
-	List<Entity> entitiesToRemove;
-	
+	EntityManager entManager;
+	EntityFactory entFactory;
 	InputHandler inputHandler;
 	
 	@Override
 	public void create () {
 		screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		screenCenter = new Vector2((float) (MAP_SIZE * TILE_WIDTH * 0.5), (float) (MAP_SIZE * TILE_HEIGHT * 0.5));
+		System.out.println(" *** SCREEN SIZE: " + screenSize.x + "x" + screenSize.y + " ***");
 		
 		//rendering objects
 		camera = new OrthographicCamera();
@@ -71,15 +54,8 @@ public class MainGame extends ApplicationAdapter {
 		camera.position.x = screenCenter.x;
 		camera.position.y = screenCenter.y;
 		atlas = new TextureAtlas("assets/textures.atlas");
-		batch = new SpriteBatch();
 		
-		//hitboxes
-		if(SHOW_HITBOXES) {
-			hitboxRenderer = new ShapeRenderer();
-			hitboxRenderer.setColor(Color.BLUE);
-		}
-		
-		//map
+		//Map
 		SpiceTraderMapGenerator mapGen = new SpiceTraderMapGenerator(atlas);
 		try {
 			map = mapGen.generateMap(MAP_SIZE, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
@@ -89,23 +65,19 @@ public class MainGame extends ApplicationAdapter {
 			this.dispose();
 			System.exit(0);
 		}
-
-		//Entities
-		allEntities = new ArrayList<Entity>();
-		EntityFactory entFactory = new EntityFactory(atlas, map, screenCenter, allEntities);
-		entitiesToRemove = new ArrayList<Entity>();
 		
+		//Entities
+		entManager = new EntityManager(SHOW_HITBOXES);
+		entFactory = new EntityFactory(atlas, map, screenCenter, entManager);
+
 		//player
-		player = entFactory.getPlayer();
+		Player player = entFactory.getPlayer();
 		
 		//pirates
 		entFactory.addPiratesRandomly(10);
 		
 		//input
-		inputHandler = new InputHandler(player, camera, allEntities);
-		
-		//debug
-		System.out.println(" *** SCREEN SIZE: " + screenSize.x + "x" + screenSize.y + " ***");
+		inputHandler = new InputHandler(player, camera, entManager);		
 	}
 
 	@Override
@@ -117,35 +89,13 @@ public class MainGame extends ApplicationAdapter {
 		map.render(camera);
 		
 		//render entities
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		for(Entity e : allEntities) 
-			e.draw(batch);
-		batch.end();
-		
-		//draw hitboxes if enabled - note: drawing of map hitboxes is always enabled for now.
-		if(SHOW_HITBOXES) {
-			hitboxRenderer.setProjectionMatrix(camera.combined);
-			hitboxRenderer.begin(ShapeType.Line);
-			for(Entity e : allEntities)
-				e.drawHitbox(hitboxRenderer);
-			hitboxRenderer.end();
-		}
-		map.setProjectionMatrix(camera.combined);
+		entManager.render(camera.combined);
 		
 		//handle input
 		inputHandler.process();
 		
-		//process all entities, deleting if they don't exist anymore and updating if they do
-		entitiesToRemove.clear();
-		for(Entity e : allEntities) {
-			if(e.exists)
-				e.tick();
-			else
-				entitiesToRemove.add(e);
-		}
-		for(Entity e : entitiesToRemove)
-			allEntities.remove(e);
+		//process entities
+		entManager.process();
 		
 		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
 		if(ROUND_CAMERA_POS) {
@@ -158,7 +108,7 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
+		entManager.dispose();
 		atlas.dispose();
 	}
 }
