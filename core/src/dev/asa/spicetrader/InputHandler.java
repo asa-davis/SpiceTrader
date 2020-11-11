@@ -20,21 +20,27 @@ public class InputHandler {
 	}
 	
 	public void process() {
+		boolean forward = false;
+		boolean backward = false;
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+			forward = true;
 			Vector2 playerPos = this.player.moveForward();
 			this.camera.position.x = playerPos.x;
 			camera.position.y = playerPos.y;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+			backward = true;
 			Vector2 playerPos = this.player.moveBackward();
 			this.camera.position.x = playerPos.x;
 			this.camera.position.y = playerPos.y;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			this.player.turnCW();
+			if(forward) this.player.turnCW();
+			if(backward) this.player.turnCCW();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			this.player.turnCCW();
+			if(forward) this.player.turnCCW();
+			if(backward) this.player.turnCW();
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 			this.entManager.add(this.player.fireCannonLeft());
