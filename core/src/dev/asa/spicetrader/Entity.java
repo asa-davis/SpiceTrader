@@ -10,10 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 //parent class for everything with a hitbox, position, sprite, etc.
 //children include ship (pirate, player), village, cannonball, sea monsters (?), etc.
 public abstract class Entity {
+	public boolean exists;
+	
 	//in pixels not tiles
 	private Vector2 pos;
 	private float spriteWidth;
 	private float spriteHeight;
+	
 	private Polygon hitbox;
 	private Vector2 hitCenter;
 	private Sprite sprite;
@@ -21,6 +24,8 @@ public abstract class Entity {
 	
 	
 	public Entity(Vector2 pos, Sprite sprite) {
+		this.exists = true;
+		
 		this.pos = pos;
 		this.sprite = sprite;
 		this.spriteWidth = sprite.getWidth();
@@ -36,6 +41,8 @@ public abstract class Entity {
 	
 	//this method must instantiate our hitbox
 	abstract void createHitbox();
+	//this method is called on every frame. 
+	abstract void tick();
 	
 	public void updatePosition(float xMove, float yMove) {
 		this.pos.x += xMove;
