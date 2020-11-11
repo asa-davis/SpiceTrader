@@ -1,5 +1,8 @@
 package dev.asa.spicetrader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -44,7 +47,12 @@ public class MainGame extends ApplicationAdapter {
 	
 	//game objects
 	SpiceTraderMap map;
-	Ship player;
+	Player player;
+	//tracks all entities in game. ships, cannon balls, etc. must be added to this list when they are created. 
+	//used to render and update everything
+	List<Entity> allEntities;
+	//tracks which entities need to be remove. is cleared each frame
+	List<Entity> entitiesToRemove;
 	
 	@Override
 	public void create () {
@@ -71,10 +79,15 @@ public class MainGame extends ApplicationAdapter {
 		SpiceTraderMapGenerator mapGen = new SpiceTraderMapGenerator(atlas);
 		map = mapGen.generateMap(NUM_COLS, NUM_ROWS, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
 
+		//Entities
+		allEntities = new ArrayList<Entity>();
+		entitiesToRemove = new ArrayList<Entity>();
+		
 		//player
 		Sprite playerSprite = atlas.createSprite("ships/player");
 		Vector2 playerStartPos = new Vector2(CENTER_SCREEN_X - (playerSprite.getWidth() / 2), CENTER_SCREEN_Y - (playerSprite.getHeight() / 2));
-		player = new Ship(map, playerStartPos, playerSprite, 5, 2, 180);
+		player = new Player(playerStartPos, playerSprite, map, 5, 2, 180);
+		allEntities.add(player);
 		
 		//if player starting position is invalid, generate a new map
 		while(!map.validShipPosition(player)) {
@@ -91,22 +104,26 @@ public class MainGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		//render everything
+		//render map
 		map.render(camera);
 		
+		//render entities
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		player.draw(batch);
+		for(Entity e : allEntities) 
+			e.draw(batch);
+		
 		batch.end();
 		
+		//draw hitboxes if enabled - note: drawing of map hitboxes is always enabled for now.
 		if(SHOW_HITBOXES) {
 			hitboxRenderer.setProjectionMatrix(camera.combined);
 			hitboxRenderer.begin(ShapeType.Line);
-			player.drawHitbox(hitboxRenderer);
+			for(Entity e : allEntities)
+				e.drawHitbox(hitboxRenderer);
 			hitboxRenderer.end();
-			
-			map.setProjectionMatrix(camera.combined);
 		}
+		map.setProjectionMatrix(camera.combined);
 		
 		//handle input
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -125,6 +142,25 @@ public class MainGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			player.turnCCW();
 		}
+		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+			Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
+			allEntities.add(player.fireCannonLeft(cannonBallSprite));
+		}
+		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+			Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
+			allEntities.add(player.fireCannonRight(cannonBallSprite));
+		}
+		
+		//process all entities, deleting if they don't exist anymore and updating if they do
+		entitiesToRemove.clear();
+		for(Entity e : allEntities) {
+			if(e.exists)
+				e.tick();
+			else
+				entitiesToRemove.add(e);
+		}
+		for(Entity e : entitiesToRemove)
+			allEntities.remove(e);
 		
 		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
 		if(ROUND_CAMERA_POS) {

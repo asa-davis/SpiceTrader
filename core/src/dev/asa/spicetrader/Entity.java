@@ -10,27 +10,24 @@ import com.badlogic.gdx.math.Vector2;
 //parent class for everything with a hitbox, position, sprite, etc.
 //children include ship (pirate, player), village, cannonball, sea monsters (?), etc.
 public abstract class Entity {
+	public boolean exists;
+	
 	//in pixels not tiles
 	private Vector2 pos;
-	private float direction;
-	private float speed;
-	private float rotationSpeed;
 	private float spriteWidth;
 	private float spriteHeight;
+	
 	private Polygon hitbox;
 	private Vector2 hitCenter;
 	private Sprite sprite;
 	private SpiceTraderMap map;
 	
 	
-	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite, float speed, float rotationSpeed, float initialDirection) {
-		this.map = map;
+	public Entity(Vector2 pos, Sprite sprite) {
+		this.exists = true;
+		
 		this.pos = pos;
 		this.sprite = sprite;
-		this.speed = speed;
-		this.rotationSpeed = rotationSpeed;
-		this.direction = initialDirection;
-		
 		this.spriteWidth = sprite.getWidth();
 		this.spriteHeight = sprite.getHeight();
 
@@ -40,16 +37,12 @@ public abstract class Entity {
 		
 		this.hitbox.setPosition(pos.x, pos.y);
 		this.sprite.setPosition(pos.x, pos.y);
-		this.hitbox.setRotation(direction);
-		this.sprite.setRotation(direction);
-	}
-	
-	public Entity(SpiceTraderMap map, Vector2 pos, Sprite sprite) {
-		this(map, pos, sprite, 1, 1, 0);
 	}
 	
 	//this method must instantiate our hitbox
 	abstract void createHitbox();
+	//this method is called on every frame. 
+	abstract void tick();
 	
 	public void updatePosition(float xMove, float yMove) {
 		this.pos.x += xMove;
@@ -59,13 +52,6 @@ public abstract class Entity {
 		
 		this.sprite.translate(xMove, yMove);
 		this.hitbox.translate(xMove, yMove);
-	}
-	
-	public void updateRotation(float turnAmount) {
-		this.setDirection(this.getDirection() + turnAmount);
-		
-		this.hitbox.setRotation(this.getDirection());
-		this.sprite.setRotation(this.getDirection());
 	}
 	
 	public void draw(SpriteBatch batch) {
@@ -89,43 +75,15 @@ public abstract class Entity {
 		return this.hitbox;
 	}
 	
+	public Sprite getSprite() {
+		return this.sprite;
+	}
+	
 	public Vector2 getHitCenter() {
 		return this.hitCenter;
 	}
 	
 	public void setHitbox(Polygon p) {
 		this.hitbox = p;
-	}
-	
-	public void setMap(SpiceTraderMap map) {
-		this.map = map;
-	}
-
-	public float getDirection() {
-		return direction;
-	}
-
-	public void setDirection(float direction) {
-		this.direction = direction;
-	}
-
-	public float getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-
-	public SpiceTraderMap getMap() {
-		return map;
-	}
-
-	public float getRotationSpeed() {
-		return rotationSpeed;
-	}
-
-	public void setRotationSpeed(float rotationSpeed) {
-		this.rotationSpeed = rotationSpeed;
 	}
 }
