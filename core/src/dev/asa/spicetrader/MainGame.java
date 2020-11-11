@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -59,6 +58,8 @@ public class MainGame extends ApplicationAdapter {
 	//tracks which entities need to be remove. is cleared each frame
 	List<Entity> entitiesToRemove;
 	
+	InputHandler inputHandler;
+	
 	@Override
 	public void create () {
 		screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -100,6 +101,9 @@ public class MainGame extends ApplicationAdapter {
 		//pirates
 		entFactory.addPiratesRandomly(10);
 		
+		//input
+		inputHandler = new InputHandler(player, camera, allEntities);
+		
 		//debug
 		System.out.println(" *** SCREEN SIZE: " + screenSize.x + "x" + screenSize.y + " ***");
 	}
@@ -117,7 +121,6 @@ public class MainGame extends ApplicationAdapter {
 		batch.begin();
 		for(Entity e : allEntities) 
 			e.draw(batch);
-		
 		batch.end();
 		
 		//draw hitboxes if enabled - note: drawing of map hitboxes is always enabled for now.
@@ -131,30 +134,7 @@ public class MainGame extends ApplicationAdapter {
 		map.setProjectionMatrix(camera.combined);
 		
 		//handle input
-		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-			Vector2 playerPos = player.moveForward();
-			camera.position.x = playerPos.x;
-			camera.position.y = playerPos.y;
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-			Vector2 playerPos = player.moveBackward();
-			camera.position.x = playerPos.x;
-			camera.position.y = playerPos.y;
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.turnCW();
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			player.turnCCW();
-		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-			Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
-			allEntities.add(player.fireCannonLeft(cannonBallSprite));
-		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-			Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
-			allEntities.add(player.fireCannonRight(cannonBallSprite));
-		}
+		inputHandler.process();
 		
 		//process all entities, deleting if they don't exist anymore and updating if they do
 		entitiesToRemove.clear();
