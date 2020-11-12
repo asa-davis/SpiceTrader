@@ -19,7 +19,10 @@ import com.badlogic.gdx.math.Matrix4;
 
 public class EntityManager {
 	
+	Player player;
 	private List<Entity> allEntities;
+	private List<CannonBall> allCanBalls;
+	private List<Pirate> allPirates;
 	private List<Entity> entitiesToRemove;
 	private boolean showHitboxes;
 	private SpriteBatch batch;
@@ -28,9 +31,11 @@ public class EntityManager {
 	
 	public EntityManager(boolean showHitboxes) {
 		allEntities = new ArrayList<Entity>();
+		allCanBalls = new ArrayList<CannonBall>();
+		allPirates = new ArrayList<Pirate>();
 		entitiesToRemove = new ArrayList<Entity>();
 		batch = new SpriteBatch();
-		showHitboxes = showHitboxes;
+		this.showHitboxes = showHitboxes;
 		
 		//hitboxes
 		if(showHitboxes) {
@@ -42,7 +47,7 @@ public class EntityManager {
 	public void render(Matrix4 projectionMatrix) {
 		batch.setProjectionMatrix(projectionMatrix);
 		batch.begin();
-		for(Entity e : allEntities) 
+		for(Entity e : allEntities)
 			e.draw(batch);
 		batch.end();
 		
@@ -56,8 +61,12 @@ public class EntityManager {
 		}
 	}
 	
-	//ticks and deletes entities
+
 	public void process() {
+		//process collisions
+		this.processCollisions();
+		
+		//check for deleted entities and tick the others
 		entitiesToRemove.clear();
 		for(Entity e : allEntities) {
 			if(e.exists)
@@ -65,32 +74,63 @@ public class EntityManager {
 			else
 				entitiesToRemove.add(e);
 		}
+		
+		//delete entities which no longer exist
 		for(Entity e : entitiesToRemove)
-			allEntities.remove(e);
+			this.remove(e);
 	}
 	
-	public void add(Entity e) {
-		allEntities.add(e);
-	}
-	
-	public void addAll(List<Entity> e) {
-		allEntities.addAll(e);
-	}
-	
-	//currently we check for collisions against every entity in game every time. with many cannon balls and ships in the game, this will become too inefficient.
-	//in the future, the map should be divided into quadrants, and collision checks should only be performed against entities in the same quadrant
-	public List<Entity> getCollisions(Entity e1) {
-		List<Entity> collisions = new ArrayList<Entity>();
-		//for every entity
-		for(Entity e2 : allEntities) {
-			//check collisions except for against the entity that was passed to this method
-			if(!e2.equals(e1)) {
-				if(Intersector.overlapConvexPolygons(e2.getHitbox(), e1.getHitbox())) {
-					collisions.add(e2);
+	//Performs the following checks each frame: 
+	//	1. Player against every pirate. this starts the "you have been boarded" event
+	//	2. Every cannon ball against every pirate. this deletes cannonball and calls the strike() event on the pirate
+	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
+	//When this method gets too expensive we will have to start only checking entities against entities in the same quadrant or something
+	private void processCollisions() {
+		for(Pirate p : this.allPirates) {
+			//1.
+			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
+				System.out.println("You have been boarded!!");
+			}
+			//2.
+			for(CannonBall c : this.allCanBalls) {
+				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
+					c.exists = false;
+					System.out.println("You hit a pirate!");
+					p.strike();
 				}
 			}
 		}
-		return collisions;
+	}
+
+	public void add(Entity e) {
+		allEntities.add(e);
+		if(e instanceof Player) {
+			this.player = (Player) e;
+		}
+		else if(e instanceof Pirate) {
+			this.allPirates.add((Pirate) e);
+		}
+		else if(e instanceof CannonBall) {
+			this.allCanBalls.add((CannonBall) e);
+		}
+	}
+	
+	public void addAll(List<Entity> el) {
+		for(Entity e : el)
+			this.add(e);
+	}
+	
+	public void remove(Entity e) {
+		this.allEntities.remove(e);
+		if(e instanceof Player) {
+			this.player = null;
+		}
+		else if(e instanceof Pirate) {
+			this.allPirates.remove((Pirate) e);
+		}
+		else if(e instanceof CannonBall) {
+			this.allCanBalls.remove((CannonBall) e);
+		}
 	}
 	
 	public void dispose() {

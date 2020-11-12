@@ -1,5 +1,6 @@
 package dev.asa.spicetrader;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -63,7 +64,7 @@ public abstract class Entity {
 	}
 	
 	public void draw(SpriteBatch batch) {
-		sprite.draw(batch);
+		this.sprite.draw(batch);
 	}
 	
 	public void drawHitbox(ShapeRenderer renderer) {

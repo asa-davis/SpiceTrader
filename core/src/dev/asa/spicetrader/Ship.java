@@ -1,5 +1,6 @@
 package dev.asa.spicetrader;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +11,10 @@ public abstract class Ship extends Entity {
 	private float direction;
 	private float speed;
 	private float rotationSpeed;
+	//health of ship
+	private int hull;
+	//number of frames until sprite color goes back to normal
+	private int strikeCooldown;
 	
 	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
 		super(pos, sprite);
@@ -19,6 +24,26 @@ public abstract class Ship extends Entity {
 		this.direction = initialDirection;
 		this.getHitbox().setRotation(direction);
 		this.getSprite().setRotation(direction);
+		
+		this.hull = 10;
+		this.strikeCooldown = 0;
+	}
+	
+	public void tick() {
+		if(this.strikeCooldown > 0) {
+			this.strikeCooldown--;
+			if(this.strikeCooldown > 0)
+				this.getSprite().setColor(Color.RED);
+			else
+				this.getSprite().setColor(Color.WHITE);
+		}
+		if(this.hull == 0)
+			this.exists = false;
+	}
+	
+	public void strike() {
+		this.hull -= 2;
+		this.strikeCooldown = 10;
 	}
 	
 	public Vector2 moveForward() {

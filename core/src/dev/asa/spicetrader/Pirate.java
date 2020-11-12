@@ -16,9 +16,8 @@ public class Pirate extends Ship{
 	}
 
 	@Override
-	void tick() {
-		// TODO Auto-generated method stub
+	public void tick() {
+		super.tick();
 		
 	}
-
 }
