@@ -2,18 +2,20 @@ package dev.asa.spicetrader;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Player extends Ship {
 	
-	//player sprites:
+	//player playerSprites:
 	//	0 = base ship
 	//	1 = base ship w/ cannons
 	//	2 = left cannon firing
 	//	3 = right cannon firing
 	//	4 = both cannons firing
-	private Sprite[] sprites;
+	private Sprite[] playerSprites;
+	Sprite cannonBallSprite;
 	private static int INIT_SPRITE = 1;
 	private static int FIRING_SPRITE_COOLDOWN = 10;
 	
@@ -23,9 +25,10 @@ public class Player extends Ship {
 	private boolean firingLeft;
 	private boolean firingRight;
 	
-	public Player(Vector2 pos, Sprite[] sprites, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
-		super(pos, sprites[Player.INIT_SPRITE], map, speed, rotationSpeed, initialDirection);
-		this.sprites = sprites;
+	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
+		super(pos, playerSprites[Player.INIT_SPRITE], map, speed, rotationSpeed, initialDirection);
+		this.playerSprites = playerSprites;
+		this.cannonBallSprite = cannonBallSprite;
 		this.firingLeftSpriteCooldown = 0;
 		this.firingRightSpriteCooldown = 0;
 		this.firingLeft = false;
@@ -37,49 +40,54 @@ public class Player extends Ship {
 		this.calcPlayerFiringSprite();
 	}
 	
+	@Override
+	void createHitbox() {
+		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
+	}
+	
 	//TODO: this method should return the point between the two cannons on the sprite. 
 	//		this can be calculated by shifting from the center of ship based on this.direction
-	private Vector2 calcBallInitPos(Sprite sprite) {
+	private Vector2 calcBallInitPos() {
 		Vector2 initPos = new Vector2();
 		Vector2 centerOfShip = this.getHitCenter();
-		initPos.x = centerOfShip.x - (sprite.getWidth()/2);
-		initPos.y = centerOfShip.y - (sprite.getHeight()/2);
+		initPos.x = centerOfShip.x - (this.cannonBallSprite.getWidth()/2);
+		initPos.y = centerOfShip.y - (this.cannonBallSprite.getHeight()/2);
 		return initPos;
 	}
 	
-	public CannonBall fireCannonLeft(Sprite sprite) {
-		CannonBall shot = new CannonBall(this.calcBallInitPos(sprite), sprite, this.getDirection() + 90);
+	public CannonBall fireCannonLeft() {
+		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() + 90);
 		this.firingLeft = true;
 		this.firingLeftSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
 		if(this.firingRight) 
-			this.setSprite(sprites[4]);
+			this.setSprite(playerSprites[4]);
 		else
-			this.setSprite(sprites[2]);
+			this.setSprite(playerSprites[2]);
 		return shot;
 	}
 
-	public CannonBall fireCannonRight(Sprite sprite) {
-		CannonBall shot = new CannonBall(this.calcBallInitPos(sprite), sprite, this.getDirection() - 90);
+	public CannonBall fireCannonRight() {
+		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() - 90);
 		this.firingRight = true;
 		this.firingRightSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
 		if(this.firingLeft) 
-			this.setSprite(sprites[4]);
+			this.setSprite(playerSprites[4]);
 		else
-			this.setSprite(sprites[3]);
+			this.setSprite(playerSprites[3]);
 		return shot;
 	}
 	
-	//logic for setting correct firing sprites
+	//logic for setting correct firing playerSprites
 	private void calcPlayerFiringSprite() {
 		if(this.firingLeft) {
 			this.firingLeftSpriteCooldown--;
 			if(this.firingLeftSpriteCooldown == 0) {
 				this.firingLeft = false;
 				if(this.firingRight) {
-					this.setSprite(sprites[3]);
+					this.setSprite(playerSprites[3]);
 				}
 				else {
-					this.setSprite(sprites[Player.INIT_SPRITE]);
+					this.setSprite(playerSprites[Player.INIT_SPRITE]);
 				}
 			}
 		}
@@ -88,10 +96,10 @@ public class Player extends Ship {
 			if(this.firingRightSpriteCooldown == 0) {
 				this.firingRight = false;
 				if(this.firingLeft) {
-					this.setSprite(sprites[2]);
+					this.setSprite(playerSprites[2]);
 				}
 				else {
-					this.setSprite(sprites[Player.INIT_SPRITE]);
+					this.setSprite(playerSprites[Player.INIT_SPRITE]);
 				}
 			}
 		}
