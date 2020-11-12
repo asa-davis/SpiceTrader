@@ -36,7 +36,8 @@ public class Player extends Ship {
 	}
 	
 	@Override
-	void tick() {
+	public void tick() {
+		super.tick();
 		this.calcPlayerFiringSprite();
 	}
 	
