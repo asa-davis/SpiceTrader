@@ -35,12 +35,12 @@ public class InputHandler {
 			this.camera.position.y = playerPos.y;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			if(forward) this.player.turnCW();
 			if(backward) this.player.turnCCW();
+			else this.player.turnCW();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			if(forward) this.player.turnCCW();
 			if(backward) this.player.turnCW();
+			else this.player.turnCCW();
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 			this.entManager.add(this.player.fireCannonLeft());
