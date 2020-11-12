@@ -85,17 +85,16 @@ public class MainGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		//render map
+		//render and tick map
 		map.render(camera);
+		map.tick();
 		
-		//render entities
+		//render and process entities
 		entManager.render(camera.combined);
+		entManager.process();
 		
 		//handle input
 		inputHandler.process();
-		
-		//process entities
-		entManager.process();
 		
 		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
 		if(ROUND_CAMERA_POS) {

@@ -42,7 +42,8 @@ public class SpiceTraderMapGenerator {
 		//1
 		int maxIterations = 10000;
 		boolean validMapGenerated = false;
-		SpiceTraderMap map = new SpiceTraderMap(size, size, tileWidth, tileHeight);
+		int waveFreq = 100;
+		SpiceTraderMap map = new SpiceTraderMap(size, size, tileWidth, tileHeight, waveFreq, atlas);
 		
 		
 		//2
@@ -71,7 +72,7 @@ public class SpiceTraderMapGenerator {
 		map.setNeighborBitmaskMap(neighborBitmaskMap);
 		
 		//5
-		TiledMap libgdxMap = generateLibgdxMap(size, size, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap);
+		TiledMap libgdxMap = generateLibgdxMap(size, size, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap, waveFreq);
 		map.setLibgdxMap(libgdxMap);
 		
 		return map;
@@ -222,31 +223,36 @@ public class SpiceTraderMapGenerator {
 	}
 	
 	//generate the libgdx TiledMap object from the neighbor bitmask map and tileId map
-	private TiledMap generateLibgdxMap(int numCols, int numRows, int tileWidth, int tileHeight, int[][] neighborBitmaskMap, int[][] tileIdMap) {
+	private TiledMap generateLibgdxMap(int numCols, int numRows, int tileWidth, int tileHeight, int[][] neighborBitmaskMap, int[][] tileIdMap, int waveFreq) {
 		TiledMap libgdxMap = new TiledMap();
 		TiledMapTileLayer mapLayer = new TiledMapTileLayer(numCols, numRows, tileWidth, tileHeight);
 		
 		HashMap<Integer, Integer> beachBitmaskConverter = getBeachBitmaskConverter();
+		Array<AtlasRegion> trees = this.atlas.findRegions("tile/tree");
+		Array<AtlasRegion> water = this.atlas.findRegions("tile/water");
+		Array<AtlasRegion> grass = this.atlas.findRegions("tile/grass");
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
 				TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
 				StaticTiledMapTile tile;
+				int treeFreq = 6;
 				//water
-				if(tileIdMap[row][col] == 0) 
-					tile = new StaticTiledMapTile(this.atlas.findRegions("tile/water").get(0));
+				if(tileIdMap[row][col] == 0) {
+					if(Utils.genRandomInt(1, waveFreq) == 1) 
+						tile = new StaticTiledMapTile(water.get(Utils.genRandomInt(1, water.size - 1)));
+					else 
+						tile = new StaticTiledMapTile(water.get(0));	
+				}
 				//grass
 				else {
-					int treeFreq = 4;
 					int bitmask = neighborBitmaskMap[row][col];
 					int tileNum = beachBitmaskConverter.get(bitmask);
 					//if pure grass tile, 1 in treeFreq chance to have a random tree tile
-					if(tileNum == 0 && Utils.genRandomInt(1, treeFreq) == 1) {
-						Array<AtlasRegion> trees = this.atlas.findRegions("tile/tree");
+					if(tileNum == 0 && Utils.genRandomInt(1, treeFreq) == 1)
 						tile = new StaticTiledMapTile(trees.get(Utils.genRandomInt(0, trees.size - 1)));	
-					}
 					//otherwise we just use the appropriate grass tile
 					else
-						tile = new StaticTiledMapTile(this.atlas.findRegions("tile/grass").get(tileNum));
+						tile = new StaticTiledMapTile(grass.get(tileNum));
 				}
 				
 				cell.setTile(tile);

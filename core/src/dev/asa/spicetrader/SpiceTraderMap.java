@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -17,6 +20,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class SpiceTraderMap {
 	private int numCols;
@@ -24,7 +28,15 @@ public class SpiceTraderMap {
 	private int tileWidth;
 	private int tileHeight;
 	
-	//this holds the tileIds: 0 = water, 1 = land, 100+ = dock (tileId - 100 = dockId)
+	//one wave per how many water tiles
+	private int waveFreq;
+	//how many frames between waves moving
+	private int waveRecalcFreq;
+	private int frameCounter;
+	
+	TextureAtlas atlas;
+	
+	//this holds the tileIds: 0 = water, 1 = land, 2 = village location, 100+ = dock (tileId - 100 = village index)
 	private int[][] tileIdMap;
 	//this tells us for a particular tile, which of the neighboring tiles in the 8 directions are land. 
 	private int[][] neighborBitmaskMap;
@@ -35,21 +47,37 @@ public class SpiceTraderMap {
 	//for debugging map hitboxes
 	private ShapeRenderer hitboxRenderer;
 	
-	public SpiceTraderMap(int numCols, int numRows, int tileWidth, int tileHeight) {		
+	public SpiceTraderMap(int numCols, int numRows, int tileWidth, int tileHeight, int waveFreq, TextureAtlas atlas) {		
 		this.numCols = numCols;
 		this.numRows = numRows;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		
+		//for changing waves every x frames
+		this.waveRecalcFreq = 60;
+		this.waveFreq = waveFreq;
+		this.frameCounter = 0;
+		
 		//for debugging map hitboxes
 		this.hitboxRenderer = new ShapeRenderer();
 		hitboxRenderer.setColor(Color.RED);
+		
+		this.atlas = atlas;
 	}
 	
 	public void render(OrthographicCamera camera) {
 		this.mapRenderer.setView(camera);
 		this.mapRenderer.render();
 		hitboxRenderer.setProjectionMatrix(camera.combined);
+	}
+	
+	//every
+	public void tick() {
+		this.frameCounter++;
+		if(this.frameCounter == waveRecalcFreq) {
+			this.frameCounter = 0;
+			this.recalcWaves();
+		}
 	}
 	
 	//returns true if ship is not intersecting with shore
@@ -78,6 +106,27 @@ public class SpiceTraderMap {
 		}
 		hitboxRenderer.end();
 		return true;
+	}
+	
+	private void recalcWaves() {
+		TiledMapTileLayer mapLayer = (TiledMapTileLayer) this.libgdxMap.getLayers().get(0);
+		Array<AtlasRegion> waterTextures = this.atlas.findRegions("tile/water");
+		for(int row = 0; row < this.numRows; row++) {
+			for(int col = 0; col < this.numCols; col++) {
+				if(this.tileIdMap[row][col] == 0) {
+					TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+					StaticTiledMapTile tile;
+					if(Utils.genRandomInt(1, this.waveFreq) == 1) {
+						tile = new StaticTiledMapTile(waterTextures.get(Utils.genRandomInt(1, waterTextures.size - 1)));
+					}
+					else {
+						tile = new StaticTiledMapTile(waterTextures.get(0));
+					}
+					cell.setTile(tile);
+					mapLayer.setCell(col, row, cell);
+				}
+			}
+		}
 	}
 	
 	//takes a position in pixels and returns the tile coordinates
