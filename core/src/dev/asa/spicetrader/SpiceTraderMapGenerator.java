@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class SpiceTraderMapGenerator {
 
@@ -229,13 +231,22 @@ public class SpiceTraderMapGenerator {
 			for(int col = 0; col < numCols; col++) {
 				TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
 				StaticTiledMapTile tile;
-				
+				//water
 				if(tileIdMap[row][col] == 0) 
 					tile = new StaticTiledMapTile(this.atlas.findRegions("tile/water").get(0));
+				//grass
 				else {
+					int treeFreq = 4;
 					int bitmask = neighborBitmaskMap[row][col];
 					int tileNum = beachBitmaskConverter.get(bitmask);
-					tile = new StaticTiledMapTile(this.atlas.findRegions("tile/grass").get(tileNum));
+					//if pure grass tile, 1 in treeFreq chance to have a random tree tile
+					if(tileNum == 0 && Utils.genRandomInt(1, treeFreq) == 1) {
+						Array<AtlasRegion> trees = this.atlas.findRegions("tile/tree");
+						tile = new StaticTiledMapTile(trees.get(Utils.genRandomInt(0, trees.size - 1)));	
+					}
+					//otherwise we just use the appropriate grass tile
+					else
+						tile = new StaticTiledMapTile(this.atlas.findRegions("tile/grass").get(tileNum));
 				}
 				
 				cell.setTile(tile);
