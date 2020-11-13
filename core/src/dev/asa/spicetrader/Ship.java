@@ -34,11 +34,12 @@ public abstract class Ship extends Entity {
 			this.strikeCooldown--;
 			if(this.strikeCooldown > 0)
 				this.getSprite().setColor(Color.RED);
-			else
+			else {
 				this.getSprite().setColor(Color.WHITE);
+				if(this.hull == 0)
+					this.exists = false;
+			}
 		}
-		if(this.hull == 0)
-			this.exists = false;
 	}
 	
 	public void strike() {
