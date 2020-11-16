@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -25,17 +26,18 @@ public class EntityManager {
 	private List<Pirate> allPirates;
 	private List<Entity> entitiesToRemove;
 	private boolean showHitboxes;
-	private SpriteBatch batch;
-	
 	private ShapeRenderer hitboxRenderer;
+	MenuManager menuManager;
+	MainGame game;
 	
-	public EntityManager(boolean showHitboxes) {
+	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game) {
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
 		allPirates = new ArrayList<Pirate>();
 		entitiesToRemove = new ArrayList<Entity>();
-		batch = new SpriteBatch();
 		this.showHitboxes = showHitboxes;
+		this.menuManager = menuManager;
+		this.game = game;
 		
 		//hitboxes
 		if(showHitboxes) {
@@ -44,8 +46,8 @@ public class EntityManager {
 		}
 	}
 	
-	public void render(Matrix4 projectionMatrix) {
-		batch.setProjectionMatrix(projectionMatrix);
+	public void render(SpriteBatch batch, OrthographicCamera camera) {
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		for(Entity e : allEntities)
 			e.draw(batch);
@@ -53,7 +55,7 @@ public class EntityManager {
 		
 		//draw hitboxes if enabled
 		if(showHitboxes) {
-			hitboxRenderer.setProjectionMatrix(projectionMatrix);
+			hitboxRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 			hitboxRenderer.begin(ShapeType.Line);
 			for(Entity e : allEntities)
 				e.drawHitbox(hitboxRenderer);
@@ -81,7 +83,7 @@ public class EntityManager {
 	}
 	
 	//Performs the following checks each frame: 
-	//	1. Player against every pirate. this starts the "you have been boarded" event
+	//	1. Player against every pirate. this starts the "you have been boarded" event and pauses gameplay
 	//	2. Every cannon ball against every pirate. this deletes cannonball and calls the strike() event on the pirate
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
 	//When this method gets too expensive we will have to start only checking entities against entities in the same quadrant or something
@@ -89,7 +91,9 @@ public class EntityManager {
 		for(Pirate p : this.allPirates) {
 			//1.
 			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				System.out.println("You have been boarded!!");
+				System.out.println("you have been boarded");
+				game.pause();
+				menuManager.showBoardedMenu();
 			}
 			//2.
 			for(CannonBall c : this.allCanBalls) {
@@ -101,23 +105,24 @@ public class EntityManager {
 			}
 		}
 	}
-
-	public void add(Entity e) {
-		allEntities.add(e);
-		if(e instanceof Player) {
-			this.player = (Player) e;
-		}
-		else if(e instanceof Pirate) {
-			this.allPirates.add((Pirate) e);
-		}
-		else if(e instanceof CannonBall) {
-			this.allCanBalls.add((CannonBall) e);
-		}
+	public void add(Player p) {
+		allEntities.add(p);
+		player = p;
 	}
 	
-	public void addAll(List<Entity> el) {
-		for(Entity e : el)
-			this.add(e);
+	public void add(CannonBall c) {
+		allEntities.add(c);
+		allCanBalls.add(c);
+	}
+	
+	public void add(Pirate p) {
+		allEntities.add(p);
+		allPirates.add(p);
+	}
+	
+	public void addAll(List<Pirate> pl) {
+		for(Pirate p : pl)
+			this.add(p);
 	}
 	
 	public void remove(Entity e) {
@@ -131,9 +136,5 @@ public class EntityManager {
 		else if(e instanceof CannonBall) {
 			this.allCanBalls.remove((CannonBall) e);
 		}
-	}
-	
-	public void dispose() {
-		batch.dispose();
 	}
 }

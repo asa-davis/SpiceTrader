@@ -1,8 +1,14 @@
 package dev.asa.spicetrader;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Vector2;
 
 public class Utils {
@@ -71,5 +77,22 @@ public class Utils {
 		//if for some reason things don't work out, function returns NaN
 		System.out.println("rounding function failed with arguments " + val + ", " + fraction);
 		return 1/0;
+	}
+	
+	
+	//returns three fonts in order from smallest to largest
+	public static BitmapFont[] getPixelFonts() {
+		BitmapFont[] fonts = new BitmapFont[3];
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Perfect DOS VGA 437 Win.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 16;
+		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'()>?";
+		for(int i = 0; i < 3; i++) {
+			fonts[i] = generator.generateFont(parameter);
+			fonts[i].setColor(Color.DARK_GRAY);
+			parameter.size *= 2;
+		}
+		generator.dispose();
+		return fonts;
 	}
 }
