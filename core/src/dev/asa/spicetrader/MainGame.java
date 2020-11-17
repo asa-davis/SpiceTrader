@@ -1,5 +1,6 @@
 package dev.asa.spicetrader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -22,9 +23,8 @@ public class MainGame extends ApplicationAdapter {
 	
 //	--GAME SETTINGS--
 	
-	//TODO: MAKE THIS VARIABLE CONTROL MAP HITBOXES
-	final boolean SHOW_HITBOXES = true;
-	//fixes screen tearing
+	final boolean SHOW_HITBOXES = false;
+	//fixes texture bleeding?
 	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
@@ -83,8 +83,7 @@ public class MainGame extends ApplicationAdapter {
 		} catch (Exception e) {
 			//in case of bad map settings or mapGen unable to find valid map
 			e.printStackTrace();
-			this.dispose();
-			System.exit(0);
+			Gdx.app.exit();
 		}
 		
 		//menus
@@ -93,17 +92,31 @@ public class MainGame extends ApplicationAdapter {
 		//Entities
 		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this);
 		entFactory = new EntityFactory(atlas, map, screenCenter);
-
+		List<Entity> allEnts = new ArrayList<Entity>();
+		
 		//player
 		Player player = entFactory.getPlayer();
-		entManager.add(player);
+		allEnts.add(player);
 		
 		//pirates
 		List<Pirate> pirates = entFactory.getRandomPirates(10);
-		entManager.addAll(pirates);
+		allEnts.addAll(pirates);
+		
+		//villages
+		VillageFactory villFac = new VillageFactory(map, atlas);
+		try {
+			List<Village> villages = villFac.getVillages(5);
+			allEnts.addAll(villages);
+			map.addVillages(villages);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
+		}
+		
+		entManager.addAll(allEnts);
 		
 		//input
-		inputHandler = new InputHandler(player, camera, entManager, menuManager, screenSize.y);		
+		inputHandler = new InputHandler(player, camera, entManager, menuManager, screenSize.y, SHOW_HITBOXES);		
 	}
 
 	@Override
@@ -116,7 +129,7 @@ public class MainGame extends ApplicationAdapter {
 		if(!paused) map.tick();
 		
 		//render and process entities
-		entManager.render(batch, camera);
+		entManager.render(batch, camera, SHOW_HITBOXES);
 		if(!paused) entManager.process();
 		
 		//render menus
@@ -145,38 +158,5 @@ public class MainGame extends ApplicationAdapter {
 	
 	public void pause() {
 		paused = true;
-	}
-	
-	//for restarting game
-	public void reset() {
-		paused = false;
-		
-		//reset camera pos
-		camera.position.x = screenCenter.x;
-		camera.position.y = screenCenter.y;
-		
-		//reset map
-		try {
-			map = mapGen.generateMap(MAP_SIZE, TILE_WIDTH, TILE_HEIGHT, SMOOTHING_ITERATIONS, SEA_LEVEL_OFFSET);
-		} catch (Exception e) {
-			//in case of bad map settings or mapGen unable to find valid map
-			e.printStackTrace();
-			this.dispose();
-			System.exit(0);
-		}
-		
-		//menus
-		menuManager = new MenuManager(atlas, screenSize, this, fonts); 
-		
-		//Entities
-		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this);
-		entFactory = new EntityFactory(atlas, map, screenCenter);
-		Player player = entFactory.getPlayer();
-		entManager.add(player);
-		List<Pirate> pirates = entFactory.getRandomPirates(10);
-		entManager.addAll(pirates);
-		
-		//input
-		inputHandler = new InputHandler(player, camera, entManager, menuManager, screenSize.y);	
 	}
 }

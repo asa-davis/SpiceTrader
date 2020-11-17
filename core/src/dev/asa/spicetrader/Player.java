@@ -42,7 +42,7 @@ public class Player extends Ship {
 	}
 	
 	@Override
-	void createHitbox() {
+	protected void createHitbox() {
 		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
 	}
 	

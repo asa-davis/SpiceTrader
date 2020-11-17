@@ -13,14 +13,16 @@ public class InputHandler {
 	private Camera camera;
 	private EntityManager entManager;
 	private float screenHeight;
-	MenuManager menus;
+	private MenuManager menus;
+	private boolean showMapHitboxes;
 	
-	public InputHandler(Player player, Camera camera, EntityManager entManager, MenuManager menus, float screenHeight) {
+	public InputHandler(Player player, Camera camera, EntityManager entManager, MenuManager menus, float screenHeight, boolean showMapHitboxes) {
 		this.player = player;
 		this.camera = camera;
 		this.entManager = entManager;
 		this.screenHeight = screenHeight;
 		this.menus = menus;
+		this.showMapHitboxes = showMapHitboxes;
 	}
 	
 	public void process(boolean paused) {
@@ -38,23 +40,23 @@ public class InputHandler {
 		boolean backward = false;
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
 			forward = true;
-			Vector2 playerPos = player.moveForward();
+			Vector2 playerPos = player.moveForward(showMapHitboxes);
 			camera.position.x = playerPos.x;
 			camera.position.y = playerPos.y;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
 			backward = true;
-			Vector2 playerPos = player.moveBackward();
+			Vector2 playerPos = player.moveBackward(showMapHitboxes);
 			camera.position.x = playerPos.x;
 			camera.position.y = playerPos.y;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			if(backward) player.turnCCW();
-			else player.turnCW();
+			if(backward) player.turnCCW(showMapHitboxes);
+			else player.turnCW(showMapHitboxes);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			if(backward) player.turnCW();
-			else player.turnCCW();
+			if(backward) player.turnCW(showMapHitboxes);
+			else player.turnCCW(showMapHitboxes);
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 			this.entManager.add(player.fireCannonLeft());

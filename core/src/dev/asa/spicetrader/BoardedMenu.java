@@ -24,8 +24,7 @@ public class BoardedMenu extends Menu{
 		restartButton.setOnClick(new OnClickListener(){
             @Override
             public void onClick() {
-                System.out.println("Reset button clicked!");
-                game.reset();
+                game.create();
             }
 		});
 		

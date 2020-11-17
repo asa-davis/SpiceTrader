@@ -72,7 +72,7 @@ public class SpiceTraderMapGenerator {
 		map.setNeighborBitmaskMap(neighborBitmaskMap);
 		
 		//5
-		TiledMap libgdxMap = generateLibgdxMap(size, size, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap, waveFreq);
+		TiledMap libgdxMap = generateLibgdxMap(size, size, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap, waveFreq, atlas);
 		map.setLibgdxMap(libgdxMap);
 		
 		return map;
@@ -82,7 +82,7 @@ public class SpiceTraderMapGenerator {
 	private static void randomizeTileIdMap(int[][] tileIdMap, int min, int max) {
 		for(int y = 0; y < tileIdMap.length; y++) {
 			for(int x = 0; x < tileIdMap[0].length; x++) {
-				tileIdMap[y][x] = Utils.genRandomInt(min, max);
+				tileIdMap[y][x] = Utils.randInt(min, max);
 			}
 		}
 	}
@@ -223,14 +223,16 @@ public class SpiceTraderMapGenerator {
 	}
 	
 	//generate the libgdx TiledMap object from the neighbor bitmask map and tileId map
-	private TiledMap generateLibgdxMap(int numCols, int numRows, int tileWidth, int tileHeight, int[][] neighborBitmaskMap, int[][] tileIdMap, int waveFreq) {
+	public static TiledMap generateLibgdxMap(int numCols, int numRows, int tileWidth, int tileHeight, int[][] neighborBitmaskMap, int[][] tileIdMap, int waveFreq, TextureAtlas atlas) {
 		TiledMap libgdxMap = new TiledMap();
 		TiledMapTileLayer mapLayer = new TiledMapTileLayer(numCols, numRows, tileWidth, tileHeight);
 		
 		HashMap<Integer, Integer> beachBitmaskConverter = getBeachBitmaskConverter();
-		Array<AtlasRegion> trees = this.atlas.findRegions("tile/tree");
-		Array<AtlasRegion> water = this.atlas.findRegions("tile/water");
-		Array<AtlasRegion> grass = this.atlas.findRegions("tile/grass");
+		HashMap<Integer, Integer> dockBitmaskConverter = getDockBitmaskConverter();
+		Array<AtlasRegion> trees = atlas.findRegions("tile/tree");
+		Array<AtlasRegion> water = atlas.findRegions("tile/water");
+		Array<AtlasRegion> grass = atlas.findRegions("tile/grass");
+		Array<AtlasRegion> dock = atlas.findRegions("tile/dock");
 		for(int row = 0; row < numRows; row++) {
 			for(int col = 0; col < numCols; col++) {
 				TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
@@ -238,21 +240,34 @@ public class SpiceTraderMapGenerator {
 				int treeFreq = 6;
 				//water
 				if(tileIdMap[row][col] == 0) {
-					if(Utils.genRandomInt(1, waveFreq) == 1) 
-						tile = new StaticTiledMapTile(water.get(Utils.genRandomInt(1, water.size - 1)));
+					if(Utils.randInt(1, waveFreq) == 1) 
+						tile = new StaticTiledMapTile(water.get(Utils.randInt(1, water.size - 1)));
 					else 
 						tile = new StaticTiledMapTile(water.get(0));	
 				}
-				//grass
-				else {
+				//grass/beach
+				else if(tileIdMap[row][col] == 1) {
 					int bitmask = neighborBitmaskMap[row][col];
 					int tileNum = beachBitmaskConverter.get(bitmask);
 					//if pure grass tile, 1 in treeFreq chance to have a random tree tile
-					if(tileNum == 0 && Utils.genRandomInt(1, treeFreq) == 1)
-						tile = new StaticTiledMapTile(trees.get(Utils.genRandomInt(0, trees.size - 1)));	
+					if(tileNum == 0 && Utils.randInt(1, treeFreq) == 1)
+						tile = new StaticTiledMapTile(trees.get(Utils.randInt(0, trees.size - 1)));	
 					//otherwise we just use the appropriate grass tile
 					else
 						tile = new StaticTiledMapTile(grass.get(tileNum));
+				}
+				//grass behind village
+				else if(tileIdMap[row][col] == 2) {
+					tile = new StaticTiledMapTile(grass.get(0));
+				}
+				//dock
+				else if(tileIdMap[row][col] == 3) {
+					int bitmask = neighborBitmaskMap[row][col];
+					int tileNum = dockBitmaskConverter.get(bitmask);
+					tile = new StaticTiledMapTile(dock.get(tileNum));
+				}
+				else {
+					tile = new StaticTiledMapTile(atlas.findRegion("tile/test_tile"));
 				}
 				
 				cell.setTile(tile);
@@ -264,24 +279,25 @@ public class SpiceTraderMapGenerator {
 		return libgdxMap;
 	}
 	
-	public void addVillagesToMap(List<VillageLocation> villageLocations) {
-		//when villages are to be added to game:
-		//	1. pass list of village locations to map
-		//	2. set dock tile to 100 + village id for all locations
-		//	3. regenerate TiledMap and MapRenderer
-	}
-	
-	public List<VillageLocation> getValidVillageLocations() {
-		return new ArrayList<VillageLocation>();
-	}
-	
 	//this hashmap takes a bitmask value as a key and returns the correct grass tile number
 	private static HashMap<Integer, Integer> getBeachBitmaskConverter() {
 		HashMap<Integer, Integer> converter = new HashMap<Integer, Integer>();
-		int[] values = {255, 0, 2, 1, 8, 2, 10, 3, 11, 4, 16, 5, 18, 6, 22, 7, 24, 8, 26, 9, 27, 10, 30, 11, 31, 12, 64, 13, 66, 14, 72, 15, 74, 16, 75, 17, 80, 18, 82, 19, 86, 20, 88, 21, 90, 22, 91, 23, 94, 24, 95, 25, 104, 26, 106, 27, 107, 28, 120, 29, 122, 30, 123, 31, 126, 32, 127, 33, 208, 34, 210, 35, 214, 36, 216, 37, 218, 38, 219, 39, 222, 40, 223, 41, 248, 42, 250, 43, 251, 44, 254, 45, 0, 46};
+		int[] values = {255, 0, 2, 1, 8, 2, 10, 3, 11, 4, 16, 5, 18, 6, 22, 7, 24, 8, 26, 9, 27, 10, 30, 11, 31, 12, 64, 13, 66, 14, 72, 
+						15, 74, 16, 75, 17, 80, 18, 82, 19, 86, 20, 88, 21, 90, 22, 91, 23, 94, 24, 95, 25, 104, 26, 106, 27, 107, 28, 120, 
+						29, 122, 30, 123, 31, 126, 32, 127, 33, 208, 34, 210, 35, 214, 36, 216, 37, 218, 38, 219, 39, 222, 40, 223, 41, 248, 
+						42, 250, 43, 251, 44, 254, 45, 0, 46};
 		for(int i = 0; i < values.length; i += 2) {
 			converter.put(values[i], values[i + 1]);
 		}
+		return converter;
+	}
+	
+	private static HashMap<Integer, Integer> getDockBitmaskConverter() {
+		HashMap<Integer, Integer> converter = new HashMap<Integer, Integer>();
+		converter.put(31, 0);
+		converter.put(107, 1);
+		converter.put(214, 2);
+		converter.put(248, 3);
 		return converter;
 	}
 	

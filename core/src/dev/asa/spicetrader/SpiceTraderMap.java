@@ -36,7 +36,7 @@ public class SpiceTraderMap {
 	
 	TextureAtlas atlas;
 	
-	//this holds the tileIds: 0 = water, 1 = land, 2 = village location, 100+ = dock (tileId - 100 = village index)
+	//this holds the tileIds: 0 = water, 1 = land (maybe beach, maybe grass, maybe tree), 2 = village location (always grass no tree), 3 = dock
 	private int[][] tileIdMap;
 	//this tells us for a particular tile, which of the neighboring tiles in the 8 directions are land. 
 	private int[][] neighborBitmaskMap;
@@ -84,27 +84,40 @@ public class SpiceTraderMap {
 	//first we get the tile coords that the center of the hitbox is on
 	//then we check the tile Ids of those coords and the 8 neighboring tiles
 	//if any of these are land tiles (id != 0) we fetch their appropriate hitbox using the bitmask and check it for intersections with ship hitbox
-	public boolean validShipPosition(Ship ship) {
+	public boolean validShipPosition(Ship ship, boolean showHitboxes) {
 		Polygon shipHitbox = ship.getHitbox();
 		Vector2 shipCenter = ship.getHitCenter();
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
 		List<Vector2> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
-
-		hitboxRenderer.begin(ShapeType.Line);
+		
+		//gather all nearby tile hitboxes
+		List<Polygon> nearbyTiles = new ArrayList<Polygon>();
 		for(Vector2 tile : neighbors) {
 			if(tile != null && this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
 				float xOrigin = tile.x * this.tileWidth;
 				float yOrigin = tile.y * this.tileHeight;
 				Polygon tileHitbox = new Polygon();
 				tileHitbox.setVertices(new float[] {xOrigin, yOrigin, xOrigin + 16, yOrigin, xOrigin + 16, yOrigin + 16, xOrigin, yOrigin + 16});
-				this.hitboxRenderer.polygon(tileHitbox.getVertices());
-				if(Intersector.overlapConvexPolygons(shipHitbox, tileHitbox)) {
-					hitboxRenderer.end();
-					return false;
-				}
+				nearbyTiles.add(tileHitbox);
 			}
 		}
-		hitboxRenderer.end();
+		
+		//render hitboxes if enabled
+		if(showHitboxes) {
+			hitboxRenderer.begin(ShapeType.Line);
+			for(Polygon tileHitbox : nearbyTiles) 
+				this.hitboxRenderer.polygon(tileHitbox.getVertices());
+			hitboxRenderer.end();
+		}
+		
+		//check for collisions and determine position validity
+		for(Polygon tileHitbox : nearbyTiles) {
+			if(Intersector.overlapConvexPolygons(shipHitbox, tileHitbox)) {
+				hitboxRenderer.end();
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
@@ -116,8 +129,8 @@ public class SpiceTraderMap {
 				if(this.tileIdMap[row][col] == 0) {
 					TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
 					StaticTiledMapTile tile;
-					if(Utils.genRandomInt(1, this.waveFreq) == 1) {
-						tile = new StaticTiledMapTile(waterTextures.get(Utils.genRandomInt(1, waterTextures.size - 1)));
+					if(Utils.randInt(1, this.waveFreq) == 1) {
+						tile = new StaticTiledMapTile(waterTextures.get(Utils.randInt(1, waterTextures.size - 1)));
 					}
 					else {
 						tile = new StaticTiledMapTile(waterTextures.get(0));
@@ -127,6 +140,27 @@ public class SpiceTraderMap {
 				}
 			}
 		}
+	}
+	
+	public void addVillages(List<Village> villages) {
+		//for each village, we need to set the tiles behind the village to pure grass (no tree), and the tile for the dock
+		//then we regenerate the TiledMap and MapRenderer
+		for(Village v : villages) {
+			Vector2 originTile = v.getOriginTile();
+			Vector2 dockTile = v.getDockTile();
+			tileIdMap[(int) originTile.y][(int) originTile.x] = 2;
+			tileIdMap[(int) originTile.y - 1][(int) originTile.x] = 2;
+			tileIdMap[(int) originTile.y][(int) originTile.x - 1] = 2;
+			tileIdMap[(int) originTile.y - 1][(int) originTile.x - 1] = 2;
+			tileIdMap[(int) dockTile.y][(int) dockTile.x] = 3;
+		}
+		TiledMap newMap = SpiceTraderMapGenerator.generateLibgdxMap(numCols, numRows, tileWidth, tileHeight, neighborBitmaskMap, tileIdMap, waveFreq, atlas);
+		this.setLibgdxMap(newMap);
+	}
+	
+	//returns pixel coords for bottom left corner of given tile
+	public Vector2 getPixelCoordsFromTile(Vector2 tilePos) {
+		return new Vector2(tilePos.x * tileWidth, tilePos.y * tileHeight);
 	}
 	
 	//takes a position in pixels and returns the tile coordinates
@@ -149,5 +183,13 @@ public class SpiceTraderMap {
 
 	public Vector2 getSize() {
 		return new Vector2(this.numCols * this.tileWidth, this.numRows * this.tileHeight);
+	}
+	
+	public int[][] getBitmaskMap() {
+		return neighborBitmaskMap;
+	}
+	
+	public Vector2 getTileSize() {
+		return new Vector2(tileWidth, tileHeight);
 	}
 }
