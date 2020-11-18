@@ -17,13 +17,16 @@ public class Player extends Ship {
 	private Sprite[] playerSprites;
 	Sprite cannonBallSprite;
 	private static int INIT_SPRITE = 1;
-	private static int FIRING_SPRITE_COOLDOWN = 10;
+	private static int FIRING_SPRITE_COOLDOWN = 10; 
 	
 	//These variables make sure the proper sprite is displayed after firing for the proper number of frames
 	private int firingLeftSpriteCooldown;
 	private int firingRightSpriteCooldown;
 	private boolean firingLeft;
 	private boolean firingRight;
+	
+	//for determining when/where a player can dock
+	private Village dockable;
 	
 	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
 		super(pos, playerSprites[Player.INIT_SPRITE], map, speed, rotationSpeed, initialDirection);
@@ -33,6 +36,7 @@ public class Player extends Ship {
 		this.firingRightSpriteCooldown = 0;
 		this.firingLeft = false;
 		this.firingRight = false;
+		this.dockable = null;
 	}
 	
 	@Override
@@ -42,7 +46,7 @@ public class Player extends Ship {
 	}
 	
 	@Override
-	void createHitbox() {
+	protected void createHitbox() {
 		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
 	}
 	
@@ -104,5 +108,13 @@ public class Player extends Ship {
 				}
 			}
 		}
+	}
+
+	public void setDockable(Village dockable) {
+		this.dockable = dockable;
+	}
+	
+	public Village getDockable() {
+		return dockable;
 	}
 }

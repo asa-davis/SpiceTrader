@@ -43,7 +43,7 @@ public class EntityFactory {
 		for(int i = 0; i < numPirates; i++) {
 			Sprite pirateSprite = atlas.createSprite("ships/pirate");
 			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 1, 1, 0);
-			while(!this.map.validShipPosition(p)) {
+			while(!this.map.validShipPosition(p, false)) {
 				p.setPosition(this.getRandShipPos(pirateSprite));
 			}
 			pirates.add(p);
@@ -53,8 +53,8 @@ public class EntityFactory {
 	}
 	
 	private Vector2 getRandShipPos(Sprite sprite) {
-		float xPos = (float) Utils.genRandomInt(0, (int) (this.map.getSize().x - sprite.getWidth()));
-		float yPos = (float) Utils.genRandomInt(0, (int) (this.map.getSize().y - sprite.getHeight()));
+		float xPos = (float) Utils.randInt(0, (int) (this.map.getSize().x - sprite.getWidth()));
+		float yPos = (float) Utils.randInt(0, (int) (this.map.getSize().y - sprite.getHeight()));
 		return new Vector2(xPos, yPos);
 	}
 }

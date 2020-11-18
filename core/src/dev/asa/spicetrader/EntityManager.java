@@ -24,8 +24,8 @@ public class EntityManager {
 	private List<Entity> allEntities;
 	private List<CannonBall> allCanBalls;
 	private List<Pirate> allPirates;
+	private List<Village> allVillages;
 	private List<Entity> entitiesToRemove;
-	private boolean showHitboxes;
 	private ShapeRenderer hitboxRenderer;
 	MenuManager menuManager;
 	MainGame game;
@@ -34,19 +34,17 @@ public class EntityManager {
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
 		allPirates = new ArrayList<Pirate>();
+		allVillages = new ArrayList<Village>();
 		entitiesToRemove = new ArrayList<Entity>();
-		this.showHitboxes = showHitboxes;
 		this.menuManager = menuManager;
 		this.game = game;
 		
-		//hitboxes
-		if(showHitboxes) {
-			hitboxRenderer = new ShapeRenderer();
-			hitboxRenderer.setColor(Color.BLUE);
-		}
+		//for showing hitboxes
+		hitboxRenderer = new ShapeRenderer();
+		hitboxRenderer.setColor(Color.BLUE);
 	}
 	
-	public void render(SpriteBatch batch, OrthographicCamera camera) {
+	public void render(SpriteBatch batch, OrthographicCamera camera, boolean showHitboxes) {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		for(Entity e : allEntities)
@@ -83,46 +81,51 @@ public class EntityManager {
 	}
 	
 	//Performs the following checks each frame: 
-	//	1. Player against every pirate. this starts the "you have been boarded" event and pauses gameplay
-	//	2. Every cannon ball against every pirate. this deletes cannonball and calls the strike() event on the pirate
+	//	1. Every pirate against player. this starts the "you have been boarded" event and pauses gameplay
+	//	2. Every pirate against every cannon ball. this deletes cannon ball and calls the strike() event on the pirate
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
+	//	3. Every dock against player. When a player is in dock hit box, the dockable variable on player should be set to the appropriate village.
 	//When this method gets too expensive we will have to start only checking entities against entities in the same quadrant or something
 	private void processCollisions() {
-		for(Pirate p : this.allPirates) {
+		for(Pirate p : allPirates) {
 			//1.
 			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				System.out.println("you have been boarded");
-				game.pause();
 				menuManager.showBoardedMenu();
 			}
 			//2.
-			for(CannonBall c : this.allCanBalls) {
+			for(CannonBall c : allCanBalls) {
 				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
 					c.exists = false;
-					System.out.println("You hit a pirate!");
 					p.strike();
 				}
 			}
 		}
+		//3.
+		Village dockable = null;
+		for(Village v : allVillages) {
+			if(Intersector.overlapConvexPolygons(v.getDockHitbox(), player.getHitbox())) {
+				dockable = v;
+			}
+		}
+		player.setDockable(dockable);
 	}
-	public void add(Player p) {
-		allEntities.add(p);
-		player = p;
+
+	public void add(Entity e) {
+		allEntities.add(e);
+		if(e instanceof Player)
+			player = (Player) e;
+		if(e instanceof CannonBall)
+			allCanBalls.add((CannonBall) e);
+		if(e instanceof Pirate)
+			allPirates.add((Pirate) e);
+		if(e instanceof Village)
+			allVillages.add((Village) e);
 	}
 	
-	public void add(CannonBall c) {
-		allEntities.add(c);
-		allCanBalls.add(c);
-	}
-	
-	public void add(Pirate p) {
-		allEntities.add(p);
-		allPirates.add(p);
-	}
-	
-	public void addAll(List<Pirate> pl) {
-		for(Pirate p : pl)
-			this.add(p);
+	public void addAll(List<Entity> el) {
+		for(Entity e : el) {
+			this.add(e);
+		}
 	}
 	
 	public void remove(Entity e) {

@@ -36,7 +36,7 @@ public abstract class Ship extends Entity {
 				this.getSprite().setColor(Color.RED);
 			else {
 				this.getSprite().setColor(Color.WHITE);
-				if(this.hull == 0)
+				if(this.hull <= 0)
 					this.exists = false;
 			}
 		}
@@ -47,7 +47,7 @@ public abstract class Ship extends Entity {
 		this.strikeCooldown = 10;
 	}
 	
-	public Vector2 moveForward() {
+	public Vector2 moveForward(boolean showMapHitboxes) {
 		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.direction);
 		float yMoveInc = (float) Math.cos(0.0175 * this.direction);
 		float xMoveTotal = xMoveInc * this.speed;
@@ -57,7 +57,7 @@ public abstract class Ship extends Entity {
 		
 		//collision detection - undo move if hitting map 
 		int numMoves = (int) this.speed + 1;
-		while(!this.map.validShipPosition(this) && numMoves >= 0) {
+		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
 			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
 			numMoves--;
 		}
@@ -65,7 +65,7 @@ public abstract class Ship extends Entity {
 		return this.getHitCenter();
 	}
 	
-	public Vector2 moveBackward() {
+	public Vector2 moveBackward(boolean showMapHitboxes) {
 		float xMoveInc = (float) Math.sin(0.0175 * this.direction);
 		float yMoveInc = -1 * (float) Math.cos(0.0175 * this.direction);
 		float xMoveTotal = xMoveInc * this.speed;
@@ -75,7 +75,7 @@ public abstract class Ship extends Entity {
 		
 		//collision detection - undo move if hitting map 
 		int numMoves = (int) this.speed + 1;
-		while(!this.map.validShipPosition(this) && numMoves >= 0) {
+		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
 			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
 			numMoves--;
 		}
@@ -83,23 +83,23 @@ public abstract class Ship extends Entity {
 		return this.getHitCenter();
 	}
 	
-	public void turnCW() {
+	public void turnCW(boolean showMapHitboxes) {
 		this.updateRotation(-1 * this.rotationSpeed);
 		
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (this.rotationSpeed + 1);
-		while(!this.map.validShipPosition(this) && numMoves >= 0) {
+		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
 			this.updateRotation(1);
 			numMoves--;
 		}
 	}
 	
-	public void turnCCW() {
+	public void turnCCW(boolean showMapHitboxes) {
 		this.updateRotation(this.rotationSpeed);
 		
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (this.rotationSpeed + 1);
-		while(!this.map.validShipPosition(this) && numMoves >= 0) {
+		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
 			this.updateRotation(-1);
 			numMoves--;
 		}

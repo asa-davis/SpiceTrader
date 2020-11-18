@@ -41,7 +41,11 @@ public abstract class Entity {
 	}
 	
 	//this method must instantiate our hitbox
-	abstract void createHitbox();
+	protected void createHitbox() {
+		Rectangle rec = this.getSprite().getBoundingRectangle();
+		Polygon hitbox = new Polygon(new float[] {rec.x, rec.y, rec.x + rec.width, rec.y, rec.x + rec.width, rec.y + rec.height, rec.x, rec.y + rec.height});
+		this.setHitbox(hitbox);
+	}
 	//this method is called on every frame. 
 	abstract void tick();
 	

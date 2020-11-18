@@ -6,9 +6,11 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class Menu {
 	private Vector2 screenSize;
@@ -16,18 +18,41 @@ public abstract class Menu {
 	private AtlasRegion backgroundTexture;
 	private BitmapFont[] fonts;
 	private List<Button> buttons;
+	private MenuManager manager;
+	private TextureAtlas atlas;
+	public boolean needsPause;
 	
 	
-	public Menu(Vector2 screenSize, AtlasRegion backgroundTexture, BitmapFont[] fonts) {
+	public Menu(MenuManager manager, Vector2 screenSize, TextureAtlas atlas, BitmapFont[] fonts, boolean needsPause) {
+		this.manager = manager;
 		this.screenSize = screenSize;
-		this.backgroundTexture = backgroundTexture;
 		this.fonts = fonts;
-		this.buttons = new ArrayList<Button>();
+		this.atlas = atlas;
+		this.needsPause = needsPause;
+		
+		this.setBackground();
 		this.setPos();
+		
+		buttons = new ArrayList<Button>();
 	}
 	
 	//position depends on what kind of menu
 	protected abstract void setPos();
+	
+	//background texture depends on what kind of menu
+	protected abstract void setBackground();
+
+	protected Array<AtlasRegion> findRegions(String str) {
+		return atlas.findRegions(str);
+	}
+	
+	protected AtlasRegion findRegion(String str) {
+		return atlas.findRegion(str);
+	}
+	
+	protected void close() {
+		manager.closeMenu(this);
+	}
 	
 	public void passMouse(Vector2 mousePos, boolean mouseClicked) {
 		for(Button b : buttons) {
@@ -52,6 +77,10 @@ public abstract class Menu {
 	
 	public void setPos(Vector2 pos) {
 		this.pos = pos;
+	}
+	
+	public void setBackgroundTexture(AtlasRegion texture) {
+		backgroundTexture = texture;
 	}
 	
 	public Vector2 getSize() {
