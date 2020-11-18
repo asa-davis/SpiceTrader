@@ -13,29 +13,38 @@ public class InputHandler {
 	private Camera camera;
 	private EntityManager entManager;
 	private float screenHeight;
-	private MenuManager menus;
+	private MenuManager menuManager;
 	private boolean showMapHitboxes;
 	
-	public InputHandler(Player player, Camera camera, EntityManager entManager, MenuManager menus, float screenHeight, boolean showMapHitboxes) {
+	public InputHandler(Player player, Camera camera, EntityManager entManager, MenuManager menuManager, float screenHeight, boolean showMapHitboxes) {
 		this.player = player;
 		this.camera = camera;
 		this.entManager = entManager;
 		this.screenHeight = screenHeight;
-		this.menus = menus;
+		this.menuManager = menuManager;
 		this.showMapHitboxes = showMapHitboxes;
 	}
 	
 	public void process(boolean paused) {
-		//mouse input for menus - mousePos needs to be inverted in Y axis for some reason
-		Vector2 mousePos = new Vector2(Gdx.input.getX(), screenHeight - Gdx.input.getY());
-		boolean mouseClicked = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		menus.passMouse(mousePos, mouseClicked);
-		
-		if(!paused) this.handlePlayerMovement();
+		this.handleMouseInput();
+		if(!paused) this.handlePlayerControls();
 		
 	}
 	
-	private void handlePlayerMovement() {
+	private void handleMouseInput() {
+		//mouse input for menuManager - mousePos needs to be inverted in Y axis for some reason
+		Vector2 mousePos = new Vector2(Gdx.input.getX(), screenHeight - Gdx.input.getY());
+		boolean mouseClicked = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+		menuManager.passMouse(mousePos, mouseClicked);
+	}
+	
+	private void handlePlayerControls() {
+		//docking
+		if(player.getDockable() != null && Gdx.input.isKeyPressed(Input.Keys.F)) {
+			menuManager.showDockedMenu(player.getDockable());
+		} 
+		
+		//movement
 		boolean forward = false;
 		boolean backward = false;
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -58,11 +67,13 @@ public class InputHandler {
 			if(backward) player.turnCW(showMapHitboxes);
 			else player.turnCCW(showMapHitboxes);
 		}
+		
+		//shooting
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-			this.entManager.add(player.fireCannonLeft());
+			entManager.add(player.fireCannonLeft());
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-			this.entManager.add(player.fireCannonRight());
+			entManager.add(player.fireCannonRight());
 		}
 	}
 }

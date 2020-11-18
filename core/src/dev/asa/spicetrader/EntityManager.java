@@ -81,25 +81,33 @@ public class EntityManager {
 	}
 	
 	//Performs the following checks each frame: 
-	//	1. Player against every pirate. this starts the "you have been boarded" event and pauses gameplay
-	//	2. Every cannon ball against every pirate. this deletes cannonball and calls the strike() event on the pirate
+	//	1. Every pirate against player. this starts the "you have been boarded" event and pauses gameplay
+	//	2. Every pirate against every cannon ball. this deletes cannon ball and calls the strike() event on the pirate
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
+	//	3. Every dock against player. When a player is in dock hit box, the dockable variable on player should be set to the appropriate village.
 	//When this method gets too expensive we will have to start only checking entities against entities in the same quadrant or something
 	private void processCollisions() {
-		for(Pirate p : this.allPirates) {
+		for(Pirate p : allPirates) {
 			//1.
 			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				game.pause();
 				menuManager.showBoardedMenu();
 			}
 			//2.
-			for(CannonBall c : this.allCanBalls) {
+			for(CannonBall c : allCanBalls) {
 				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
 					c.exists = false;
 					p.strike();
 				}
 			}
 		}
+		//3.
+		Village dockable = null;
+		for(Village v : allVillages) {
+			if(Intersector.overlapConvexPolygons(v.getDockHitbox(), player.getHitbox())) {
+				dockable = v;
+			}
+		}
+		player.setDockable(dockable);
 	}
 
 	public void add(Entity e) {

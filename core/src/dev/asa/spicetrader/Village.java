@@ -40,4 +40,8 @@ public class Village extends Entity{
 	public Vector2 getDockTile() {
 		return dockTile;
 	}
+
+	public String getName() {
+		return "some village";
+	}
 }

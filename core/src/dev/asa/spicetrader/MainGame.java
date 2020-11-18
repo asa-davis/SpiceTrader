@@ -86,6 +86,7 @@ public class MainGame extends ApplicationAdapter {
 			Gdx.app.exit();
 		}
 		
+		
 		//menus
 		menuManager = new MenuManager(atlas, screenSize, this, fonts); 
 		
@@ -97,6 +98,7 @@ public class MainGame extends ApplicationAdapter {
 		//player
 		Player player = entFactory.getPlayer();
 		allEnts.add(player);
+		menuManager.setPlayer(player);
 		
 		//pirates
 		List<Pirate> pirates = entFactory.getRandomPirates(10);
@@ -133,6 +135,7 @@ public class MainGame extends ApplicationAdapter {
 		if(!paused) entManager.process();
 		
 		//render menus
+		menuManager.tick();
 		menuManager.draw(batch);
 		
 		//handle input
@@ -156,7 +159,13 @@ public class MainGame extends ApplicationAdapter {
 		atlas.dispose();
 	}
 	
+	@Override
 	public void pause() {
 		paused = true;
+	}
+	
+	@Override
+	public void resume() {
+		paused = false;
 	}
 }
