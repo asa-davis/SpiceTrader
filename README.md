@@ -1,4 +1,4 @@
-TODO:
+TODO (11/25/20):
 - finish acceleration (fix collision bugs and camera shake)
 - design hud/inventory menus
 - build trading mechanic with villages
