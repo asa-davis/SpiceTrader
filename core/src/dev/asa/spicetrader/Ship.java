@@ -9,17 +9,21 @@ public abstract class Ship extends Entity {
 
 	private SpiceTraderMap map;
 	private float direction;
-	private float speed;
+	private float currSpeed;
+	private float maxSpeed;
+	private float accel;
+	private boolean inReverse;
 	private float rotationSpeed;
 	//health of ship
 	private int hull;
 	//number of frames until sprite color goes back to normal
 	private int strikeCooldown;
 	
-	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
+	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float maxSpeed, float accel, float rotationSpeed, float initialDirection) {
 		super(pos, sprite);
 		this.map = map;
-		this.speed = speed;
+		this.maxSpeed = maxSpeed;
+		this.accel = accel;
 		this.rotationSpeed = rotationSpeed;
 		this.direction = initialDirection;
 		this.getHitbox().setRotation(direction);
@@ -27,9 +31,20 @@ public abstract class Ship extends Entity {
 		
 		this.hull = 10;
 		this.strikeCooldown = 0;
+		this.currSpeed = maxSpeed;
+		this.inReverse = false;
 	}
 	
 	public void tick() {
+		//handle acceleration behavior
+		//if(!inReverse)
+			//this.moveForward(true);
+		//else
+			//this.moveBackward(true);
+		//if(currSpeed > 0)
+			//currSpeed -= 0.01;
+		
+		//handle red shading on strike
 		if(this.strikeCooldown > 0) {
 			this.strikeCooldown--;
 			if(this.strikeCooldown > 0)
@@ -47,69 +62,67 @@ public abstract class Ship extends Entity {
 		this.strikeCooldown = 10;
 	}
 	
-	public Vector2 moveForward(boolean showMapHitboxes) {
+	public void moveForward() {
 		float xMoveInc = -1 * (float) Math.sin(0.0175 * this.direction);
 		float yMoveInc = (float) Math.cos(0.0175 * this.direction);
-		float xMoveTotal = xMoveInc * this.speed;
-		float yMoveTotal = yMoveInc * this.speed;
+		float xMoveTotal = xMoveInc * currSpeed;
+		float yMoveTotal = yMoveInc * currSpeed;
 		
 		this.updatePosition(xMoveTotal, yMoveTotal);
 		
 		//collision detection - undo move if hitting map 
-		int numMoves = (int) this.speed + 1;
-		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
-			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
-			numMoves--;
+		int numBacktracks = 4;
+		float backtrackAmount = currSpeed / 4f; 
+		while(!map.validShipPosition(this) && numBacktracks >= 0) {
+			this.updatePosition(-1 * backtrackAmount * xMoveInc, -1 * backtrackAmount * yMoveInc);
+			numBacktracks--;
 		}
-
-		return this.getHitCenter();
 	}
 	
-	public Vector2 moveBackward(boolean showMapHitboxes) {
-		float xMoveInc = (float) Math.sin(0.0175 * this.direction);
-		float yMoveInc = -1 * (float) Math.cos(0.0175 * this.direction);
-		float xMoveTotal = xMoveInc * this.speed;
-		float yMoveTotal = yMoveInc * this.speed;
+	public void moveBackward() {
+		float xMoveInc = (float) Math.sin(0.0175 * direction);
+		float yMoveInc = -1 * (float) Math.cos(0.0175 * direction);
+		float xMoveTotal = xMoveInc * currSpeed;
+		float yMoveTotal = yMoveInc * currSpeed;
 		
 		this.updatePosition(xMoveTotal, yMoveTotal);
 		
 		//collision detection - undo move if hitting map 
-		int numMoves = (int) this.speed + 1;
-		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
-			this.updatePosition(-1 * xMoveInc, -1 * yMoveInc);
-			numMoves--;
+		int numBacktracks = 4;
+		float backtrackAmount = currSpeed / 4f; 
+		while(!map.validShipPosition(this) && numBacktracks >= 0) {
+			this.updatePosition(-1 * backtrackAmount * xMoveInc, -1 * backtrackAmount * yMoveInc);
+			numBacktracks--;
 		}
-
-		return this.getHitCenter();
 	}
 	
-	public void turnCW(boolean showMapHitboxes) {
-		this.updateRotation(-1 * this.rotationSpeed);
+	public void turnCW() {
+		this.updateRotation(-1 * rotationSpeed);
 		
 		//collision detection - undo move if hitting map
-		int numMoves = (int) (this.rotationSpeed + 1);
-		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
+		int numMoves = (int) (rotationSpeed + 1);
+		while(!map.validShipPosition(this) && numMoves >= 0) {
 			this.updateRotation(1);
 			numMoves--;
 		}
 	}
 	
-	public void turnCCW(boolean showMapHitboxes) {
-		this.updateRotation(this.rotationSpeed);
+	public void turnCCW() {
+		this.updateRotation(rotationSpeed);
 		
 		//collision detection - undo move if hitting map
-		int numMoves = (int) (this.rotationSpeed + 1);
-		while(!this.map.validShipPosition(this, showMapHitboxes) && numMoves >= 0) {
+		int numMoves = (int) (rotationSpeed + 1);
+		while(!map.validShipPosition(this) && numMoves >= 0) {
 			this.updateRotation(-1);
 			numMoves--;
 		}
 	}
 	
 	private void updateRotation(float turnAmount) {
-		this.direction = this.direction + turnAmount;
+		direction = direction + turnAmount;
 		
-		this.getHitbox().setRotation(this.direction);
-		this.getSprite().setRotation(this.direction);
+		this.getHitbox().setRotation(direction);
+		this.getSprite().setRotation(direction);
 	}
 	
 	public static Polygon getShipHitbox(float spriteWidth, float spriteHeight, int xOffset) {
@@ -121,10 +134,10 @@ public abstract class Ship extends Entity {
 	@Override
 	public void setSprite(Sprite sprite) {
 		super.setSprite(sprite);
-		this.getSprite().setRotation(this.direction);
+		this.getSprite().setRotation(direction);
 	}
 	
 	public float getDirection() {
-		return this.direction;
+		return direction;
 	}
  }

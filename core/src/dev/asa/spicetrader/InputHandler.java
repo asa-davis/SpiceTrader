@@ -10,25 +10,20 @@ import com.badlogic.gdx.math.Vector2;
 public class InputHandler {
 	
 	private Player player;
-	private Camera camera;
 	private EntityManager entManager;
 	private float screenHeight;
 	private MenuManager menuManager;
-	private boolean showMapHitboxes;
 	
-	public InputHandler(Player player, Camera camera, EntityManager entManager, MenuManager menuManager, float screenHeight, boolean showMapHitboxes) {
+	public InputHandler(Player player, EntityManager entManager, MenuManager menuManager, float screenHeight) {
 		this.player = player;
-		this.camera = camera;
 		this.entManager = entManager;
 		this.screenHeight = screenHeight;
 		this.menuManager = menuManager;
-		this.showMapHitboxes = showMapHitboxes;
 	}
 	
 	public void process(boolean paused) {
 		this.handleMouseInput();
 		if(!paused) this.handlePlayerControls();
-		
 	}
 	
 	private void handleMouseInput() {
@@ -49,23 +44,19 @@ public class InputHandler {
 		boolean backward = false;
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
 			forward = true;
-			Vector2 playerPos = player.moveForward(showMapHitboxes);
-			camera.position.x = playerPos.x;
-			camera.position.y = playerPos.y;
+			player.moveForward();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
 			backward = true;
-			Vector2 playerPos = player.moveBackward(showMapHitboxes);
-			camera.position.x = playerPos.x;
-			camera.position.y = playerPos.y;
+			player.moveBackward();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			if(backward) player.turnCCW(showMapHitboxes);
-			else player.turnCW(showMapHitboxes);
+			if(backward) player.turnCCW();
+			else player.turnCW();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			if(backward) player.turnCW(showMapHitboxes);
-			else player.turnCCW(showMapHitboxes);
+			if(backward) player.turnCW();
+			else player.turnCCW();
 		}
 		
 		//shooting
