@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Pirate extends Ship{
 
-	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
-		super(pos, sprite, map, speed, rotationSpeed, initialDirection);
+	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float maxSpeed, float accel, float rotationSpeed, float initialDirection) {
+		super(pos, sprite, map, maxSpeed, accel, rotationSpeed, initialDirection);
 	}
 
 	@Override

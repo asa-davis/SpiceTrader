@@ -31,7 +31,7 @@ public class EntityFactory {
 		//calculate player start position
 		Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2), screenCenter.y - (playerSprites[0].getHeight() / 2));
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
-		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map, 3, 3, 0);
+		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
 		
 		return player;
 	}
@@ -42,8 +42,8 @@ public class EntityFactory {
 		List<Pirate> pirates = new ArrayList<Pirate>();
 		for(int i = 0; i < numPirates; i++) {
 			Sprite pirateSprite = atlas.createSprite("ships/pirate");
-			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 1, 1, 0);
-			while(!this.map.validShipPosition(p, false)) {
+			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 1, 0.05f, 1, 0);
+			while(!this.map.validShipPosition(p)) {
 				p.setPosition(this.getRandShipPos(pirateSprite));
 			}
 			pirates.add(p);

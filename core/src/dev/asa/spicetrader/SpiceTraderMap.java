@@ -46,6 +46,7 @@ public class SpiceTraderMap {
 	
 	//for debugging map hitboxes
 	private ShapeRenderer hitboxRenderer;
+	private List<Polygon> potentialCollisions;
 	
 	public SpiceTraderMap(int numCols, int numRows, int tileWidth, int tileHeight, int waveFreq, TextureAtlas atlas) {		
 		this.numCols = numCols;
@@ -61,30 +62,43 @@ public class SpiceTraderMap {
 		//for debugging map hitboxes
 		this.hitboxRenderer = new ShapeRenderer();
 		hitboxRenderer.setColor(Color.RED);
+		potentialCollisions = new ArrayList<Polygon>();
 		
 		this.atlas = atlas;
 	}
 	
-	public void render(OrthographicCamera camera) {
+	public void render(OrthographicCamera camera, boolean showHitboxes) {
 		this.mapRenderer.setView(camera);
 		this.mapRenderer.render();
-		hitboxRenderer.setProjectionMatrix(camera.combined);
+		
+		if(showHitboxes) {
+			hitboxRenderer.setProjectionMatrix(camera.combined);
+			hitboxRenderer.begin(ShapeType.Line);
+			for(Polygon tileHitbox : potentialCollisions) 
+				this.hitboxRenderer.polygon(tileHitbox.getVertices());
+			hitboxRenderer.end();
+		}
 	}
 	
-	//every
-	public void tick() {
+	//every frame this gets called
+	public void tick(boolean paused) {
+		if(paused)
+			return;
+		
 		this.frameCounter++;
 		if(this.frameCounter == waveRecalcFreq) {
 			this.frameCounter = 0;
 			this.recalcWaves();
 		}
+		
+		this.potentialCollisions.clear();	
 	}
 	
 	//returns true if ship is not intersecting with shore
 	//first we get the tile coords that the center of the hitbox is on
 	//then we check the tile Ids of those coords and the 8 neighboring tiles
 	//if any of these are land tiles (id != 0) we fetch their appropriate hitbox using the bitmask and check it for intersections with ship hitbox
-	public boolean validShipPosition(Ship ship, boolean showHitboxes) {
+	public boolean validShipPosition(Ship ship) {
 		Polygon shipHitbox = ship.getHitbox();
 		Vector2 shipCenter = ship.getHitCenter();
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
@@ -102,13 +116,8 @@ public class SpiceTraderMap {
 			}
 		}
 		
-		//render hitboxes if enabled
-		if(showHitboxes) {
-			hitboxRenderer.begin(ShapeType.Line);
-			for(Polygon tileHitbox : nearbyTiles) 
-				this.hitboxRenderer.polygon(tileHitbox.getVertices());
-			hitboxRenderer.end();
-		}
+		//so we can render hitboxes if desired
+		potentialCollisions.addAll(nearbyTiles);
 		
 		//check for collisions and determine position validity
 		for(Polygon tileHitbox : nearbyTiles) {

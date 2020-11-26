@@ -28,8 +28,8 @@ public class Player extends Ship {
 	//for determining when/where a player can dock
 	private Village dockable;
 	
-	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map, float speed, float rotationSpeed, float initialDirection) {
-		super(pos, playerSprites[Player.INIT_SPRITE], map, speed, rotationSpeed, initialDirection);
+	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
+		super(pos, playerSprites[Player.INIT_SPRITE], map, 3, 0.05f, 2, 0);
 		this.playerSprites = playerSprites;
 		this.cannonBallSprite = cannonBallSprite;
 		this.firingLeftSpriteCooldown = 0;

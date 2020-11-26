@@ -3,6 +3,7 @@ package dev.asa.spicetrader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 
 //this class does several things:
 //	-renders entities (+their hitboxes)
@@ -29,8 +31,10 @@ public class EntityManager {
 	private ShapeRenderer hitboxRenderer;
 	MenuManager menuManager;
 	MainGame game;
+	Camera camera;
 	
-	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game) {
+	
+	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, Camera camera) {
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
 		allPirates = new ArrayList<Pirate>();
@@ -38,6 +42,7 @@ public class EntityManager {
 		entitiesToRemove = new ArrayList<Entity>();
 		this.menuManager = menuManager;
 		this.game = game;
+		this.camera = camera;
 		
 		//for showing hitboxes
 		hitboxRenderer = new ShapeRenderer();
@@ -62,7 +67,15 @@ public class EntityManager {
 	}
 	
 
-	public void process() {
+	public void process(boolean paused) {
+		if(paused)
+			return;
+		
+		//sync camera to player position
+		Vector2 playerPos = player.getHitCenter();
+		camera.position.x = playerPos.x;
+		camera.position.y = playerPos.y;
+		
 		//process collisions
 		this.processCollisions();
 		
@@ -86,6 +99,7 @@ public class EntityManager {
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
 	//	3. Every dock against player. When a player is in dock hit box, the dockable variable on player should be set to the appropriate village.
 	//When this method gets too expensive we will have to start only checking entities against entities in the same quadrant or something
+	//NOTE: collisions between ships and the map are handled in the validShipPosition method in the map class, which should always be called when a ship moves
 	private void processCollisions() {
 		for(Pirate p : allPirates) {
 			//1.

@@ -23,7 +23,7 @@ public class MainGame extends ApplicationAdapter {
 	
 //	--GAME SETTINGS--
 	
-	final boolean SHOW_HITBOXES = false;
+	final boolean SHOW_HITBOXES = true;
 	//fixes texture bleeding?
 	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
@@ -91,7 +91,7 @@ public class MainGame extends ApplicationAdapter {
 		menuManager = new MenuManager(atlas, screenSize, this, fonts); 
 		
 		//Entities
-		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this);
+		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, camera);
 		entFactory = new EntityFactory(atlas, map, screenCenter);
 		List<Entity> allEnts = new ArrayList<Entity>();
 		
@@ -118,7 +118,7 @@ public class MainGame extends ApplicationAdapter {
 		entManager.addAll(allEnts);
 		
 		//input
-		inputHandler = new InputHandler(player, camera, entManager, menuManager, screenSize.y, SHOW_HITBOXES);		
+		inputHandler = new InputHandler(player, entManager, menuManager, screenSize.y);		
 	}
 
 	@Override
@@ -126,28 +126,23 @@ public class MainGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		//render and tick map
-		map.render(camera);
-		if(!paused) map.tick();
-		
-		//render and process entities
-		entManager.render(batch, camera, SHOW_HITBOXES);
-		if(!paused) entManager.process();
-		
-		//render menus
-		menuManager.tick();
-		menuManager.draw(batch);
-		
-		//handle input
+		//update all game objects
+		map.tick(paused);
 		inputHandler.process(paused);
-		
+		entManager.process(paused);
+			
+		menuManager.tick();
 		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
 		if(ROUND_CAMERA_POS) {
 			camera.position.x = Utils.roundToNearestFraction(camera.position.x, ZOOM_LEVEL);
 			camera.position.y = Utils.roundToNearestFraction(camera.position.y, ZOOM_LEVEL);
 		}
-
 		camera.update();
+		
+		//render all game objects
+		map.render(camera, SHOW_HITBOXES);
+		entManager.render(batch, camera, SHOW_HITBOXES);
+		menuManager.draw(batch);
 	}
 	
 	@Override
