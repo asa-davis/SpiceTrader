@@ -40,23 +40,17 @@ public class InputHandler {
 		} 
 		
 		//movement
-		boolean forward = false;
-		boolean backward = false;
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-			forward = true;
-			player.moveForward();
+			player.accelForward();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-			backward = true;
-			player.moveBackward();
+			player.accelBackward();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			if(backward) player.turnCCW();
-			else player.turnCW();
+			player.turnRight();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			if(backward) player.turnCW();
-			else player.turnCCW();
+			player.turnLeft();
 		}
 		
 		//shooting

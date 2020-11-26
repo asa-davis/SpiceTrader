@@ -31,7 +31,7 @@ public class EntityFactory {
 		//calculate player start position
 		Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2), screenCenter.y - (playerSprites[0].getHeight() / 2));
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
-		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map, 2.2f, 0.05f, 3, 0);
+		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
 		
 		return player;
 	}

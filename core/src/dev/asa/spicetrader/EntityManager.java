@@ -99,6 +99,7 @@ public class EntityManager {
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
 	//	3. Every dock against player. When a player is in dock hit box, the dockable variable on player should be set to the appropriate village.
 	//When this method gets too expensive we will have to start only checking entities against entities in the same quadrant or something
+	//NOTE: collisions between ships and the map are handled in the validShipPosition method in the map class, which should always be called when a ship moves
 	private void processCollisions() {
 		for(Pirate p : allPirates) {
 			//1.
