@@ -1,8 +1,15 @@
-TODO (11/26/20):
-- design hud/inventory menus
-- build trading mechanic with villages
-- improve map hitboxes (use different rectangle/polygon based on neighbor bitmask instead of always 16x16 square)
-- setup pirate pathfinding
-- setup starting area
-- build upgrade mechanic
-- build sea monster mechanic
+TODO (11/27/20):
+- extend Menu/MenuManager to implement hud/inventory menus
+- implement trading 
+    - Add datastructures to Village to hold current trade, inventory, etc.
+    - implement execution of trades through DockedMenu
+- improve map hitboxes 
+    -use different rectangle/polygon based on neighbor bitmask instead of always 16x16 square
+- implement pirate pathfinding 
+    -use A* code from old version of SpiceTrader to get list of tiles to travel to in order
+    -convert to list of point coords (centers of tiles)
+    -simplify using Ramer–Douglas–Peucker algorithm
+    -track next waypoint in pirate class and check if it gets close enough in pirate tick()
+- work on starting area idea
+- work on upgrade mechanic
+- work on sea monster mechanic
