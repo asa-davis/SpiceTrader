@@ -1,15 +1,17 @@
 TODO (11/27/20):
+- implement pirate pathfinding
+    - build dijkstra map from player position - stored in map object?
+    - on pirate tick, if in range, build path to current player position from dijkstra map
+    - convert to list of point coords (centers of tiles)
+    - (optional)simplify using Ramer–Douglas–Peucker algorithm
+    - track next waypoint in pirate class and check if it gets close enough in pirate tick()
 - extend Menu/MenuManager to implement hud/inventory menus
 - implement trading 
     - add datastructures to Village to hold current trade, inventory, etc.
     - implement execution of trades through DockedMenu
 - improve map hitboxes 
-    - use different rectangle/polygon based on neighbor bitmask instead of always 16x16 square.
-- implement pirate pathfinding
-    - use A* code from old version of SpiceTrader to get list of tiles to travel to in order
-    - convert to list of point coords (centers of tiles)
-    - simplify using Ramer–Douglas–Peucker algorithm
-    - track next waypoint in pirate class and check if it gets close enough in pirate tick()
+    - use different rectangle/polygon based on neighbor bitmask instead of always 16x16 square
+- add falling off world death
 - work on starting area idea
 - work on upgrade mechanic
 - work on sea monster mechanic
