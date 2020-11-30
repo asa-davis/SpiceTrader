@@ -1,4 +1,4 @@
-TODO (11/27/20):
+TODO (11/29/20):
 - implement pirate pathfinding (in progress)
     - build dijkstra map from player position - stored in map object?
     - on pirate tick, if in range, build path to current player position from dijkstra map
