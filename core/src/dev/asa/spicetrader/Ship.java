@@ -40,7 +40,13 @@ public abstract class Ship extends Entity {
 	public void tick() {
 		//handle acceleration behavior
 		this.move();
-		if(currSpeed > 0) currSpeed -= decel;
+		if(currSpeed > 0) {
+			currSpeed -= decel;
+			if(currSpeed <= 0) {
+				currSpeed = 0;
+				inReverse = false;
+			}
+		}
 		
 		//handle red shading on strike
 		if(this.strikeCooldown > 0) {
@@ -66,8 +72,6 @@ public abstract class Ship extends Entity {
 	}
 	
 	public void accelBackward() {
-		System.out.println("inside accelBackward");
-		System.out.println("In reverse: " + inReverse);
 		if(inReverse) {
 			if (currSpeed < maxSpeed) currSpeed += accel;
 		}
@@ -154,5 +158,13 @@ public abstract class Ship extends Entity {
 	
 	public float getDirection() {
 		return direction;
+	}
+	
+	public SpiceTraderMap getMap() {
+		return map;
+	}
+	
+	public float getCurrSpeed() {
+		return currSpeed;
 	}
  }

@@ -1,6 +1,7 @@
 package dev.asa.spicetrader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -40,6 +41,8 @@ public class SpiceTraderMap {
 	private int[][] tileIdMap;
 	//this tells us for a particular tile, which of the neighboring tiles in the 8 directions are land. 
 	private int[][] neighborBitmaskMap;
+	//holds the distance to player from each tile location - used for pirate pathfinding
+	private int[][] playerDistMap;
 	//libgdx objects holding the map in the form in which it can be rendered
 	private TiledMap libgdxMap;
 	private TiledMapRenderer mapRenderer;
@@ -65,6 +68,9 @@ public class SpiceTraderMap {
 		potentialCollisions = new ArrayList<Polygon>();
 		
 		this.atlas = atlas;
+		
+		//for pirate pathfinding
+		playerDistMap = new int[numRows][numCols];
 	}
 	
 	public void render(OrthographicCamera camera, boolean showHitboxes) {
@@ -94,6 +100,68 @@ public class SpiceTraderMap {
 		this.potentialCollisions.clear();	
 	}
 	
+	//creates a dijkstra map representing the distance from the player for every tile
+	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
+	public void calcPlayerDistMap(Vector2 playerPos) {
+		//1. fill map with maximum value except for at player position, where value = 0
+		int playerCol = this.getTileCoordsFromPixels(playerPos)[0];
+		int playerRow = this.getTileCoordsFromPixels(playerPos)[1];
+		for(int[] row : playerDistMap) 
+			Arrays.fill(row, numRows * numCols);
+		
+		//check if player tile position has changed. if it hasn't, we dont need to do anything.
+		if(playerDistMap[playerRow][playerCol] == 0)
+			return;
+		playerDistMap[playerRow][playerCol] = 0;
+
+		
+		//2. iterate through map, checking for tiles where the lowest value neighbor is more than 1 less than the tile value. 
+		//	 for these tiles, set value to the neighbor value + 1. repeat until no more cases. ignore land tiles.
+		boolean done = false;
+		while(!done) {
+			done = true;
+			for(int row = 0; row < numRows; row++) {
+				for(int col = 0; col < numCols; col++) {
+					//only process ocean tiles
+					if(tileIdMap[row][col] == 0) {
+						//collect current value and neighbor coords
+						List<int[]> neighborCoords = Utils.getNeighborCoords(col, row, numCols, numRows, false);
+						int currValue = playerDistMap[row][col];
+						
+						//collect lowest neighbor value (ignoring neighbors with values greater than current
+						int lowestNeighborValue = currValue;
+						for(int[] neighbor : neighborCoords) {
+							if(neighbor != null) {
+								int currNeighborValue = playerDistMap[(int) neighbor[0]][(int) neighbor[1]];
+								if(currNeighborValue < lowestNeighborValue)
+									lowestNeighborValue = currNeighborValue;	
+							}
+						}
+						
+						//check if more than 1 below current value and set current appropriately.
+						if(lowestNeighborValue < currValue - 1) {
+							done = false;
+							playerDistMap[row][col] = lowestNeighborValue + 1;
+						}
+					}
+				}
+			}
+		}
+		//System.out.println("DIJKSTRA MAP:");
+		//for(int row = numRows - 1; row >= 0; row--) {
+			//for(int col = 0; col < numCols; col++) {
+				//int val = playerDistMap[row][col];
+				//if(val < 10)
+					//System.out.print("00" + val + ", ");
+				//else if(val < 100)
+					//System.out.print("0" + val + ", ");
+				//else if(val < 1000)
+					//System.out.print(val + ", ");
+			//}
+			//System.out.print('\n');
+		//}
+	}
+	
 	//returns true if ship is not intersecting with shore
 	//first we get the tile coords that the center of the hitbox is on
 	//then we check the tile Ids of those coords and the 8 neighboring tiles
@@ -102,14 +170,14 @@ public class SpiceTraderMap {
 		Polygon shipHitbox = ship.getHitbox();
 		Vector2 shipCenter = ship.getHitCenter();
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
-		List<Vector2> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
+		List<int[]> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
 		
 		//gather all nearby tile hitboxes
 		List<Polygon> nearbyTiles = new ArrayList<Polygon>();
-		for(Vector2 tile : neighbors) {
-			if(tile != null && this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
-				float xOrigin = tile.x * this.tileWidth;
-				float yOrigin = tile.y * this.tileHeight;
+		for(int[] tile : neighbors) {
+			if(tile != null && this.tileIdMap[tile[1]][tile[0]] != 0) {
+				float xOrigin = tile[0] * this.tileWidth;
+				float yOrigin = tile[1] * this.tileHeight;
 				Polygon tileHitbox = new Polygon();
 				tileHitbox.setVertices(new float[] {xOrigin, yOrigin, xOrigin + 16, yOrigin, xOrigin + 16, yOrigin + 16, xOrigin, yOrigin + 16});
 				nearbyTiles.add(tileHitbox);

@@ -33,6 +33,8 @@ public class MainGame extends ApplicationAdapter {
 	final int MAP_SIZE = 64;//use even numbers plz
 	final int SMOOTHING_ITERATIONS = 5;
 	final int SEA_LEVEL_OFFSET = 2;
+	final int NUM_VILLAGES = 5;
+	final int NUM_PIRATES = 1;
 
 
 //	--GAME VARIABLES--
@@ -101,13 +103,13 @@ public class MainGame extends ApplicationAdapter {
 		menuManager.setPlayer(player);
 		
 		//pirates
-		List<Pirate> pirates = entFactory.getRandomPirates(10);
+		List<Pirate> pirates = entFactory.getRandomPirates(NUM_PIRATES);
 		allEnts.addAll(pirates);
 		
 		//villages
 		VillageFactory villFac = new VillageFactory(map, atlas);
 		try {
-			List<Village> villages = villFac.getVillages(5);
+			List<Village> villages = villFac.getVillages(NUM_VILLAGES);
 			allEnts.addAll(villages);
 			map.addVillages(villages);
 		} catch (Exception e) {
@@ -123,6 +125,7 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		

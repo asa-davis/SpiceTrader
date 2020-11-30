@@ -98,10 +98,10 @@ public class SpiceTraderMapGenerator {
 				//sum and average neighbors
 				int neighborSum = 0;
 				int neighborCount = 0;
-				List<Vector2> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
-				for(Vector2 currNeighbor : neighbors) {
+				List<int[]> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
+				for(int[] currNeighbor : neighbors) {
 					if(currNeighbor != null) {
-						neighborSum += tileIdMap[(int) currNeighbor.y][(int) currNeighbor.x];
+						neighborSum += tileIdMap[currNeighbor[1]][currNeighbor[0]];
 						neighborCount++;
 					}
 				}
@@ -171,6 +171,7 @@ public class SpiceTraderMapGenerator {
 	//Note: diagonal neighboring land will only be counted if it's two surrounding neighbors are also land. 
 	//For example, the top right neighbor is only counted if both the top and the right neighbors are land too.
 	//This is to avoid redundant values.
+	//Algorithm taken from here: https://gamedevelopment.tutsplus.com/tutorials/how-to-use-tile-bitmasking-to-auto-tile-your-level-layouts--cms-25673
 	
 	private static int[][] generateNeighborTileBitmaskMap(int numRows, int numCols, int[][] tileIdMap) {
 		int[][]	neighborBitmaskMap = new int[numRows][numCols];
@@ -181,11 +182,11 @@ public class SpiceTraderMapGenerator {
 				int power = 0;
 				//iterate through all neighbors, increasing our power each time
 				//if neighbor is land, we add 2^power to our bitmask
-				List<Vector2> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
-				for(Vector2 currNeighbor : neighbors) {
+				List<int[]> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
+				for(int[] currNeighbor : neighbors) {
 					//check for out of bounds
 					if(currNeighbor != null) {
-						if(tileIdMap[(int) currNeighbor.y][(int) currNeighbor.x] == 1) 
+						if(tileIdMap[currNeighbor[1]][currNeighbor[0]] == 1) 
 							bitmask += Math.pow(2, power);
 					}
 

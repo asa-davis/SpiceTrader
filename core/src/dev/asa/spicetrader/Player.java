@@ -37,12 +37,16 @@ public class Player extends Ship {
 		this.firingLeft = false;
 		this.firingRight = false;
 		this.dockable = null;
+		
+		this.getMap().calcPlayerDistMap(this.getHitCenter());
 	}
 	
 	@Override
 	public void tick() {
 		super.tick();
 		this.calcPlayerFiringSprite();
+		if(this.getCurrSpeed() > 0)
+			this.getMap().calcPlayerDistMap(this.getHitCenter());
 	}
 	
 	@Override
