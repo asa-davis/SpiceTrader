@@ -1,10 +1,11 @@
 TODO (11/27/20):
-- implement pirate pathfinding
+- implement pirate pathfinding (in progress)
     - build dijkstra map from player position - stored in map object?
     - on pirate tick, if in range, build path to current player position from dijkstra map
     - convert to list of point coords (centers of tiles)
     - (optional)simplify using Ramer–Douglas–Peucker algorithm
     - track next waypoint in pirate class and check if it gets close enough in pirate tick()
+- change all uses of Vector2 class to int[] when used for tile coords - all these floats are slowing down the game!
 - extend Menu/MenuManager to implement hud/inventory menus
 - implement trading 
     - add datastructures to Village to hold current trade, inventory, etc.
