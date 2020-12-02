@@ -71,6 +71,9 @@ public class SpiceTraderMap {
 		
 		//for pirate pathfinding
 		playerDistMap = new int[numRows][numCols];
+		for(int[] row : playerDistMap) 
+			Arrays.fill(row, numRows * numCols);
+		
 	}
 	
 	public void render(OrthographicCamera camera, boolean showHitboxes) {
@@ -99,23 +102,37 @@ public class SpiceTraderMap {
 		
 		this.potentialCollisions.clear();	
 	}
+ 	
+	//returns a set of points representing the center tiles of the path to the player
+	public Vector2 getPathToPlayer(Vector2 startPos) {
+		int[] curr = this.getTileCoordsFromPixels(startPos);
+		while(playerDistMap[curr[1]][curr[0]] != 0) {
+			
+		}
+		
+		return new Vector2(0,0);
+	}
 	
-	//creates a dijkstra map representing the distance from the player for every tile
+	//creates a "dijkstra" map representing the distance from the player for every tile
 	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
 	public void calcPlayerDistMap(Vector2 playerPos) {
-		//1. fill map with maximum value except for at player position, where value = 0
 		int playerCol = this.getTileCoordsFromPixels(playerPos)[0];
 		int playerRow = this.getTileCoordsFromPixels(playerPos)[1];
+		
+		//0. check if player tile position has changed. if it hasn't, we dont need to do anything.
+		if(playerDistMap[playerRow][playerCol] == 0) 
+			return;
+		
+		//1. fill map with maximum value except for at player position, where value = 0
 		for(int[] row : playerDistMap) 
 			Arrays.fill(row, numRows * numCols);
-		
-		//check if player tile position has changed. if it hasn't, we dont need to do anything.
-		if(playerDistMap[playerRow][playerCol] == 0)
-			return;
 		playerDistMap[playerRow][playerCol] = 0;
 
+		//TODO: IMPLEMENT RANGE FOR THIS ALGORITHM. CURRENTLY IT CREATES A DIJSKTRA MAP FOR ENTIRE MAP
+		//2. determine range of tiles to build map on - maximum size of map is 16x16, player must always be centered and we cant look outside map bounds
 		
-		//2. iterate through map, checking for tiles where the lowest value neighbor is more than 1 less than the tile value. 
+		
+		//3. iterate through map, checking for tiles where the lowest value neighbor is more than 1 less than the tile value. 
 		//	 for these tiles, set value to the neighbor value + 1. repeat until no more cases. ignore land tiles.
 		boolean done = false;
 		while(!done) {
@@ -147,19 +164,22 @@ public class SpiceTraderMap {
 				}
 			}
 		}
-		//System.out.println("DIJKSTRA MAP:");
-		//for(int row = numRows - 1; row >= 0; row--) {
-			//for(int col = 0; col < numCols; col++) {
-				//int val = playerDistMap[row][col];
-				//if(val < 10)
-					//System.out.print("00" + val + ", ");
-				//else if(val < 100)
-					//System.out.print("0" + val + ", ");
-				//else if(val < 1000)
-					//System.out.print(val + ", ");
-			//}
-			//System.out.print('\n');
-		//}
+		boolean debug = false;
+		if(debug) {
+			System.out.println("DIJKSTRA MAP:");
+			for(int row = numRows - 1; row >= 0; row--) {
+				for(int col = 0; col < numCols; col++) {
+					int val = playerDistMap[row][col];
+					if(val < 10)
+						System.out.print("00" + val + ", ");
+					else if(val < 100)
+						System.out.print("0" + val + ", ");
+					else if(val < 1000)
+						System.out.print(val + ", ");
+				}
+				System.out.print('\n');
+			}
+		}
 	}
 	
 	//returns true if ship is not intersecting with shore
