@@ -33,7 +33,7 @@ public class Utils {
 	//	3|x|4
 	//	-----
 	//	5|6|7	
-	public static List<int[]> getNeighborCoords(int x, int y, int numCols, int numRows, boolean includeCurrTile) {
+	public static List<int[]> getNeighborCoords(int x, int y, int numCols, int numRows, boolean includeCurrTile, boolean includeDiag) {
 		List<int[]> neighbors = new ArrayList<int[]>();
 		int neighborY;
 		int neighborX;
@@ -49,8 +49,24 @@ public class Utils {
 				}
 			}
 		}
+		
+		//yikes
 		if(!includeCurrTile)
 			neighbors.remove(4);
+		
+		if(!includeDiag) {
+			neighbors.remove(0);
+			neighbors.remove(1);
+			if(!includeCurrTile) {
+				neighbors.remove(3);
+				neighbors.remove(4);
+			}
+			else {
+				neighbors.remove(4);
+				neighbors.remove(5);
+			}
+
+		}
 		return neighbors;
 	}
 	

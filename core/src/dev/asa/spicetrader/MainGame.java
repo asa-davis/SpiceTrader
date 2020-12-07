@@ -30,11 +30,11 @@ public class MainGame extends ApplicationAdapter {
 	final int TILE_HEIGHT = 16;
 	final float ZOOM_LEVEL = 3;
 	//map settings
-	final int MAP_SIZE = 16;//use even numbers plz - greater than 32
+	final int MAP_SIZE = 32;//use even numbers plz - greater than 32
 	final int SMOOTHING_ITERATIONS = 5;
 	final int SEA_LEVEL_OFFSET = 2;
-	final int NUM_VILLAGES = 0;
-	final int NUM_PIRATES = 1;
+	final int NUM_VILLAGES = 2;
+	final int NUM_PIRATES = 5;
 
 
 //	--GAME VARIABLES--

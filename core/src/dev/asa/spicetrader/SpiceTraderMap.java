@@ -70,7 +70,7 @@ public class SpiceTraderMap {
 		this.atlas = atlas;
 		
 		//for pirate pathfinding
-		playerDistMap = new int[16][16];
+		playerDistMap = new int[32][32];
 		for(int[] row : playerDistMap) 
 			Arrays.fill(row, numRows * numCols);
 		
@@ -129,7 +129,7 @@ public class SpiceTraderMap {
 			return currPath;
 		
 		//otherwise, find lowest value neighbor square, set it to currPos, add it to currPath and continue
-		List<int[]> neighbors = Utils.getNeighborCoords(currPos[0], currPos[1], playerDistMap[0].length, playerDistMap.length, false);
+		List<int[]> neighbors = Utils.getNeighborCoords(currPos[0], currPos[1], playerDistMap[0].length, playerDistMap.length, false, true);
 		int lowestVal = currVal;
 		int[] lowestPos = currPos;
 		
@@ -170,7 +170,6 @@ public class SpiceTraderMap {
 		//3. iterate through map, checking for tiles where the lowest value neighbor is more than 1 less than the tile value. 
 		//	 for these tiles, set value to the neighbor value + 1. repeat until no more cases. ignore land tiles.
 		boolean done = false;
-		boolean oneMore = false;
 		while(!done) {
 			boolean tileChanged = false;
 			
@@ -178,8 +177,8 @@ public class SpiceTraderMap {
 				for(int col = 0; col < numCols; col++) {
 					//only process ocean tiles
 					if(tileIdMap[row][col] == 0) {
-						//collect current value and neighbor coords
-						List<int[]> neighborCoords = Utils.getNeighborCoords(col, row, numCols, numRows, false);
+						//collect current value and neighbor coords - no diags
+						List<int[]> neighborCoords = Utils.getNeighborCoords(col, row, numCols, numRows, false, false);
 						int currValue = playerDistMap[row][col];
 						
 						//collect lowest neighbor value (ignoring neighbors with values greater than current
@@ -187,8 +186,9 @@ public class SpiceTraderMap {
 						for(int[] neighbor : neighborCoords) {
 							if(neighbor != null) {
 								int currNeighborValue = playerDistMap[neighbor[1]][neighbor[0]];
-								if(currNeighborValue < lowestNeighborValue)
-									lowestNeighborValue = currNeighborValue;	
+								if(currNeighborValue < lowestNeighborValue) {
+									lowestNeighborValue = currNeighborValue;
+								}
 							}
 						}
 						
@@ -205,7 +205,7 @@ public class SpiceTraderMap {
 				done = true;
 			}
 		}
-		boolean debug = false;
+		boolean debug = true;
 		if(debug) {
 			System.out.println("NEW MAP:");
 			for(int row = numRows - 1; row >= 0; row--) {
@@ -231,7 +231,7 @@ public class SpiceTraderMap {
 		Polygon shipHitbox = ship.getHitbox();
 		Vector2 shipCenter = ship.getHitCenter();
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
-		List<int[]> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
+		List<int[]> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true, true);
 		
 		//gather all nearby tile hitboxes
 		List<Polygon> nearbyTiles = new ArrayList<Polygon>();

@@ -98,7 +98,7 @@ public class SpiceTraderMapGenerator {
 				//sum and average neighbors
 				int neighborSum = 0;
 				int neighborCount = 0;
-				List<int[]> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
+				List<int[]> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false, true);
 				for(int[] currNeighbor : neighbors) {
 					if(currNeighbor != null) {
 						neighborSum += tileIdMap[currNeighbor[1]][currNeighbor[0]];
@@ -182,7 +182,7 @@ public class SpiceTraderMapGenerator {
 				int power = 0;
 				//iterate through all neighbors, increasing our power each time
 				//if neighbor is land, we add 2^power to our bitmask
-				List<int[]> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false);
+				List<int[]> neighbors = Utils.getNeighborCoords(x, y, numCols, numRows, false, true);
 				for(int[] currNeighbor : neighbors) {
 					//check for out of bounds
 					if(currNeighbor != null) {
