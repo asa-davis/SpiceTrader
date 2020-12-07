@@ -1,9 +1,9 @@
 TODO (12/6/20):
 - implement pirate pathfinding (in progress)
-    - build dijkstra map from player position - stored in map object?
-    - on pirate tick, if in range, build path to current player position from dijkstra map
-    - convert to list of point coords (centers of tiles)
-    - (optional)simplify using Ramer–Douglas–Peucker algorithm
+    - change dijkstra map to increase movement cost diagonally
+    - on pirate pathfinding, handle the case where there is no valid path
+    - add pirate ai to sail toward next waypoint 
+    - (optional)simplify path using Ramer–Douglas–Peucker algorithm
     - track next waypoint in pirate class and check if it gets close enough in pirate tick()
 - fix weird collision bug
 - extend Menu/MenuManager to implement hud/inventory menus
