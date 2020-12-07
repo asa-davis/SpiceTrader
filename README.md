@@ -1,6 +1,5 @@
 TODO (12/6/20):
 - implement pirate pathfinding (in progress)
-    - change dijkstra map to increase movement cost diagonally
     - on pirate pathfinding, handle the case where there is no valid path
     - add pirate ai to sail toward next waypoint 
     - (optional)simplify path using Ramer–Douglas–Peucker algorithm
