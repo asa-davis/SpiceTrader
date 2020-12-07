@@ -5,6 +5,7 @@ TODO (12/6/20):
     - add pirate ai to sail toward next waypoint 
     - (optional)simplify path using Ramer–Douglas–Peucker algorithm
     - track next waypoint in pirate class and check if it gets close enough in pirate tick()
+    - keep pirates from colliding somehow
 - fix weird collision bug
 - extend Menu/MenuManager to implement hud/inventory menus
 - implement trading 
