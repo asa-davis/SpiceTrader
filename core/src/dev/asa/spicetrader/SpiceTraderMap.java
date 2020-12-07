@@ -70,7 +70,7 @@ public class SpiceTraderMap {
 		this.atlas = atlas;
 		
 		//for pirate pathfinding
-		playerDistMap = new int[numRows][numCols];
+		playerDistMap = new int[16][16];
 		for(int[] row : playerDistMap) 
 			Arrays.fill(row, numRows * numCols);
 		
@@ -104,13 +104,48 @@ public class SpiceTraderMap {
 	}
  	
 	//returns a set of points representing the center tiles of the path to the player
-	public Vector2 getPathToPlayer(Vector2 startPos) {
-		int[] curr = this.getTileCoordsFromPixels(startPos);
-		while(playerDistMap[curr[1]][curr[0]] != 0) {
-			
+	public List<Vector2> getPathToPlayer(Vector2 startPos) {
+		//turn start pos into tile coords
+		int[] currPos = this.getTileCoordsFromPixels(startPos);
+
+		//generate path of tile coords
+		List<int[]> tilePath = new ArrayList<int[]>();
+		tilePath.add(currPos);
+		tilePath = getPathToPlayerHelper(currPos, tilePath);
+		
+		//turn tile coords path into pixel path where each point is center of tile
+		List<Vector2> path = new ArrayList<Vector2>();
+		for(int[] tile : tilePath)
+			path.add(this.getPixelCoordsFromTile(tile).add(new Vector2(tileWidth/2, tileHeight/2)));
+		
+		return path;
+	}
+	
+	//recursive helper method - deals only with tile coords
+	private List<int[]> getPathToPlayerHelper(int[] currPos, List<int[]> currPath) {
+		int currVal = playerDistMap[currPos[1]][currPos[0]];
+		//if current position is on player tile, we are done
+		if(currVal == 0) 
+			return currPath;
+		
+		//otherwise, find lowest value neighbor square, set it to currPos, add it to currPath and continue
+		List<int[]> neighbors = Utils.getNeighborCoords(currPos[0], currPos[1], playerDistMap[0].length, playerDistMap.length, false);
+		int lowestVal = currVal;
+		int[] lowestPos = currPos;
+		
+		for(int[] neighborPos : neighbors) {
+			if(neighborPos != null) {
+				int neighborVal = playerDistMap[neighborPos[1]][neighborPos[0]];
+				if(neighborVal < lowestVal) {
+					lowestPos = neighborPos;
+					lowestVal = neighborVal;
+				}
+			}
 		}
 		
-		return new Vector2(0,0);
+		//System.out.println("Adding (" + lowestPos[0] + ", " + lowestPos[1] + ") to path with value of " + lowestVal);
+		currPath.add(lowestPos);
+		return getPathToPlayerHelper(lowestPos, currPath);
 	}
 	
 	//creates a "dijkstra" map representing the distance from the player for every tile
@@ -129,14 +164,16 @@ public class SpiceTraderMap {
 		playerDistMap[playerRow][playerCol] = 0;
 
 		//TODO: IMPLEMENT RANGE FOR THIS ALGORITHM. CURRENTLY IT CREATES A DIJSKTRA MAP FOR ENTIRE MAP
-		//2. determine range of tiles to build map on - maximum size of map is 16x16, player must always be centered and we cant look outside map bounds
+		//2. determine range of tiles to build map on - maximum size of map is 32x32, player must always be centered and we cant look outside map bounds
 		
 		
 		//3. iterate through map, checking for tiles where the lowest value neighbor is more than 1 less than the tile value. 
 		//	 for these tiles, set value to the neighbor value + 1. repeat until no more cases. ignore land tiles.
 		boolean done = false;
+		boolean oneMore = false;
 		while(!done) {
-			done = true;
+			boolean tileChanged = false;
+			
 			for(int row = 0; row < numRows; row++) {
 				for(int col = 0; col < numCols; col++) {
 					//only process ocean tiles
@@ -149,7 +186,7 @@ public class SpiceTraderMap {
 						int lowestNeighborValue = currValue;
 						for(int[] neighbor : neighborCoords) {
 							if(neighbor != null) {
-								int currNeighborValue = playerDistMap[(int) neighbor[0]][(int) neighbor[1]];
+								int currNeighborValue = playerDistMap[neighbor[1]][neighbor[0]];
 								if(currNeighborValue < lowestNeighborValue)
 									lowestNeighborValue = currNeighborValue;	
 							}
@@ -157,16 +194,20 @@ public class SpiceTraderMap {
 						
 						//check if more than 1 below current value and set current appropriately.
 						if(lowestNeighborValue < currValue - 1) {
-							done = false;
+							tileChanged = true;
 							playerDistMap[row][col] = lowestNeighborValue + 1;
 						}
 					}
 				}
 			}
+			
+			if(!tileChanged) {
+				done = true;
+			}
 		}
 		boolean debug = false;
 		if(debug) {
-			System.out.println("DIJKSTRA MAP:");
+			System.out.println("NEW MAP:");
 			for(int row = numRows - 1; row >= 0; row--) {
 				for(int col = 0; col < numCols; col++) {
 					int val = playerDistMap[row][col];
@@ -258,6 +299,9 @@ public class SpiceTraderMap {
 	//returns pixel coords for bottom left corner of given tile
 	public Vector2 getPixelCoordsFromTile(Vector2 tilePos) {
 		return new Vector2(tilePos.x * tileWidth, tilePos.y * tileHeight);
+	}
+	public Vector2 getPixelCoordsFromTile(int[] tileCoords) {
+		return new Vector2(tileCoords[0] * tileWidth, tileCoords[1] * tileHeight);
 	}
 	
 	//takes a position in pixels and returns the tile coordinates
