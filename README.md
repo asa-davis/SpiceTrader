@@ -6,6 +6,7 @@ TODO (12/6/20):
     - track next waypoint in pirate class and check if it gets close enough in pirate tick()
     - keep pirates from colliding somehow
 - fix weird collision bug
+- replace all instances of MainGame static variables passed as parameters with MainGame static getters 
 - extend Menu/MenuManager to implement hud/inventory menus
 - implement trading 
     - add datastructures to Village to hold current trade, inventory, etc.
