@@ -42,7 +42,7 @@ public class SpiceTraderMap {
 	//this tells us for a particular tile, which of the neighboring tiles in the 8 directions are land. 
 	private int[][] neighborBitmaskMap;
 	//holds the distance to player from each tile location - used for pirate pathfinding
-	private int[][] playerDistMap;
+	private DijkstraMap playerDistMap;
 	//libgdx objects holding the map in the form in which it can be rendered
 	private TiledMap libgdxMap;
 	private TiledMapRenderer mapRenderer;
@@ -58,6 +58,7 @@ public class SpiceTraderMap {
 		this.tileHeight = tileHeight;
 		
 		//for changing waves every x frames
+		this.atlas = atlas;
 		this.waveRecalcFreq = 60;
 		this.waveFreq = waveFreq;
 		this.frameCounter = 0;
@@ -67,24 +68,40 @@ public class SpiceTraderMap {
 		hitboxRenderer.setColor(Color.RED);
 		potentialCollisions = new ArrayList<Polygon>();
 		
-		this.atlas = atlas;
-		
 		//for pirate pathfinding
-		playerDistMap = new int[32][32];
-		for(int[] row : playerDistMap) 
-			Arrays.fill(row, numRows * numCols);
+		playerDistMap = new DijkstraMap(8, this);
 		
 	}
 	
-	public void render(OrthographicCamera camera, boolean showHitboxes) {
+	public void render(OrthographicCamera camera, boolean showHitboxes, boolean showGrid) {
 		this.mapRenderer.setView(camera);
 		this.mapRenderer.render();
 		
+		//for debugging
+		
+		//draw hitboxes of tiles with boats near them
 		if(showHitboxes) {
 			hitboxRenderer.setProjectionMatrix(camera.combined);
 			hitboxRenderer.begin(ShapeType.Line);
+			
+			hitboxRenderer.setColor(Color.RED);
 			for(Polygon tileHitbox : potentialCollisions) 
-				this.hitboxRenderer.polygon(tileHitbox.getVertices());
+				hitboxRenderer.polygon(tileHitbox.getVertices());
+			
+			hitboxRenderer.end();
+		}
+		
+		//draw grid over all tiles
+		if(showGrid) {
+			hitboxRenderer.setProjectionMatrix(camera.combined);
+			hitboxRenderer.begin(ShapeType.Line);
+			
+			hitboxRenderer.setColor(Color.WHITE);
+			for(int col = 0; col <= numCols; col++)
+				hitboxRenderer.line(new Vector2(col * tileWidth, 0), new Vector2(col * tileWidth, this.getSizePixels().y));
+			for(int row = 0; row <= numRows; row++)
+				hitboxRenderer.line(new Vector2(0, row * tileHeight), new Vector2(this.getSizePixels().x, row * tileHeight));
+			
 			hitboxRenderer.end();
 		}
 	}
@@ -101,126 +118,6 @@ public class SpiceTraderMap {
 		}
 		
 		this.potentialCollisions.clear();	
-	}
- 	
-	//returns a set of points representing the center tiles of the path to the player
-	public List<Vector2> getPathToPlayer(Vector2 startPos) {
-		//turn start pos into tile coords
-		int[] currPos = this.getTileCoordsFromPixels(startPos);
-
-		//generate path of tile coords
-		List<int[]> tilePath = new ArrayList<int[]>();
-		tilePath.add(currPos);
-		tilePath = getPathToPlayerHelper(currPos, tilePath);
-		
-		//turn tile coords path into pixel path where each point is center of tile
-		List<Vector2> path = new ArrayList<Vector2>();
-		for(int[] tile : tilePath)
-			path.add(this.getPixelCoordsFromTile(tile).add(new Vector2(tileWidth/2, tileHeight/2)));
-		
-		return path;
-	}
-	
-	//recursive helper method - deals only with tile coords
-	private List<int[]> getPathToPlayerHelper(int[] currPos, List<int[]> currPath) {
-		int currVal = playerDistMap[currPos[1]][currPos[0]];
-		//if current position is on player tile, we are done
-		if(currVal == 0) 
-			return currPath;
-		
-		//otherwise, find lowest value neighbor square, set it to currPos, add it to currPath and continue
-		List<int[]> neighbors = Utils.getNeighborCoords(currPos[0], currPos[1], playerDistMap[0].length, playerDistMap.length, false, true);
-		int lowestVal = currVal;
-		int[] lowestPos = currPos;
-		
-		for(int[] neighborPos : neighbors) {
-			if(neighborPos != null) {
-				int neighborVal = playerDistMap[neighborPos[1]][neighborPos[0]];
-				if(neighborVal < lowestVal) {
-					lowestPos = neighborPos;
-					lowestVal = neighborVal;
-				}
-			}
-		}
-		
-		//System.out.println("Adding (" + lowestPos[0] + ", " + lowestPos[1] + ") to path with value of " + lowestVal);
-		currPath.add(lowestPos);
-		return getPathToPlayerHelper(lowestPos, currPath);
-	}
-	
-	//creates a "dijkstra" map representing the distance from the player for every tile
-	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
-	public void calcPlayerDistMap(Vector2 playerPos) {
-		int playerCol = this.getTileCoordsFromPixels(playerPos)[0];
-		int playerRow = this.getTileCoordsFromPixels(playerPos)[1];
-		
-		//0. check if player tile position has changed. if it hasn't, we dont need to do anything.
-		if(playerDistMap[playerRow][playerCol] == 0) 
-			return;
-		
-		//1. fill map with maximum value except for at player position, where value = 0
-		for(int[] row : playerDistMap) 
-			Arrays.fill(row, numRows * numCols);
-		playerDistMap[playerRow][playerCol] = 0;
-
-		//TODO: IMPLEMENT RANGE FOR THIS ALGORITHM. CURRENTLY IT CREATES A DIJSKTRA MAP FOR ENTIRE MAP
-		//2. determine range of tiles to build map on - maximum size of map is 32x32, player must always be centered and we cant look outside map bounds
-		
-		
-		//3. iterate through map, checking for tiles where the lowest value neighbor is more than 1 less than the tile value. 
-		//	 for these tiles, set value to the neighbor value + 1. repeat until no more cases. ignore land tiles.
-		boolean done = false;
-		while(!done) {
-			boolean tileChanged = false;
-			
-			for(int row = 0; row < numRows; row++) {
-				for(int col = 0; col < numCols; col++) {
-					//only process ocean tiles
-					if(tileIdMap[row][col] == 0) {
-						//collect current value and neighbor coords - no diags
-						List<int[]> neighborCoords = Utils.getNeighborCoords(col, row, numCols, numRows, false, false);
-						int currValue = playerDistMap[row][col];
-						
-						//collect lowest neighbor value (ignoring neighbors with values greater than current
-						int lowestNeighborValue = currValue;
-						for(int[] neighbor : neighborCoords) {
-							if(neighbor != null) {
-								int currNeighborValue = playerDistMap[neighbor[1]][neighbor[0]];
-								if(currNeighborValue < lowestNeighborValue) {
-									lowestNeighborValue = currNeighborValue;
-								}
-							}
-						}
-						
-						//check if more than 1 below current value and set current appropriately.
-						if(lowestNeighborValue < currValue - 1) {
-							tileChanged = true;
-							playerDistMap[row][col] = lowestNeighborValue + 1;
-						}
-					}
-				}
-			}
-			
-			if(!tileChanged) {
-				done = true;
-			}
-		}
-		boolean debug = true;
-		if(debug) {
-			System.out.println("NEW MAP:");
-			for(int row = numRows - 1; row >= 0; row--) {
-				for(int col = 0; col < numCols; col++) {
-					int val = playerDistMap[row][col];
-					if(val < 10)
-						System.out.print("00" + val + ", ");
-					else if(val < 100)
-						System.out.print("0" + val + ", ");
-					else if(val < 1000)
-						System.out.print(val + ", ");
-				}
-				System.out.print('\n');
-			}
-		}
 	}
 	
 	//returns true if ship is not intersecting with shore
@@ -319,18 +216,30 @@ public class SpiceTraderMap {
 	
 	public void setLibgdxMap(TiledMap libgdxMap) {
 		this.libgdxMap = libgdxMap;
-		this.mapRenderer = new OrthogonalTiledMapRenderer(this.libgdxMap);
+		mapRenderer = new OrthogonalTiledMapRenderer(libgdxMap);
 	}
 
-	public Vector2 getSize() {
+	public Vector2 getSizePixels() {
 		return new Vector2(this.numCols * this.tileWidth, this.numRows * this.tileHeight);
+	}
+	
+	public Vector2 getSizeTiles() {
+		return new Vector2(this.numCols, this.numRows);
 	}
 	
 	public int[][] getBitmaskMap() {
 		return neighborBitmaskMap;
 	}
 	
+	public int[][] getTileIdMap() {
+		return tileIdMap;
+	}
+	
 	public Vector2 getTileSize() {
 		return new Vector2(tileWidth, tileHeight);
+	}
+	
+	public DijkstraMap getDijkstraMap() {
+		return playerDistMap;
 	}
 }

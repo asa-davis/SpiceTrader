@@ -22,7 +22,7 @@ public class Pirate extends Ship{
 	public void tick() {
 		super.tick();
 		
-		currPath = this.getMap().getPathToPlayer(this.getHitCenter());
+		currPath = this.getMap().getDijkstraMap().getPathToPlayer(this.getHitCenter());
 		//System.out.println(currPath.size() + " tiles from player.");
 	}
 	

@@ -53,8 +53,8 @@ public class EntityFactory {
 	}
 	
 	private Vector2 getRandShipPos(Sprite sprite) {
-		float xPos = (float) Utils.randInt(0, (int) (this.map.getSize().x - sprite.getWidth()));
-		float yPos = (float) Utils.randInt(0, (int) (this.map.getSize().y - sprite.getHeight()));
+		float xPos = (float) Utils.randInt(0, (int) (this.map.getSizePixels().x - sprite.getWidth()));
+		float yPos = (float) Utils.randInt(0, (int) (this.map.getSizePixels().y - sprite.getHeight()));
 		return new Vector2(xPos, yPos);
 	}
 }

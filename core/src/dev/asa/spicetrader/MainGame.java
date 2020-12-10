@@ -24,17 +24,18 @@ public class MainGame extends ApplicationAdapter {
 //	--GAME SETTINGS--
 	
 	final boolean SHOW_HITBOXES = true;
+	final boolean SHOW_GRID = true;
 	//fixes texture bleeding?
 	final boolean ROUND_CAMERA_POS = false;
 	final int TILE_WIDTH = 16;
 	final int TILE_HEIGHT = 16;
-	final float ZOOM_LEVEL = 3;
+	final float ZOOM_LEVEL = 2;
 	//map settings
 	final int MAP_SIZE = 32;//use even numbers plz - greater than 32
 	final int SMOOTHING_ITERATIONS = 5;
 	final int SEA_LEVEL_OFFSET = 2;
-	final int NUM_VILLAGES = 2;
-	final int NUM_PIRATES = 5;
+	final int NUM_VILLAGES = 0;
+	final int NUM_PIRATES = 10;
 
 
 //	--GAME VARIABLES--
@@ -143,7 +144,7 @@ public class MainGame extends ApplicationAdapter {
 		camera.update();
 		
 		//render all game objects
-		map.render(camera, SHOW_HITBOXES);
+		map.render(camera, SHOW_HITBOXES, SHOW_GRID);
 		entManager.render(batch, camera, SHOW_HITBOXES);
 		menuManager.draw(batch);
 	}
