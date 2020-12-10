@@ -23,19 +23,19 @@ public class MainGame extends ApplicationAdapter {
 	
 //	--GAME SETTINGS--
 	
-	final boolean SHOW_HITBOXES = true;
-	final boolean SHOW_GRID = true;
+	static final boolean SHOW_HITBOXES = true;
+	static final boolean SHOW_GRID = true;
 	//fixes texture bleeding?
-	final boolean ROUND_CAMERA_POS = false;
-	final int TILE_WIDTH = 16;
-	final int TILE_HEIGHT = 16;
-	final float ZOOM_LEVEL = 2;
+	static final boolean ROUND_CAMERA_POS = false;
+	static final int TILE_WIDTH = 16;
+	static final int TILE_HEIGHT = 16;
+	static final float ZOOM_LEVEL = 2;
 	//map settings
-	final int MAP_SIZE = 32;//use even numbers plz - greater than 32
-	final int SMOOTHING_ITERATIONS = 5;
-	final int SEA_LEVEL_OFFSET = 2;
-	final int NUM_VILLAGES = 0;
-	final int NUM_PIRATES = 10;
+	static final int MAP_SIZE = 32;//use even numbers plz - greater than 32
+	static final int SMOOTHING_ITERATIONS = 5;
+	static final int SEA_LEVEL_OFFSET = 2;
+	static final int NUM_VILLAGES = 0;
+	static final int NUM_PIRATES = 10;
 
 
 //	--GAME VARIABLES--
