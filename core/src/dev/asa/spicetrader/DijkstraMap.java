@@ -21,13 +21,8 @@ public class DijkstraMap {
 		this.windowSize = (windowExtensionDist * 2) + 1;
 		this.map = map;
 		
-		//instantiate map matrix and fill with max value
+		//instantiate map matrix
 		dijkstraMap = new int[windowSize][windowSize];
-		for(int[] row : dijkstraMap) 
-			Arrays.fill(row, windowSize * windowSize);
-		
-		//instantiate player tile position
-		Vector2 playerTilePos = new Vector2(-1, -1);
 	}
 	
 	//creates a "dijkstra" map representing the distance from the player for every tile
