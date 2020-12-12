@@ -166,15 +166,22 @@ public class DijkstraMap {
 		int lowestVal = currVal;
 		int[] lowestPos = currPos;
 		
+		boolean foundPath = false;
 		for(int[] neighborPos : neighbors) {
 			if(neighborPos != null) {
 				int neighborVal = dijkstraMap[neighborPos[1]][neighborPos[0]];
 				if(neighborVal < lowestVal) {
 					lowestPos = neighborPos;
 					lowestVal = neighborVal;
+					foundPath = true;
 				}
 			}
 		}
+		
+		//check for no valid path forward
+		if(!foundPath) 
+			return currPath;
+		
 		
 		currPath.add(lowestPos);
 		return getPathToPlayerHelper(lowestPos, currPath);
