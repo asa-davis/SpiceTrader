@@ -29,13 +29,13 @@ public class MainGame extends ApplicationAdapter {
 	static final boolean ROUND_CAMERA_POS = false;
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;
-	static final float ZOOM_LEVEL = 2;
+	static final float ZOOM_LEVEL = 3;
 	//map settings
-	static final int MAP_SIZE = 32;//use even numbers plz - greater than 32
+	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
-	static final int NUM_VILLAGES = 0;
-	static final int NUM_PIRATES = 10;
+	static final int NUM_VILLAGES = 4;
+	static final int NUM_PIRATES = 30;
 
 
 //	--GAME VARIABLES--

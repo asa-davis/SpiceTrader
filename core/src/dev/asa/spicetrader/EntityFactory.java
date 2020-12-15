@@ -42,7 +42,7 @@ public class EntityFactory {
 		List<Pirate> pirates = new ArrayList<Pirate>();
 		for(int i = 0; i < numPirates; i++) {
 			Sprite pirateSprite = atlas.createSprite("ships/pirate");
-			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 1, 0.05f, 1, 0);
+			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 0);
 			while(!this.map.validShipPosition(p)) {
 				p.setPosition(this.getRandShipPos(pirateSprite));
 			}

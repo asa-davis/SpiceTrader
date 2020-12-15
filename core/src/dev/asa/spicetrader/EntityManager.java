@@ -75,6 +75,8 @@ public class EntityManager {
 		Vector2 playerPos = player.getHitCenter();
 		camera.position.x = playerPos.x;
 		camera.position.y = playerPos.y;
+		//drunk mode
+		//camera.rotate(1, 0, 0, 1);
 		
 		//process collisions
 		this.processCollisions();

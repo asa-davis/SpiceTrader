@@ -27,6 +27,7 @@ public class DijkstraMap {
 	
 	//creates a "dijkstra" map representing the distance from the player for every tile
 	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
+	//this is nice because all pirates can share one copy of this map for chasing the player
 	public void calcPlayerDistMap(Vector2 playerPixPos) {
 		//0. calculate new player tile position on actual map. if unchanged, we dont do anything
 		Vector2 newPlayerTilePos = new Vector2(map.getTileCoordsFromPixels(playerPixPos)[0], map.getTileCoordsFromPixels(playerPixPos)[1]);
@@ -69,7 +70,7 @@ public class DijkstraMap {
 						inBounds = false;
 
 					
-					if(inBounds && map.getTileIdMap()[actualRow][actualCol] == 0) {
+					if(inBounds && map.getTileId(new int[] {actualCol, actualRow}) == 0) {
 						//collect current value and neighbor coords - no diags
 						List<int[]> neighborCoords = Utils.getNeighborCoords(col, row, windowSize, windowSize, false, false);
 						int currValue = dijkstraMap[row][col];
@@ -133,8 +134,7 @@ public class DijkstraMap {
 			return path;
 		
 		//change position into coordinates relative to window
-		currPos[0] -= origin.x;
-		currPos[1] -= origin.y;
+		toDijkstraWindowCoords(currPos);
 		
 		//generate path of tile coords
 		List<int[]> tilePath = new ArrayList<int[]>();
@@ -143,8 +143,7 @@ public class DijkstraMap {
 		
 		//turn tile path back into coords relative to actual map
 		for(int[] tile : tilePath) {
-			tile[0] += origin.x;
-			tile[1] += origin.y;
+			toMapCoords(tile);
 		}
 		
 		//turn tile coords path into pixel path where each point is center of tile
@@ -166,11 +165,12 @@ public class DijkstraMap {
 		int lowestVal = currVal;
 		int[] lowestPos = currPos;
 		
+		//iterate through neighbors and look for tiles with lower weights than current
 		boolean foundPath = false;
 		for(int[] neighborPos : neighbors) {
 			if(neighborPos != null) {
 				int neighborVal = dijkstraMap[neighborPos[1]][neighborPos[0]];
-				if(neighborVal < lowestVal) {
+				if(neighborVal < lowestVal && validMove(currPos, neighborPos)) {
 					lowestPos = neighborPos;
 					lowestVal = neighborVal;
 					foundPath = true;
@@ -178,12 +178,49 @@ public class DijkstraMap {
 			}
 		}
 		
-		//check for no valid path forward
+		//check for no valid path forward - when no neighbors have lower path than current
 		if(!foundPath) 
 			return currPath;
 		
 		
 		currPath.add(lowestPos);
 		return getPathToPlayerHelper(lowestPos, currPath);
+	}
+	
+	//AVOID DIAGONALS THAT CUT CORNERS ON LAND - THESE MAKE PIRATES GET STUCK
+	//ex: If a pirate was on 5, the lowest neighbor would be 3. but this would get the pirate stuck. so when moving diagonally, we must check for shared land
+	//
+	//			1P12
+	//			###3
+	//			7654
+	
+	private boolean validMove(int[] curr, int[] next) {
+		toMapCoords(next);
+		toMapCoords(curr);
+		
+		//diag check
+		if(curr[0] != next[0] && curr[1] != next[1]) { 
+			int[] sharedNeighbor1 = {curr[0], next[1]};
+			int[] sharedNeighbor2 = {next[0], curr[1]};
+			//neighbor check
+			if(map.getTileId(sharedNeighbor1) == 1 || map.getTileId(sharedNeighbor2) == 1) {
+				toDijkstraWindowCoords(curr);
+				toDijkstraWindowCoords(next);
+				return false;
+			}
+		}
+		toDijkstraWindowCoords(curr);
+		toDijkstraWindowCoords(next);
+		return true;
+	}
+	
+	private void toMapCoords(int[] tile) {
+		tile[0] += origin.x;
+		tile[1] += origin.y;
+	}
+	
+	private void toDijkstraWindowCoords(int[] tile) {
+		tile[0] -= origin.x;
+		tile[1] -= origin.y;
 	}
 }

@@ -78,19 +78,7 @@ public class SpiceTraderMap {
 		this.mapRenderer.render();
 		
 		//for debugging
-		
-		//draw hitboxes of tiles with boats near them
-		if(showHitboxes) {
-			hitboxRenderer.setProjectionMatrix(camera.combined);
-			hitboxRenderer.begin(ShapeType.Line);
-			
-			hitboxRenderer.setColor(Color.RED);
-			for(Polygon tileHitbox : potentialCollisions) 
-				hitboxRenderer.polygon(tileHitbox.getVertices());
-			
-			hitboxRenderer.end();
-		}
-		
+				
 		//draw grid over all tiles
 		if(showGrid) {
 			hitboxRenderer.setProjectionMatrix(camera.combined);
@@ -101,6 +89,18 @@ public class SpiceTraderMap {
 				hitboxRenderer.line(new Vector2(col * tileWidth, 0), new Vector2(col * tileWidth, this.getSizePixels().y));
 			for(int row = 0; row <= numRows; row++)
 				hitboxRenderer.line(new Vector2(0, row * tileHeight), new Vector2(this.getSizePixels().x, row * tileHeight));
+			
+			hitboxRenderer.end();
+		}
+		
+		//draw hitboxes of tiles with boats near them
+		if(showHitboxes) {
+			hitboxRenderer.setProjectionMatrix(camera.combined);
+			hitboxRenderer.begin(ShapeType.Line);
+			
+			hitboxRenderer.setColor(Color.RED);
+			for(Polygon tileHitbox : potentialCollisions) 
+				hitboxRenderer.polygon(tileHitbox.getVertices());
 			
 			hitboxRenderer.end();
 		}
@@ -231,8 +231,8 @@ public class SpiceTraderMap {
 		return neighborBitmaskMap;
 	}
 	
-	public int[][] getTileIdMap() {
-		return tileIdMap;
+	public int getTileId(int[] tile) {
+		return tileIdMap[tile[1]][tile[0]];
 	}
 	
 	public Vector2 getTileSize() {
