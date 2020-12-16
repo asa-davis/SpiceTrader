@@ -20,7 +20,7 @@ public class Utils {
 	
 	//i made this function because i kept having to fetch all the neighbors for a tile and check if they were in bounds.
 	//returns a list containing vectors representing the coords for neighboring tiles.
-	//out of bounds tiles will be NULL
+	//out of bounds tiles will be NULL - this is bad practice and really they should just not be part of the list but well here we are.
 	//if includeCurrTile is true, the neighbors are ordered in the list like this:
 	//	0|1|2
 	//	-----
@@ -32,9 +32,9 @@ public class Utils {
 	//	-----
 	//	3|x|4
 	//	-----
-	//	5|6|7
-	public static List<Vector2> getNeighborCoords(int x, int y, int numCols, int numRows, boolean includeCurrTile) {
-		List<Vector2> neighbors = new ArrayList<Vector2>();
+	//	5|6|7	
+	public static List<int[]> getNeighborCoords(int x, int y, int numCols, int numRows, boolean includeCurrTile, boolean includeDiag) {
+		List<int[]> neighbors = new ArrayList<int[]>();
 		int neighborY;
 		int neighborX;
 		for(int yShift = 1; yShift >= -1; yShift--) {
@@ -43,14 +43,30 @@ public class Utils {
 				neighborX = x + xShift;
 				//check for out of bounds
 				if(neighborY >= 0 && neighborY < numRows && neighborX >= 0 && neighborX < numCols) {
-					neighbors.add(new Vector2(neighborX, neighborY));
+					neighbors.add(new int[] {neighborX, neighborY});
 				} else {
 					neighbors.add(null);
 				}
 			}
 		}
+		
+		//yikes
 		if(!includeCurrTile)
 			neighbors.remove(4);
+		
+		if(!includeDiag) {
+			neighbors.remove(0);
+			neighbors.remove(1);
+			if(!includeCurrTile) {
+				neighbors.remove(3);
+				neighbors.remove(4);
+			}
+			else {
+				neighbors.remove(4);
+				neighbors.remove(5);
+			}
+
+		}
 		return neighbors;
 	}
 	

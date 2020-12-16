@@ -29,7 +29,7 @@ public class EntityFactory {
 			playerSprites[i] = new Sprite(playerSpriteTextures.get(i));
 		
 		//calculate player start position
-		Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2), screenCenter.y - (playerSprites[0].getHeight() / 2));
+		Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2) + 3, screenCenter.y - (playerSprites[0].getHeight() / 2) + 3);
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
 		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
 		
@@ -42,7 +42,7 @@ public class EntityFactory {
 		List<Pirate> pirates = new ArrayList<Pirate>();
 		for(int i = 0; i < numPirates; i++) {
 			Sprite pirateSprite = atlas.createSprite("ships/pirate");
-			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 1, 0.05f, 1, 0);
+			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 0);
 			while(!this.map.validShipPosition(p)) {
 				p.setPosition(this.getRandShipPos(pirateSprite));
 			}
@@ -53,8 +53,8 @@ public class EntityFactory {
 	}
 	
 	private Vector2 getRandShipPos(Sprite sprite) {
-		float xPos = (float) Utils.randInt(0, (int) (this.map.getSize().x - sprite.getWidth()));
-		float yPos = (float) Utils.randInt(0, (int) (this.map.getSize().y - sprite.getHeight()));
+		float xPos = (float) Utils.randInt(0, (int) (this.map.getSizePixels().x - sprite.getWidth()));
+		float yPos = (float) Utils.randInt(0, (int) (this.map.getSizePixels().y - sprite.getHeight()));
 		return new Vector2(xPos, yPos);
 	}
 }

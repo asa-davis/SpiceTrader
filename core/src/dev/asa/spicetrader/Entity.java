@@ -21,8 +21,6 @@ public abstract class Entity {
 	private Polygon hitbox;
 	private Vector2 hitCenter;
 	private Sprite sprite;
-	private SpiceTraderMap map;
-	
 	
 	public Entity(Vector2 pos, Sprite sprite) {
 		this.exists = true;

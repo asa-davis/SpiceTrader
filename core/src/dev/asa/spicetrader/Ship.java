@@ -40,7 +40,13 @@ public abstract class Ship extends Entity {
 	public void tick() {
 		//handle acceleration behavior
 		this.move();
-		if(currSpeed > 0) currSpeed -= decel;
+		if(currSpeed > 0) {
+			currSpeed -= decel;
+			if(currSpeed <= 0) {
+				currSpeed = 0;
+				inReverse = false;
+			}
+		}
 		
 		//handle red shading on strike
 		if(this.strikeCooldown > 0) {
@@ -66,13 +72,10 @@ public abstract class Ship extends Entity {
 	}
 	
 	public void accelBackward() {
-		System.out.println("inside accelBackward");
-		System.out.println("In reverse: " + inReverse);
 		if(inReverse) {
 			if (currSpeed < maxSpeed) currSpeed += accel;
 		}
 		else {
-
 			if(currSpeed > 0) currSpeed -= accel;
 			else inReverse = true;
 		}
@@ -101,29 +104,41 @@ public abstract class Ship extends Entity {
 	}
 	
 	public void turnRight() {
-		if(!inReverse)
-			this.updateRotation(-1 * rotationSpeed);
-		else
-			this.updateRotation(rotationSpeed);
+		if(!inReverse) 
+			direction -= rotationSpeed;
+		else 
+			direction += rotationSpeed;
+		
+		this.updateRotation();
 		
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (rotationSpeed + 1);
 		while(!map.validShipPosition(this) && numMoves >= 0) {
-			this.updateRotation(1);
+			if(!inReverse) 
+				direction += 1;
+			else 
+				direction -= 1;
+			this.updateRotation();
 			numMoves--;
 		}
 	}
 	
 	public void turnLeft() {
 		if(!inReverse)
-			this.updateRotation(rotationSpeed);
+			direction += rotationSpeed;
 		else
-			this.updateRotation(-1 * rotationSpeed);
+			direction -= rotationSpeed;
+		
+		this.updateRotation();
 		
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (rotationSpeed + 1);
 		while(!map.validShipPosition(this) && numMoves >= 0) {
-			this.updateRotation(-1);
+			if(!inReverse) 
+				direction -= 1;
+			else 
+				direction += 1;
+			this.updateRotation();
 			numMoves--;
 		}
 	}
@@ -133,11 +148,24 @@ public abstract class Ship extends Entity {
 		this.strikeCooldown = 10;
 	}
 	
-	private void updateRotation(float turnAmount) {
-		direction = direction + turnAmount;
+	private void updateRotation() {
+		//maintain range 0 <= d <= 360
+		while(direction < 0)
+			direction += 360;
+		while(direction > 360)
+			direction -= 360;
 		
+		//System.out.println("" + direction);
 		this.getHitbox().setRotation(direction);
 		this.getSprite().setRotation(direction);
+	}
+	
+	public void setDirection(float d) {
+		//System.out.println("" + d);
+		direction = d;
+		
+		this.getHitbox().setRotation(d);
+		this.getSprite().setRotation(d);
 	}
 	
 	public static Polygon getShipHitbox(float spriteWidth, float spriteHeight, int xOffset) {
@@ -154,5 +182,13 @@ public abstract class Ship extends Entity {
 	
 	public float getDirection() {
 		return direction;
+	}
+	
+	public SpiceTraderMap getMap() {
+		return map;
+	}
+	
+	public float getCurrSpeed() {
+		return currSpeed;
 	}
  }

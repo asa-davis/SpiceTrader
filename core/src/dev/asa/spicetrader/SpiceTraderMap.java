@@ -1,6 +1,7 @@
 package dev.asa.spicetrader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -40,6 +41,8 @@ public class SpiceTraderMap {
 	private int[][] tileIdMap;
 	//this tells us for a particular tile, which of the neighboring tiles in the 8 directions are land. 
 	private int[][] neighborBitmaskMap;
+	//holds the distance to player from each tile location - used for pirate pathfinding
+	private DijkstraMap playerDistMap;
 	//libgdx objects holding the map in the form in which it can be rendered
 	private TiledMap libgdxMap;
 	private TiledMapRenderer mapRenderer;
@@ -55,6 +58,7 @@ public class SpiceTraderMap {
 		this.tileHeight = tileHeight;
 		
 		//for changing waves every x frames
+		this.atlas = atlas;
 		this.waveRecalcFreq = 60;
 		this.waveFreq = waveFreq;
 		this.frameCounter = 0;
@@ -64,18 +68,40 @@ public class SpiceTraderMap {
 		hitboxRenderer.setColor(Color.RED);
 		potentialCollisions = new ArrayList<Polygon>();
 		
-		this.atlas = atlas;
+		//for pirate pathfinding
+		playerDistMap = new DijkstraMap(8, this);
+		
 	}
 	
-	public void render(OrthographicCamera camera, boolean showHitboxes) {
+	public void render(OrthographicCamera camera, boolean showHitboxes, boolean showGrid) {
 		this.mapRenderer.setView(camera);
 		this.mapRenderer.render();
 		
+		//for debugging
+				
+		//draw grid over all tiles
+		if(showGrid) {
+			hitboxRenderer.setProjectionMatrix(camera.combined);
+			hitboxRenderer.begin(ShapeType.Line);
+			
+			hitboxRenderer.setColor(Color.WHITE);
+			for(int col = 0; col <= numCols; col++)
+				hitboxRenderer.line(new Vector2(col * tileWidth, 0), new Vector2(col * tileWidth, this.getSizePixels().y));
+			for(int row = 0; row <= numRows; row++)
+				hitboxRenderer.line(new Vector2(0, row * tileHeight), new Vector2(this.getSizePixels().x, row * tileHeight));
+			
+			hitboxRenderer.end();
+		}
+		
+		//draw hitboxes of tiles with boats near them
 		if(showHitboxes) {
 			hitboxRenderer.setProjectionMatrix(camera.combined);
 			hitboxRenderer.begin(ShapeType.Line);
+			
+			hitboxRenderer.setColor(Color.RED);
 			for(Polygon tileHitbox : potentialCollisions) 
-				this.hitboxRenderer.polygon(tileHitbox.getVertices());
+				hitboxRenderer.polygon(tileHitbox.getVertices());
+			
 			hitboxRenderer.end();
 		}
 	}
@@ -102,14 +128,14 @@ public class SpiceTraderMap {
 		Polygon shipHitbox = ship.getHitbox();
 		Vector2 shipCenter = ship.getHitCenter();
 		int[] currTile = this.getTileCoordsFromPixels(shipCenter);
-		List<Vector2> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true);
+		List<int[]> neighbors = Utils.getNeighborCoords(currTile[0], currTile[1], numCols, numRows, true, true);
 		
 		//gather all nearby tile hitboxes
 		List<Polygon> nearbyTiles = new ArrayList<Polygon>();
-		for(Vector2 tile : neighbors) {
-			if(tile != null && this.tileIdMap[(int) tile.y][(int) tile.x] != 0) {
-				float xOrigin = tile.x * this.tileWidth;
-				float yOrigin = tile.y * this.tileHeight;
+		for(int[] tile : neighbors) {
+			if(tile != null && this.tileIdMap[tile[1]][tile[0]] != 0) {
+				float xOrigin = tile[0] * this.tileWidth;
+				float yOrigin = tile[1] * this.tileHeight;
 				Polygon tileHitbox = new Polygon();
 				tileHitbox.setVertices(new float[] {xOrigin, yOrigin, xOrigin + 16, yOrigin, xOrigin + 16, yOrigin + 16, xOrigin, yOrigin + 16});
 				nearbyTiles.add(tileHitbox);
@@ -171,6 +197,9 @@ public class SpiceTraderMap {
 	public Vector2 getPixelCoordsFromTile(Vector2 tilePos) {
 		return new Vector2(tilePos.x * tileWidth, tilePos.y * tileHeight);
 	}
+	public Vector2 getPixelCoordsFromTile(int[] tileCoords) {
+		return new Vector2(tileCoords[0] * tileWidth, tileCoords[1] * tileHeight);
+	}
 	
 	//takes a position in pixels and returns the tile coordinates
 	public int[] getTileCoordsFromPixels(Vector2 pos) {
@@ -187,18 +216,30 @@ public class SpiceTraderMap {
 	
 	public void setLibgdxMap(TiledMap libgdxMap) {
 		this.libgdxMap = libgdxMap;
-		this.mapRenderer = new OrthogonalTiledMapRenderer(this.libgdxMap);
+		mapRenderer = new OrthogonalTiledMapRenderer(libgdxMap);
 	}
 
-	public Vector2 getSize() {
+	public Vector2 getSizePixels() {
 		return new Vector2(this.numCols * this.tileWidth, this.numRows * this.tileHeight);
+	}
+	
+	public Vector2 getSizeTiles() {
+		return new Vector2(this.numCols, this.numRows);
 	}
 	
 	public int[][] getBitmaskMap() {
 		return neighborBitmaskMap;
 	}
 	
+	public int getTileId(int[] tile) {
+		return tileIdMap[tile[1]][tile[0]];
+	}
+	
 	public Vector2 getTileSize() {
 		return new Vector2(tileWidth, tileHeight);
+	}
+	
+	public DijkstraMap getDijkstraMap() {
+		return playerDistMap;
 	}
 }

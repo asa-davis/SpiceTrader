@@ -23,16 +23,19 @@ public class MainGame extends ApplicationAdapter {
 	
 //	--GAME SETTINGS--
 	
-	final boolean SHOW_HITBOXES = true;
+	static final boolean SHOW_HITBOXES = true;
+	static final boolean SHOW_GRID = true;
 	//fixes texture bleeding?
-	final boolean ROUND_CAMERA_POS = false;
-	final int TILE_WIDTH = 16;
-	final int TILE_HEIGHT = 16;
-	final float ZOOM_LEVEL = 3;
+	static final boolean ROUND_CAMERA_POS = false;
+	static final int TILE_WIDTH = 16;
+	static final int TILE_HEIGHT = 16;
+	static final float ZOOM_LEVEL = 3;
 	//map settings
-	final int MAP_SIZE = 64;//use even numbers plz
-	final int SMOOTHING_ITERATIONS = 5;
-	final int SEA_LEVEL_OFFSET = 2;
+	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
+	static final int SMOOTHING_ITERATIONS = 5;
+	static final int SEA_LEVEL_OFFSET = 2;
+	static final int NUM_VILLAGES = 4;
+	static final int NUM_PIRATES = 30;
 
 
 //	--GAME VARIABLES--
@@ -101,13 +104,13 @@ public class MainGame extends ApplicationAdapter {
 		menuManager.setPlayer(player);
 		
 		//pirates
-		List<Pirate> pirates = entFactory.getRandomPirates(10);
+		List<Pirate> pirates = entFactory.getRandomPirates(NUM_PIRATES);
 		allEnts.addAll(pirates);
 		
 		//villages
 		VillageFactory villFac = new VillageFactory(map, atlas);
 		try {
-			List<Village> villages = villFac.getVillages(5);
+			List<Village> villages = villFac.getVillages(NUM_VILLAGES);
 			allEnts.addAll(villages);
 			map.addVillages(villages);
 		} catch (Exception e) {
@@ -123,6 +126,7 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -140,7 +144,7 @@ public class MainGame extends ApplicationAdapter {
 		camera.update();
 		
 		//render all game objects
-		map.render(camera, SHOW_HITBOXES);
+		map.render(camera, SHOW_HITBOXES, SHOW_GRID);
 		entManager.render(batch, camera, SHOW_HITBOXES);
 		menuManager.draw(batch);
 	}
