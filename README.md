@@ -1,10 +1,5 @@
-TODO (12/10/20):
-- implement pirate pathfinding (in progress)
-    - on pirate pathfinding, handle the case where there is no valid path
-    - add pirate ai to sail toward next waypoint 
-    - (optional)simplify path using Ramer–Douglas–Peucker algorithm
-    - track next waypoint in pirate class and check if it gets close enough in pirate tick()
-    - keep pirates from colliding somehow
+TODO (12/15/20):
+- generalize dijkstra map methods so pirates can have arbitrary destinations for wandering behavior
 - extend Menu/MenuManager to implement hud/inventory menus
 - implement trading 
     - add datastructures to Village to hold current trade, inventory, etc.
@@ -18,4 +13,4 @@ TODO (12/10/20):
 
 - Fixes/Refactoring:
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
-    - fix weird collision bug when in reverse
+    - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
