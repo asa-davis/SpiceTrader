@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 public class Pirate extends Ship{
 	private List<Vector2> currPath;
 	private static final float initMaxSpeed = 0.5f;
-	private static final float initAccel = 0.02f;
-	private static final float initRotationSpeed = 1;
+	private static final float initAccel = 0.03f;
+	private static final float initRotationSpeed = 2;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
 		super(pos, sprite, map, initMaxSpeed, initAccel, initRotationSpeed, initialDirection);
@@ -56,7 +56,7 @@ public class Pirate extends Ship{
 		
 		//turn to correct direction 
 		float diff = directionToPoint - this.getDirection();
-		if(Math.abs(diff) > 1) {
+		if(Math.abs(diff) > 5) {
 			if(diff < 0)
 				diff += 360;
 			if(diff > 180)

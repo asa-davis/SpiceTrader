@@ -76,7 +76,6 @@ public abstract class Ship extends Entity {
 			if (currSpeed < maxSpeed) currSpeed += accel;
 		}
 		else {
-
 			if(currSpeed > 0) currSpeed -= accel;
 			else inReverse = true;
 		}
@@ -107,7 +106,6 @@ public abstract class Ship extends Entity {
 	public void turnRight() {
 		if(!inReverse) 
 			direction -= rotationSpeed;
-		
 		else 
 			direction += rotationSpeed;
 		
@@ -116,7 +114,10 @@ public abstract class Ship extends Entity {
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (rotationSpeed + 1);
 		while(!map.validShipPosition(this) && numMoves >= 0) {
-			direction += 1;
+			if(!inReverse) 
+				direction += 1;
+			else 
+				direction -= 1;
 			this.updateRotation();
 			numMoves--;
 		}
@@ -133,7 +134,10 @@ public abstract class Ship extends Entity {
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (rotationSpeed + 1);
 		while(!map.validShipPosition(this) && numMoves >= 0) {
-			direction -= 1;
+			if(!inReverse) 
+				direction -= 1;
+			else 
+				direction += 1;
 			this.updateRotation();
 			numMoves--;
 		}
