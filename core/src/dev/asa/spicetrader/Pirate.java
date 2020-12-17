@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Pirate extends Ship{
 	private List<Vector2> currPath;
-	private static final float initMaxSpeed = 0.5f;
-	private static final float initAccel = 0.03f;
-	private static final float initRotationSpeed = 2;
+	private static final float initMaxSpeed = 1.2f;
+	private static final float initAccel = 0.05f;
+	private static final float initRotationSpeed = 2.5f;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
 		super(pos, sprite, map, initMaxSpeed, initAccel, initRotationSpeed, initialDirection);

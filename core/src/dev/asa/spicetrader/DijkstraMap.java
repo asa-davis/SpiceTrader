@@ -15,10 +15,14 @@ public class DijkstraMap {
 	//holds the values for each tile in the map - 
 	int[][] dijkstraMap;
 	
-	public DijkstraMap(int windowExtensionDist, SpiceTraderMap map) {
-		//number of tiles the window extends left, right, up, down of player - ensures will always be odd sized, with player in exact center
-		//window extension dist of 16 means a 33x33 window with player centered at tile [16, 16]
-		this.windowSize = (windowExtensionDist * 2) + 1;
+	public DijkstraMap(int windowSize, SpiceTraderMap map) {
+		//window size must be odd so that player can be in very center
+		if(windowSize % 2 != 0)
+			this.windowSize = windowSize;
+		else
+			this.windowSize = windowSize - 1;
+		
+		
 		this.map = map;
 		
 		//instantiate map matrix

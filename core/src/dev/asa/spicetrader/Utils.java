@@ -79,8 +79,8 @@ public class Utils {
 		float valRoundedOff = (int)val;
 		double nextThresh = valRoundedOff;
 		double lastThresh = valRoundedOff;
-		for(int i = 0; i < fraction; i++) {
-			nextThresh += (1/fraction);
+		for(int i = 0; i < 1/fraction; i++) {
+			nextThresh += fraction;
 			if(val < nextThresh) {
 				double split = lastThresh + ((nextThresh - lastThresh)/2);
 				if(val < split)
@@ -101,13 +101,20 @@ public class Utils {
 		BitmapFont[] fonts = new BitmapFont[3];
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Perfect DOS VGA 437 Win.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 16;
 		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'()>?";
-		for(int i = 0; i < 3; i++) {
-			fonts[i] = generator.generateFont(parameter);
-			fonts[i].setColor(Color.DARK_GRAY);
-			parameter.size *= 2;
-		}
+		
+		parameter.size = 24;
+		fonts[0] = generator.generateFont(parameter);
+		fonts[0].setColor(Color.DARK_GRAY);
+		
+		parameter.size = 32;
+		fonts[1] = generator.generateFont(parameter);
+		fonts[1].setColor(Color.DARK_GRAY);
+		
+		parameter.size = 48;
+		fonts[2] = generator.generateFont(parameter);
+		fonts[2].setColor(Color.DARK_GRAY);
+		
 		generator.dispose();
 		return fonts;
 	}
