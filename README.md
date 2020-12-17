@@ -19,3 +19,4 @@ TODO (12/16/20)
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
     - generalize dijkstra map methods
+    - fix bug where dead pirates board player in the time between when they take a hit and get deleted
