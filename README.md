@@ -3,6 +3,7 @@ TODO (12/16/20)
     - pirate wandering (use dijkstra map class?)
     - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
     - hud/inventory menus (extend menu/menu manager)
+    - cooldown on cannons
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
