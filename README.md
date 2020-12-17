@@ -1,16 +1,21 @@
-TODO (12/15/20):
-- generalize dijkstra map methods so pirates can have arbitrary destinations for wandering behavior
-- extend Menu/MenuManager to implement hud/inventory menus
-- implement trading 
-    - add datastructures to Village to hold current trade, inventory, etc.
-    - implement execution of trades through DockedMenu
-- improve map hitboxes 
-    - use different rectangle/polygon based on neighbor bitmask instead of always 16x16 square
-- add falling off world death
-- work on starting area idea
-- work on upgrade mechanic
-- work on sea monster mechanic
+TODO (12/16/20):
+- Features to Add:
+    - pirate wandering (use dijkstra map class?)
+    - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
+    - hud/inventory menus (extend menu/menu manager)
+    - trading 
+        - expand on docked menu
+        - add datastructures to Village to hold current trade, inventory, etc.
+    - different map hitboxes for different tile types
+    - falling off world death
+    - starting area/upgrade shop
+    - sea monsters
+    - quest/winning the game
+    
+- Features to Investigate:
+    - have camera rotate when you turn
 
 - Fixes/Refactoring:
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
+    - generalize dijkstra map methods
