@@ -20,3 +20,4 @@ TODO (12/16/20)
     - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
     - generalize dijkstra map methods
     - fix bug where dead pirates board player in the time between when they take a hit and get deleted
+    - make buttons work on fullscreen/resize
