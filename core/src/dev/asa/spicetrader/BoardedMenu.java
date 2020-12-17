@@ -21,7 +21,7 @@ public class BoardedMenu extends Menu{
 		
 		//create restart button 
 		Array<AtlasRegion> restartButtonTextures = atlas.findRegions("ui/restart_button");
-		Vector2 restartButtonPos = new Vector2(this.getPos().x + ((this.getSize().x/2)- (restartButtonTextures.get(0).getRegionWidth()/2)), this.getPos().y + 32);
+		Vector2 restartButtonPos = new Vector2(this.getPos().x + ((this.getSize().x/2)- (restartButtonTextures.get(0).getRegionWidth()/2)), this.getPos().y + 22);
 		Button restartButton = new Button(restartButtonTextures, restartButtonPos);
 		restartButton.setOnClick(new OnClickListener(){
             @Override
@@ -55,7 +55,7 @@ public class BoardedMenu extends Menu{
 	
 	private void drawTitle(SpriteBatch batch, String title) {
 		this.getFont(1).setColor(Color.FIREBRICK);
-		this.getFont(1).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 16, this.getSize().x, Align.center, true);
+		this.getFont(1).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 24, this.getSize().x, Align.center, true);
 	}
 	
 	private void drawBody(SpriteBatch batch, String body) {

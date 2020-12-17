@@ -69,7 +69,7 @@ public class SpiceTraderMap {
 		potentialCollisions = new ArrayList<Polygon>();
 		
 		//for pirate pathfinding
-		playerDistMap = new DijkstraMap(8, this);
+		playerDistMap = new DijkstraMap(33, this);
 		
 	}
 	

@@ -29,7 +29,7 @@ public class Player extends Ship {
 	private Village dockable;
 	
 	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
-		super(pos, playerSprites[Player.INIT_SPRITE], map, 3, 0.05f, 2, 0);
+		super(pos, playerSprites[Player.INIT_SPRITE], map, 1.4f, 0.05f, 2, 0);
 		this.playerSprites = playerSprites;
 		this.cannonBallSprite = cannonBallSprite;
 		this.firingLeftSpriteCooldown = 0;

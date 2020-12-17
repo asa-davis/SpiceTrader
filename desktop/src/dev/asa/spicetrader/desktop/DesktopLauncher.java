@@ -8,15 +8,17 @@ import dev.asa.spicetrader.MainGame;
 
 public class DesktopLauncher {
 	
-	static final float SCREEN_SIZE_RATIO = 3/4f;
+	//static final float SCREEN_SIZE_RATIO = 3/4f;
 	
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
+
+		
 		config.title = "Spice Trader";
-		config.width = (int)(1920 * SCREEN_SIZE_RATIO);
-		config.height = (int)(1080 * SCREEN_SIZE_RATIO);
-		config.resizable = true;
+		//config.width = 1920;
+		//config.height = (int)(1080 * SCREEN_SIZE_RATIO);
+		config.resizable = false;
 		
 		// Pack all textures into a 'texture atlas'
 		TexturePacker.Settings sets = new TexturePacker.Settings();

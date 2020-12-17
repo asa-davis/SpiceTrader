@@ -21,12 +21,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class MainGame extends ApplicationAdapter {
 	
-//	--GAME SETTINGS--
+//	--GAME SETTINGS--w
 	
-	static final boolean SHOW_HITBOXES = true;
-	static final boolean SHOW_GRID = true;
+	static final boolean SHOW_HITBOXES = false;
+	static final boolean SHOW_GRID = false;
 	//fixes texture bleeding?
-	static final boolean ROUND_CAMERA_POS = false;
+	static final boolean ROUND_CAMERA_POS = true;
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;
 	static final float ZOOM_LEVEL = 3;
@@ -34,7 +34,7 @@ public class MainGame extends ApplicationAdapter {
 	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
-	static final int NUM_VILLAGES = 4;
+	static final int NUM_VILLAGES = 10;
 	static final int NUM_PIRATES = 30;
 
 
@@ -62,6 +62,8 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
+		
 		paused = false;
 		
 		screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -138,8 +140,8 @@ public class MainGame extends ApplicationAdapter {
 		menuManager.tick();
 		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
 		if(ROUND_CAMERA_POS) {
-			camera.position.x = Utils.roundToNearestFraction(camera.position.x, ZOOM_LEVEL);
-			camera.position.y = Utils.roundToNearestFraction(camera.position.y, ZOOM_LEVEL);
+			camera.position.x = Utils.roundToNearestFraction(camera.position.x, 1/ZOOM_LEVEL);
+			camera.position.y = Utils.roundToNearestFraction(camera.position.y, 1/ZOOM_LEVEL);
 		}
 		camera.update();
 		

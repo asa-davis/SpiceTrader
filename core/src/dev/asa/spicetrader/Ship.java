@@ -30,7 +30,7 @@ public abstract class Ship extends Entity {
 		this.getHitbox().setRotation(direction);
 		this.getSprite().setRotation(direction);
 		
-		hull = 10;
+		hull = 2;
 		strikeCooldown = 0;
 		currSpeed = 0;
 		inReverse = false;
