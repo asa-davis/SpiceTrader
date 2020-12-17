@@ -17,6 +17,7 @@ TODO (12/16/20)
     - have camera rotate when you turn
 
 - Fixes/Refactoring
+    - don't let pirates spawn next to beach tiles, they get stuck
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
     - generalize dijkstra map methods
