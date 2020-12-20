@@ -13,23 +13,27 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
-//this will help us 
+//this class manages resources like textures and screen size that menus and menu factory need
+//it also takes care of running the menus each tick
+
 public class MenuManager {
-	MainGame game;
-	Matrix4 screenMatrix;
-	List<Menu> activeMenus;
-	List<Menu> menusToClose;
-	BoardedMenu boardedMenu;
-	BitmapFont[] fonts;
-	Player player;
-	Vector2 screenSize;
-	TextureAtlas atlas;
+	private MainGame game;
+	private Matrix4 screenMatrix;
+	private List<Menu> activeMenus;
+	private List<Menu> menusToClose;
+	private BitmapFont[] fonts;
+	private Player player;
+	private Vector2 screenSize;
+	private TextureAtlas atlas;
 	
-	public MenuManager(TextureAtlas atlas, Vector2 screenSize, MainGame game, BitmapFont[] fonts) {
+	//menus need access to these
+	
+	public MenuManager(TextureAtlas atlas, Vector2 screenSize, MainGame game, BitmapFont[] fonts, Player player) {
 		this.game = game;
 		this.fonts = fonts;
 		this.screenSize = screenSize;
 		this.atlas = atlas;
+		this.player = player;
 		
 		screenMatrix = new Matrix4(new Matrix4().setToOrtho2D(0, 0, screenSize.x, screenSize.y));
 		activeMenus = new ArrayList<Menu>();
@@ -44,10 +48,18 @@ public class MenuManager {
 		}
 		menusToClose.clear();
 		
-		if(this.gameShouldPause())
+		if(gameShouldPause())
 			game.pause();
 		else
 			game.resume();
+	}
+	
+	public void addMenu(Menu m) {
+		activeMenus.add(m);
+	}
+	
+	public void closeMenu(Menu m) {
+		menusToClose.add(m);
 	}
 	
 	private boolean gameShouldPause() {
@@ -59,26 +71,10 @@ public class MenuManager {
 		return false;
 	}
 	
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-	
-	public void showBoardedMenu() {
-		activeMenus.add(new BoardedMenu(this, screenSize, atlas, fonts, game));
-	}
-	
-	public void showDockedMenu(Village v) {
-		activeMenus.add(new DockedMenu(this, screenSize, atlas, fonts, v));
-	}
-	
-	public void closeMenu(Menu m) {
-		menusToClose.add(m);
-	}
-	
 	public void draw(SpriteBatch batch) {
 		batch.setProjectionMatrix(screenMatrix);
 		batch.begin();
-		this.drawDockingPrompt(batch);
+		drawDockingPrompt(batch);
 		for(Menu m : activeMenus) {
 			m.draw(batch);
 		}
@@ -96,5 +92,25 @@ public class MenuManager {
 			fonts[0].setColor(Color.WHITE);
 			fonts[0].draw(batch, "Press f to dock at " + player.getDockable().getName(), 0, 32, screenSize.x, Align.center, false);
 		}
+	}
+
+	public MainGame getGame() {
+		return game;
+	}
+	
+	public TextureAtlas getAtlas() {
+		return atlas;
+	}
+
+	public BitmapFont getFont(int i) {
+		return fonts[i];
+	}
+
+	public Vector2 getScreenSize() {
+		return screenSize;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 }

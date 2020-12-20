@@ -13,44 +13,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public abstract class Menu {
-	private Vector2 screenSize;
+	public MenuManager manager;
+	public boolean needsPause;
 	private Vector2 pos;
 	private AtlasRegion backgroundTexture;
-	private BitmapFont[] fonts;
 	private List<Button> buttons;
-	private MenuManager manager;
-	private TextureAtlas atlas;
-	public boolean needsPause;
 	
-	
-	public Menu(MenuManager manager, Vector2 screenSize, TextureAtlas atlas, BitmapFont[] fonts, boolean needsPause) {
+	public Menu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture, boolean needsPause) {
 		this.manager = manager;
-		this.screenSize = screenSize;
-		this.fonts = fonts;
-		this.atlas = atlas;
 		this.needsPause = needsPause;
-		
-		this.setBackground();
-		this.setPos();
+		this.pos = pos;
+		this.backgroundTexture = backgroundTexture;
 		
 		buttons = new ArrayList<Button>();
 	}
 	
-	//position depends on what kind of menu
-	protected abstract void setPos();
-	
-	//background texture depends on what kind of menu
-	protected abstract void setBackground();
-
-	protected Array<AtlasRegion> findRegions(String str) {
-		return atlas.findRegions(str);
-	}
-	
-	protected AtlasRegion findRegion(String str) {
-		return atlas.findRegion(str);
-	}
-	
-	protected void close() {
+	public void close() {
 		manager.closeMenu(this);
 	}
 	
@@ -75,23 +53,7 @@ public abstract class Menu {
 		return pos;
 	}
 	
-	public void setPos(Vector2 pos) {
-		this.pos = pos;
-	}
-	
-	public void setBackgroundTexture(AtlasRegion texture) {
-		backgroundTexture = texture;
-	}
-	
 	public Vector2 getSize() {
 		return new Vector2(backgroundTexture.getRegionWidth(), backgroundTexture.getRegionHeight());
-	}
-	
-	public Vector2 getScreenSize() {
-		return screenSize;
-	}
-	
-	public BitmapFont getFont(int i) {
-		return fonts[i];
 	}
 }

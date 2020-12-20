@@ -91,23 +91,20 @@ public class MainGame extends ApplicationAdapter {
 			Gdx.app.exit();
 		}
 		
-		
-		//menus
-		menuManager = new MenuManager(atlas, screenSize, this, fonts); 
-		
 		//Entities
-		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, camera);
-		entFactory = new EntityFactory(atlas, map, screenCenter);
 		List<Entity> allEnts = new ArrayList<Entity>();
 		
 		//player
-		Player player = entFactory.getPlayer();
+		Player player = (Player) EntityFactory.createEntity("Player", atlas, map, screenCenter);
 		allEnts.add(player);
-		menuManager.setPlayer(player);
 		
 		//pirates
-		List<Pirate> pirates = entFactory.getRandomPirates(NUM_PIRATES);
-		allEnts.addAll(pirates);
+		for(int i = 0; i < NUM_PIRATES; i++) {
+			allEnts.add(EntityFactory.createEntity("Pirate", atlas, map, screenCenter));
+		}
+		
+		//menus
+		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
 		
 		//villages
 		VillageFactory villFac = new VillageFactory(map, atlas);
@@ -120,6 +117,7 @@ public class MainGame extends ApplicationAdapter {
 			Gdx.app.exit();
 		}
 		
+		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, camera);
 		entManager.addAll(allEnts);
 		
 		//input
@@ -168,5 +166,9 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void resume() {
 		paused = false;
+	}
+
+	public Vector2 getScreenSize() {
+		return screenSize;
 	}
 }

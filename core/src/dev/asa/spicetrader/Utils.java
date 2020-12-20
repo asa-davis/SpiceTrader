@@ -7,6 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Vector2;
@@ -117,5 +118,11 @@ public class Utils {
 		
 		generator.dispose();
 		return fonts;
+	}
+	
+	public static Vector2 getRandShipPos(Sprite sprite, SpiceTraderMap map) {
+		float xPos = (float) Utils.randInt(0, (int) (map.getSizePixels().x - sprite.getWidth()));
+		float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
+		return new Vector2(xPos, yPos);
 	}
 }

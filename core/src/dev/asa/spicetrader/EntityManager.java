@@ -106,7 +106,8 @@ public class EntityManager {
 		for(Pirate p : allPirates) {
 			//1.
 			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				menuManager.showBoardedMenu();
+				Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
+				menuManager.addMenu(boarded);
 			}
 			//2.
 			for(CannonBall c : allCanBalls) {

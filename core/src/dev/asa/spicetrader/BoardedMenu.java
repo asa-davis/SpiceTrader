@@ -16,50 +16,38 @@ import com.badlogic.gdx.utils.Array;
 
 public class BoardedMenu extends Menu{
 
-	public BoardedMenu(MenuManager manager, Vector2 screenSize, TextureAtlas atlas, BitmapFont[] fonts, final MainGame game) {
-		super(manager, screenSize, atlas, fonts, true);
+	public BoardedMenu(final MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture) {
+		super(manager, pos, backgroundTexture, true);
 		
 		//create restart button 
-		Array<AtlasRegion> restartButtonTextures = atlas.findRegions("ui/restart_button");
+		Array<AtlasRegion> restartButtonTextures = manager.getAtlas().findRegions("ui/restart_button");
 		Vector2 restartButtonPos = new Vector2(this.getPos().x + ((this.getSize().x/2)- (restartButtonTextures.get(0).getRegionWidth()/2)), this.getPos().y + 22);
 		Button restartButton = new Button(restartButtonTextures, restartButtonPos);
 		restartButton.setOnClick(new OnClickListener(){
             @Override
             public void onClick() {
-                game.create();
+                manager.getGame().create();
             }
 		});
 		
 		this.addButton(restartButton);
 	}
-
-	@Override
-	protected void setPos() {
-		int topGap = 128;
-		float x = (this.getScreenSize().x / 2) - (this.getSize().x / 2);
-		float y = this.getScreenSize().y - this.getSize().y - topGap;
-		this.setPos(new Vector2(x, y));
-	}
-	
-	@Override
-	protected void setBackground() {
-		this.setBackgroundTexture(this.findRegion("ui/game_over_menu_background"));
-	}
 	
 	@Override
 	public void draw(SpriteBatch batch) {
 		super.draw(batch);
-		this.drawTitle(batch, "Your ship has been boarded!");
-		this.drawBody(batch, "Pirates have overrun your vessel, murdering you and your crew and looting your cargo. This marks the end of your voyage.");
+		drawTitle(batch, "Your ship has been boarded!");
+		drawBody(batch, "Pirates have overrun your vessel, murdering you and your crew and looting your cargo. This marks the end of your voyage.");
 	}
 	
+	//TEMPORARY: menu contents will drastically change in future
 	private void drawTitle(SpriteBatch batch, String title) {
-		this.getFont(1).setColor(Color.FIREBRICK);
-		this.getFont(1).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 24, this.getSize().x, Align.center, true);
+		manager.getFont(1).setColor(Color.FIREBRICK);
+		manager.getFont(1).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 24, this.getSize().x, Align.center, true);
 	}
 	
 	private void drawBody(SpriteBatch batch, String body) {
-		this.getFont(0).setColor(Color.DARK_GRAY);
-		this.getFont(0).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
+		manager.getFont(0).setColor(Color.DARK_GRAY);
+		manager.getFont(0).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
 	}
 }
