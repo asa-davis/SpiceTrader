@@ -7,6 +7,7 @@ TODO (12/19/20)
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
+        - unique names for villages, visual representation of what they trade
     - different map hitboxes for different tile types
     - falling off world death
     - starting area/upgrade shop
