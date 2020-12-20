@@ -42,12 +42,12 @@ public class BoardedMenu extends Menu{
 	
 	//TEMPORARY: menu contents will drastically change in future
 	private void drawTitle(SpriteBatch batch, String title) {
-		manager.getFont(1).setColor(Color.FIREBRICK);
-		manager.getFont(1).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 24, this.getSize().x, Align.center, true);
+		manager.getFont(2).setColor(Color.FIREBRICK);
+		manager.getFont(2).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 24, this.getSize().x, Align.center, true);
 	}
 	
 	private void drawBody(SpriteBatch batch, String body) {
-		manager.getFont(0).setColor(Color.DARK_GRAY);
-		manager.getFont(0).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
+		manager.getFont(1).setColor(Color.DARK_GRAY);
+		manager.getFont(1).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
 	}
 }

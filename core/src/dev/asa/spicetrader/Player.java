@@ -8,6 +8,14 @@ import com.badlogic.gdx.utils.Array;
 
 public class Player extends Ship {
 	
+	private int currHull = 3;
+	private int maxHull = 6;
+	private int currCargo = 2;
+	private int maxCargo = 4;
+	
+	private int gold = 0;
+	private int cannonBalls = 0;
+	
 	//player playerSprites:
 	//	0 = base ship
 	//	1 = base ship w/ cannons
@@ -15,9 +23,9 @@ public class Player extends Ship {
 	//	3 = right cannon firing
 	//	4 = both cannons firing
 	private Sprite[] playerSprites;
-	Sprite cannonBallSprite;
-	private static int INIT_SPRITE = 1;
-	private static int FIRING_SPRITE_COOLDOWN = 10; 
+	private Sprite cannonBallSprite;
+	private final static int INIT_SPRITE = 1;
+	private final static int FIRING_SPRITE_COOLDOWN = 10; 
 	
 	//These variables make sure the proper sprite is displayed after firing for the proper number of frames
 	private int firingLeftSpriteCooldown;
@@ -120,5 +128,29 @@ public class Player extends Ship {
 	
 	public Village getDockable() {
 		return dockable;
+	}
+
+	public int getCurrHull() {
+		return currHull;
+	}
+
+	public int getMaxHull() {
+		return maxHull;
+	}
+
+	public int getCurrCargo() {
+		return currCargo;
+	}
+
+	public int getMaxCargo() {
+		return maxCargo;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public int getCannonBalls() {
+		return cannonBalls;
 	}
 }

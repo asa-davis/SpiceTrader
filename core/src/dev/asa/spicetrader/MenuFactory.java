@@ -28,7 +28,14 @@ public class MenuFactory {
 			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
 			pos = new Vector2(x, y);
 			
-			return new DockedMenu(manager, pos, backgroundTexture, manager.getPlayer().getDockable());
+			return new DockedMenu(manager, pos, backgroundTexture);
+		}
+		
+		else if(menuType.equals("HUD")) {
+			backgroundTexture = manager.getAtlas().findRegion("ui/HUD_Base");
+			pos = new Vector2(0,8);
+			
+			return new HUD(manager, pos, backgroundTexture);
 		}
 		
 		return null;

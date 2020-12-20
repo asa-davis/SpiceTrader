@@ -38,6 +38,8 @@ public class MenuManager {
 		screenMatrix = new Matrix4(new Matrix4().setToOrtho2D(0, 0, screenSize.x, screenSize.y));
 		activeMenus = new ArrayList<Menu>();
 		menusToClose = new ArrayList<Menu>();
+		
+		activeMenus.add(MenuFactory.createMenu(this, "HUD"));
 	}
 	
 	//handle closing of menus and pausing/resuming of game
