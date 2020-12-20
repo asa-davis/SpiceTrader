@@ -1,4 +1,4 @@
-TODO (12/16/20)
+TODO (12/19/20)
 - Features to Add
     - pirate wandering (use dijkstra map class?)
     - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
