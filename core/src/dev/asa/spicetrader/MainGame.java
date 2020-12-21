@@ -21,22 +21,25 @@ import com.badlogic.gdx.utils.Array;
 
 public class MainGame extends ApplicationAdapter {
 	
-//	--GAME SETTINGS--w
+//	--GAME SETTINGS--
+	
+	private enum DisplayMode { WINDOWED, FULLSCREEN, BORDERLESS_WINDOWED}
+	static final DisplayMode DISPLAY_MODE = DisplayMode.WINDOWED;
 	
 	static final boolean SHOW_HITBOXES = false;
 	static final boolean SHOW_GRID = false;
-	//fixes texture bleeding?
-	static final boolean ROUND_CAMERA_POS = false;
+	static final boolean ROUND_CAMERA_POS = false;	//fixes texture bleeding but makes player sprite appear to shake
+	
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;
 	static final float ZOOM_LEVEL = 3;
+	
 	//map settings
 	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int NUM_VILLAGES = 10;
 	static final int NUM_PIRATES = 30;
-
 
 //	--GAME VARIABLES--
 	
@@ -61,10 +64,19 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
+		
+		//handle display setting
+		com.badlogic.gdx.Graphics.DisplayMode mode = Gdx.graphics.getDisplayMode();
+		if (DISPLAY_MODE == DisplayMode.FULLSCREEN) {
+		    Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
+		    Gdx.graphics.setFullscreenMode(mode);
+		} else if (DISPLAY_MODE == DisplayMode.BORDERLESS_WINDOWED) {
+		    Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
+		}
 		
 		paused = false;
 		
+		//fetch screen size, compute screen center
 		screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		screenCenter = new Vector2((float) (MAP_SIZE * TILE_WIDTH * 0.5), (float) (MAP_SIZE * TILE_HEIGHT * 0.5));
 		System.out.println(" *** SCREEN SIZE: " + screenSize.x + "x" + screenSize.y + " ***");
