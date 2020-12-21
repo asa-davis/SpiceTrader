@@ -26,7 +26,7 @@ public class MainGame extends ApplicationAdapter {
 	static final boolean SHOW_HITBOXES = false;
 	static final boolean SHOW_GRID = false;
 	//fixes texture bleeding?
-	static final boolean ROUND_CAMERA_POS = true;
+	static final boolean ROUND_CAMERA_POS = false;
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;
 	static final float ZOOM_LEVEL = 3;
@@ -52,7 +52,6 @@ public class MainGame extends ApplicationAdapter {
 	//game objects
 	private SpiceTraderMap map;
 	private EntityManager entManager;
-	private EntityFactory entFactory;
 	private InputHandler inputHandler;
 	private SpiceTraderMapGenerator mapGen;
 	private MenuManager menuManager;

@@ -27,75 +27,75 @@ public abstract class Entity {
 		
 		this.pos = pos;
 		this.sprite = sprite;
-		this.spriteWidth = sprite.getWidth();
-		this.spriteHeight = sprite.getHeight();
+		spriteWidth = sprite.getWidth();
+		spriteHeight = sprite.getHeight();
 
 		//initialize hitbox and set center point to center of sprite
-		this.createHitbox();
-		this.hitCenter = new Vector2((this.spriteWidth/2) + pos.x, (this.spriteHeight/2) + pos.y);
+		createHitbox();
+		hitCenter = new Vector2((spriteWidth/2) + pos.x, (spriteHeight/2) + pos.y);
 		
-		this.hitbox.setPosition(pos.x, pos.y);
-		this.sprite.setPosition(pos.x, pos.y);
+		hitbox.setPosition(pos.x, pos.y);
+		sprite.setPosition(pos.x, pos.y);
 	}
 	
 	//this method must instantiate our hitbox
 	protected void createHitbox() {
-		Rectangle rec = this.getSprite().getBoundingRectangle();
-		Polygon hitbox = new Polygon(new float[] {rec.x, rec.y, rec.x + rec.width, rec.y, rec.x + rec.width, rec.y + rec.height, rec.x, rec.y + rec.height});
-		this.setHitbox(hitbox);
+		Rectangle rec = sprite.getBoundingRectangle();
+		Polygon newHitbox = new Polygon(new float[] {rec.x, rec.y, rec.x + rec.width, rec.y, rec.x + rec.width, rec.y + rec.height, rec.x, rec.y + rec.height});
+		hitbox = newHitbox;
 	}
 	//this method is called on every frame. 
 	abstract void tick();
 	
 	public void setPosition(Vector2 pos) {
 		this.pos = pos;
-		this.createHitbox();
-		this.hitCenter = new Vector2((this.spriteWidth/2) + pos.x, (this.spriteHeight/2) + pos.y);
-		this.hitbox.setPosition(pos.x, pos.y);
-		this.sprite.setPosition(pos.x, pos.y);
+		createHitbox();
+		hitCenter = new Vector2((spriteWidth/2) + pos.x, (spriteHeight/2) + pos.y);
+		hitbox.setPosition(pos.x, pos.y);
+		sprite.setPosition(pos.x, pos.y);
 	}
 	
 	public void updatePosition(float xMove, float yMove) {
-		this.pos.x += xMove;
-		this.pos.y += yMove;
-		this.hitCenter.x += xMove;
-		this.hitCenter.y += yMove;
+		pos.x += xMove;
+		pos.y += yMove;
+		hitCenter.x += xMove;
+		hitCenter.y += yMove;
 		
-		this.sprite.translate(xMove, yMove);
-		this.hitbox.translate(xMove, yMove);
+		sprite.translate(xMove, yMove);
+		hitbox.translate(xMove, yMove);
 	}
 	
 	public void draw(SpriteBatch batch) {
-		this.sprite.draw(batch);
+		sprite.draw(batch);
 	}
 	
 	public void drawHitbox(ShapeRenderer renderer) {
-		renderer.polygon(this.hitbox.getTransformedVertices());
-		//renderer.circle(this.hitCenter.x, this.hitCenter.y, 1);
+		renderer.polygon(hitbox.getTransformedVertices());
+		//renderer.circle(hitCenter.x, hitCenter.y, 1);
 	}
 	
 	public float getWidth() {
-		return this.spriteWidth;
+		return spriteWidth;
 	}
 	
 	public float getHeight() {
-		return this.spriteHeight;
+		return spriteHeight;
 	}
 	
 	public Polygon getHitbox() {
-		return this.hitbox;
+		return hitbox;
 	}
 	
 	public Sprite getSprite() {
-		return this.sprite;
+		return sprite;
 	}
 	
 	public Vector2 getHitCenter() {
-		return this.hitCenter;
+		return hitCenter;
 	}
 	
 	public void setHitbox(Polygon p) {
-		this.hitbox = p;
+		hitbox = p;
 	}
 	
 	public void setSprite(Sprite sprite) {

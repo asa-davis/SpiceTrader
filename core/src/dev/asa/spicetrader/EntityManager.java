@@ -33,7 +33,6 @@ public class EntityManager {
 	MainGame game;
 	Camera camera;
 	
-	
 	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, Camera camera) {
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
