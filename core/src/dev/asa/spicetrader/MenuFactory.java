@@ -33,7 +33,7 @@ public class MenuFactory {
 		
 		else if(menuType.equals("HUD")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/HUD_Base");
-			pos = new Vector2(0,8);
+			pos = new Vector2(8,8);
 			
 			return new HUD(manager, pos, backgroundTexture);
 		}

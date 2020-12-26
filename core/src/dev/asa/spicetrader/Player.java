@@ -8,13 +8,13 @@ import com.badlogic.gdx.utils.Array;
 
 public class Player extends Ship {
 	
-	private int currHull = 3;
-	private int maxHull = 6;
+	private int currHull = 12;
+	private int maxHull = 12;
 	private int currCargo = 2;
-	private int maxCargo = 4;
+	private int maxCargo = 12;
 	
-	private int gold = 0;
-	private int cannonBalls = 0;
+	private int gold = 999;
+	private int cannonBalls = 99;
 	
 	//player playerSprites:
 	//	0 = base ship
