@@ -1,15 +1,23 @@
 TODO (12/19/20)
 - Features to Add
-    - pirate wandering (use dijkstra map class?)
-    - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
-    - hud/inventory menus (extend menu/menu manager)
-    - cooldown on cannons
+    - hud/inventory menus (in progress)
+        - biggest thing to add at this point is items/inventory data structure
+        - hover over item for name tag (dark background, white text, minecraft style)
+        - double click item to equip
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
-        - unique names for villages, visual representation of what they trade
+        - unique names for villages
+        - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
+    - pirate wandering (use dijkstra map class?)
+    - pirates shouldn't come after player when he gets within certain radius of village
+        - remove code that pauses game when docked
+        - display safety radius?
+    - pirate bases
+    - cooldown on cannons
+    - cannons use cannon balls
     - different map hitboxes for different tile types
-    - falling off world death
+    - falling off world death/outer world textures
     - starting area/upgrade shop
     - sea monsters
     - quest/winning the game
