@@ -112,7 +112,7 @@ public class EntityManager {
 			for(CannonBall c : allCanBalls) {
 				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
 					c.exists = false;
-					p.strike();
+					p.strike(c.getDamage());
 				}
 			}
 		}

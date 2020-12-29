@@ -8,15 +8,14 @@ import com.badlogic.gdx.utils.Array;
 
 public class Player extends Ship {
 	
-	private int currHull = 12;
-	private int maxHull = 12;
-	private int currCargo = 2;
-	private int maxCargo = 12;
+	private int maxHull;
+	private int currCargo;
+	private int maxCargo;
 	
 	private int gold = 999;
 	private int cannonBalls = 99;
 	
-	private int cannonDamage = 1;
+	private int cannonDamage = 5;
 	private float cannonRange = 9;
 	
 	//player playerSprites:
@@ -39,8 +38,9 @@ public class Player extends Ship {
 	//for determining when/where a player can dock
 	private Village dockable;
 	
-	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
-		super(pos, playerSprites[Player.INIT_SPRITE], map, 0.8f, 0.2f, 1f, 0);
+	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map, int maxHull) {
+		super(pos, playerSprites[Player.INIT_SPRITE], map, 0.8f, 0.2f, 1f, 0, maxHull);
+		this.maxHull = maxHull;
 		this.playerSprites = playerSprites;
 		this.cannonBallSprite = cannonBallSprite;
 		this.firingLeftSpriteCooldown = 0;
@@ -106,11 +106,7 @@ public class Player extends Ship {
 	public Village getDockable() {
 		return dockable;
 	}
-
-	public int getCurrHull() {
-		return currHull;
-	}
-
+	
 	public int getMaxHull() {
 		return maxHull;
 	}

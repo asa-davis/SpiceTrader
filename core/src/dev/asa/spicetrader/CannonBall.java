@@ -11,7 +11,7 @@ public class CannonBall extends Entity{
 	private static float SPEED_CUTOFF = 1.5f;
 	private float direction;
 	private float currSpeed;
-	private float damage;
+	private int damage;
 	
 	public CannonBall(Vector2 pos, Sprite sprite, float direction, float range, int damage) {
 		super(pos, sprite);
@@ -40,7 +40,7 @@ public class CannonBall extends Entity{
 		currSpeed += CannonBall.ACCEL;
 	}
 	
-	public float getDamage() {
+	public int getDamage() {
 		return damage;
 	}
 }

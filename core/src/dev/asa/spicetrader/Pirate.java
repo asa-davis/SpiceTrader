@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Pirate extends Ship{
 	private List<Vector2> currPath;
-	private static final float initMaxSpeed = 1.2f;
-	private static final float initAccel = 0.05f;
-	private static final float initRotationSpeed = 2.5f;
+	private static final float initMaxSpeed = 1f;
+	private static final float initAccel = 0.02f;
+	private static final float initRotationSpeed = 2f;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
-		super(pos, sprite, map, initMaxSpeed, initAccel, initRotationSpeed, initialDirection);
+		super(pos, sprite, map, initMaxSpeed, initAccel, initRotationSpeed, initialDirection, 5);
 	}
 
 	@Override
@@ -36,9 +36,11 @@ public class Pirate extends Ship{
 	}
 	
 	//first version of pirate path following behavior
-	//	- If pirate isn't pointing towards point by +- 1 degree, then turn towards it
-	//	- If pirate is pointing towards point by +- 1 degree, accel forward
+	//	- If pirate isn't pointing towards point by +- prec degree, then turn towards it
+	//	- If pirate is pointing towards point by +- prec degree, accel forward
 	private void moveTowardsPoint(Vector2 point) {
+		//determines the precision with which a pirate must be pointing towards a point before it can move forward
+		int prec = 5;
 		//calc directional vector
 		Vector2 dVec = new Vector2(point).sub(this.getHitCenter());
 		//convert to radians
@@ -56,7 +58,7 @@ public class Pirate extends Ship{
 		
 		//turn to correct direction 
 		float diff = directionToPoint - this.getDirection();
-		if(Math.abs(diff) > 5) {
+		if(Math.abs(diff) > prec) {
 			if(diff < 0)
 				diff += 360;
 			if(diff > 180)
