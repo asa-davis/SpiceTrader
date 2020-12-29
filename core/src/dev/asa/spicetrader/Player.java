@@ -13,7 +13,7 @@ public class Player extends Ship {
 	private int maxCargo;
 	
 	private int gold = 999;
-	private int cannonBalls = 99;
+	private int cannonBalls = 5;
 	
 	private int cannonDamage = 5;
 	private float cannonRange = 9;
@@ -66,25 +66,33 @@ public class Player extends Ship {
 	}
 	
 	public CannonBall fireCannonLeft() {
-		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() + 90, cannonRange, cannonDamage);
-		this.firingLeft = true;
-		this.firingLeftSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
-		if(this.firingRight) 
-			this.setSprite(playerSprites[4]);
-		else
-			this.setSprite(playerSprites[2]);
-		return shot;
+		if(cannonBalls > 0) {
+			cannonBalls--;
+			CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() + 90, cannonRange, cannonDamage);
+			this.firingLeft = true;
+			this.firingLeftSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
+			if(this.firingRight) 
+				this.setSprite(playerSprites[4]);
+			else
+				this.setSprite(playerSprites[2]);
+			return shot;
+		}
+		return null;
 	}
 
 	public CannonBall fireCannonRight() {
-		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() - 90, cannonRange, cannonDamage);
-		this.firingRight = true;
-		this.firingRightSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
-		if(this.firingLeft) 
-			this.setSprite(playerSprites[4]);
-		else
-			this.setSprite(playerSprites[3]);
-		return shot;
+		if(cannonBalls > 0) {
+			cannonBalls--;
+			CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() - 90, cannonRange, cannonDamage);
+			this.firingRight = true;
+			this.firingRightSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
+			if(this.firingLeft) 
+				this.setSprite(playerSprites[4]);
+			else
+				this.setSprite(playerSprites[3]);
+			return shot;
+		}
+		return null;
 	}
 	
 	//returns normalized values of stats fit to scale

@@ -55,10 +55,14 @@ public class InputHandler {
 		
 		//shooting
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-			entManager.add(player.fireCannonLeft());
+			CannonBall c = player.fireCannonLeft();
+			if(c != null)
+				entManager.add(c);
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-			entManager.add(player.fireCannonRight());
+			CannonBall c = player.fireCannonRight();
+			if(c != null)
+				entManager.add(c);
 		}
 	}
 }
