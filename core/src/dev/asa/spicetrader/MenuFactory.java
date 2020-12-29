@@ -31,11 +31,18 @@ public class MenuFactory {
 			return new DockedMenu(manager, pos, backgroundTexture);
 		}
 		
-		else if(menuType.equals("HUD")) {
+		else if(menuType.equals("HUDMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/HUD_Base");
 			pos = new Vector2(8,8);
 			
-			return new HUD(manager, pos, backgroundTexture);
+			return new HUDMenu(manager, pos, backgroundTexture);
+		}
+		
+		else if(menuType.equals("ShipMenu")) {
+			backgroundTexture = manager.getAtlas().findRegion("ui/ship_menu_base");
+			pos = new Vector2(8, 86);
+			
+			return new ShipMenu(manager, pos, backgroundTexture);
 		}
 		
 		return null;

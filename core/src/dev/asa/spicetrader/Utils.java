@@ -129,4 +129,87 @@ public class Utils {
 		float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
 		return new Vector2(xPos, yPos);
 	}
+	
+	//for fitting movement stats to a nicer 1 - 11 range instead of their true float values
+	//true value ranges:
+	//		max speed 	0.8 - 3		 	
+	//		accel		0.02 - 0.2	
+	//		turning		1 - 6		
+	//		range		4 - 9		
+	//		damage		1 - 10 	
+	
+	//for scaling a number x in a range [min, max] to a different range [a, b] we can use
+	
+//		   (b-a)(x - min)
+//	f(x) = --------------  + a
+//			  max - min
+	
+	
+	public static int statToView(float val, char stat) {
+		float min = 0;
+		float max = 0;
+		float a = 1;
+		float b = 10;
+		
+		switch(stat) {
+			case 'm':
+				min = 0.8f;
+				max = 3;
+				break;
+			case 'a':
+				min = 0.02f;
+				max = 0.2f;
+				break;
+			case 't':
+				min = 1;
+				max = 6;
+				break;
+			case 'r':
+				min = 4;
+				max = 9;
+				break;
+			case 'd':
+				min = 1;
+				max = 10;
+				break;
+			default:
+				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
+		}
+		
+		return (int) ((((b - a) * (val - min))/(max - min)) + a);
+	}
+	
+	public static float statToUse(int val, char stat) {
+		float min = 1;
+		float max = 10;
+		float a = 0;
+		float b = 0;
+		
+		switch(stat) {
+		case 'm':
+			a = 0.8f;
+			b = 3;
+			break;
+		case 'a':
+			a = 0.02f;
+			b = 0.2f;
+			break;
+		case 't':
+			a = 1;
+			b = 6;
+			break;
+		case 'r':
+			a = 4;
+			b = 9;
+			break;
+		case 'd':
+			a = 1;
+			b = 10;
+			break;
+			default:
+				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
+		}
+		
+		return ((((b - a) * (val - min))/(max - min)) + a);
+	}
 }

@@ -106,7 +106,7 @@ public class EntityManager {
 			//1.
 			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
 				Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
-				menuManager.addMenu(boarded);
+				menuManager.openMenu(boarded);
 			}
 			//2.
 			for(CannonBall c : allCanBalls) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -37,9 +38,9 @@ public class MainGame extends ApplicationAdapter {
 	//map settings
 	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
 	static final int SMOOTHING_ITERATIONS = 5;
-	static final int SEA_LEVEL_OFFSET = 2;
+	static final int SEA_LEVEL_OFFSET = 3;
 	static final int NUM_VILLAGES = 10;
-	static final int NUM_PIRATES = 30;
+	static final int NUM_PIRATES = 0;
 
 //	--GAME VARIABLES--
 	
@@ -66,7 +67,7 @@ public class MainGame extends ApplicationAdapter {
 	public void create () {
 		
 		//handle display setting
-		com.badlogic.gdx.Graphics.DisplayMode mode = Gdx.graphics.getDisplayMode();
+		Graphics.DisplayMode mode = Gdx.graphics.getDisplayMode();
 		if (DISPLAY_MODE == DisplayMode.FULLSCREEN) {
 		    Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
 		    Gdx.graphics.setFullscreenMode(mode);
@@ -143,10 +144,10 @@ public class MainGame extends ApplicationAdapter {
 		
 		//update all game objects
 		map.tick(paused);
+		menuManager.tick();
 		inputHandler.process(paused);
 		entManager.process(paused);
 			
-		menuManager.tick();
 		//round camera position to nearest 1/zoom_level of a pixel - this fixes screen tearing but introduces a weird jiggling effect
 		if(ROUND_CAMERA_POS) {
 			camera.position.x = Utils.roundToNearestFraction(camera.position.x, 1/ZOOM_LEVEL);

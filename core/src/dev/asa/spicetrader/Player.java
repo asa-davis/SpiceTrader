@@ -16,6 +16,9 @@ public class Player extends Ship {
 	private int gold = 999;
 	private int cannonBalls = 99;
 	
+	private int cannonDamage = 1;
+	private float cannonRange = 9;
+	
 	//player playerSprites:
 	//	0 = base ship
 	//	1 = base ship w/ cannons
@@ -37,7 +40,7 @@ public class Player extends Ship {
 	private Village dockable;
 	
 	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
-		super(pos, playerSprites[Player.INIT_SPRITE], map, 1.4f, 0.05f, 2, 0);
+		super(pos, playerSprites[Player.INIT_SPRITE], map, 0.8f, 0.2f, 1f, 0);
 		this.playerSprites = playerSprites;
 		this.cannonBallSprite = cannonBallSprite;
 		this.firingLeftSpriteCooldown = 0;
@@ -62,18 +65,8 @@ public class Player extends Ship {
 		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
 	}
 	
-	//TODO: this method should return the point between the two cannons on the sprite. 
-	//		this can be calculated by shifting from the center of ship based on this.direction
-	private Vector2 calcBallInitPos() {
-		Vector2 initPos = new Vector2();
-		Vector2 centerOfShip = this.getHitCenter();
-		initPos.x = centerOfShip.x - (this.cannonBallSprite.getWidth()/2);
-		initPos.y = centerOfShip.y - (this.cannonBallSprite.getHeight()/2);
-		return initPos;
-	}
-	
 	public CannonBall fireCannonLeft() {
-		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() + 90);
+		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() + 90, cannonRange, cannonDamage);
 		this.firingLeft = true;
 		this.firingLeftSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
 		if(this.firingRight) 
@@ -84,7 +77,7 @@ public class Player extends Ship {
 	}
 
 	public CannonBall fireCannonRight() {
-		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() - 90);
+		CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() - 90, cannonRange, cannonDamage);
 		this.firingRight = true;
 		this.firingRightSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
 		if(this.firingLeft) 
@@ -94,34 +87,18 @@ public class Player extends Ship {
 		return shot;
 	}
 	
-	//logic for setting correct firing playerSprites
-	private void calcPlayerFiringSprite() {
-		if(this.firingLeft) {
-			this.firingLeftSpriteCooldown--;
-			if(this.firingLeftSpriteCooldown == 0) {
-				this.firingLeft = false;
-				if(this.firingRight) {
-					this.setSprite(playerSprites[3]);
-				}
-				else {
-					this.setSprite(playerSprites[Player.INIT_SPRITE]);
-				}
-			}
-		}
-		if(this.firingRight) {
-			this.firingRightSpriteCooldown--;
-			if(this.firingRightSpriteCooldown == 0) {
-				this.firingRight = false;
-				if(this.firingLeft) {
-					this.setSprite(playerSprites[2]);
-				}
-				else {
-					this.setSprite(playerSprites[Player.INIT_SPRITE]);
-				}
-			}
-		}
+	//returns normalized values of stats fit to scale
+	//0 = max speed, 1 = accel, 2 = turning, 3 = damage, 4 = range
+	public int[] getStats() {
+		int[] stats = new int[5];
+		stats[0] = Utils.statToView(getMaxSpeed(), 'm');
+		stats[1] = Utils.statToView(getAccel(), 'a');
+		stats[2] = Utils.statToView(getRotationSpeed(), 't');
+		stats[3] = Utils.statToView(cannonDamage, 'd');
+		stats[4] = Utils.statToView(cannonRange, 'r');
+		return stats;
 	}
-
+	
 	public void setDockable(Village dockable) {
 		this.dockable = dockable;
 	}
@@ -152,5 +129,42 @@ public class Player extends Ship {
 
 	public int getCannonBalls() {
 		return cannonBalls;
+	}
+	
+	//TODO: Move cannon firing stuff to another class so pirate villages can use it
+	private Vector2 calcBallInitPos() {
+		Vector2 initPos = new Vector2();
+		Vector2 centerOfShip = this.getHitCenter();
+		initPos.x = centerOfShip.x - (this.cannonBallSprite.getWidth()/2);
+		initPos.y = centerOfShip.y - (this.cannonBallSprite.getHeight()/2);
+		return initPos;
+	}
+	
+	//logic for setting correct firing playerSprites
+	private void calcPlayerFiringSprite() {
+		if(this.firingLeft) {
+			this.firingLeftSpriteCooldown--;
+			if(this.firingLeftSpriteCooldown == 0) {
+				this.firingLeft = false;
+				if(this.firingRight) {
+					this.setSprite(playerSprites[3]);
+				}
+				else {
+					this.setSprite(playerSprites[Player.INIT_SPRITE]);
+				}
+			}
+		}
+		if(this.firingRight) {
+			this.firingRightSpriteCooldown--;
+			if(this.firingRightSpriteCooldown == 0) {
+				this.firingRight = false;
+				if(this.firingLeft) {
+					this.setSprite(playerSprites[2]);
+				}
+				else {
+					this.setSprite(playerSprites[Player.INIT_SPRITE]);
+				}
+			}
+		}
 	}
 }

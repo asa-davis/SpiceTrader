@@ -21,10 +21,12 @@ public class MenuManager {
 	private Matrix4 screenMatrix;
 	private List<Menu> activeMenus;
 	private List<Menu> menusToClose;
+	private List<Menu> menusToOpen;
 	private BitmapFont[] fonts;
 	private Player player;
 	private Vector2 screenSize;
 	private TextureAtlas atlas;
+	private ShipMenu shipMenu;
 	
 	//menus need access to these
 	
@@ -38,17 +40,23 @@ public class MenuManager {
 		screenMatrix = new Matrix4(new Matrix4().setToOrtho2D(0, 0, screenSize.x, screenSize.y));
 		activeMenus = new ArrayList<Menu>();
 		menusToClose = new ArrayList<Menu>();
+		menusToOpen = new ArrayList<Menu>();
 		
-		activeMenus.add(MenuFactory.createMenu(this, "HUD"));
+		activeMenus.add(MenuFactory.createMenu(this, "HUDMenu"));
+		this.shipMenu = (ShipMenu) MenuFactory.createMenu(this, "ShipMenu");
 	}
 	
 	//handle closing of menus and pausing/resuming of game
 	public void tick() {
-		//clear menus to close
+		//close and open menus - this needs to happen only here to avoid concurrent modification
 		for(Menu m : menusToClose) {
 			activeMenus.remove(m);
 		}
 		menusToClose.clear();
+		for(Menu m : menusToOpen) {
+			activeMenus.add(m);
+		}
+		menusToOpen.clear();
 		
 		if(gameShouldPause())
 			game.pause();
@@ -56,8 +64,8 @@ public class MenuManager {
 			game.resume();
 	}
 	
-	public void addMenu(Menu m) {
-		activeMenus.add(m);
+	public void openMenu(Menu m) {
+		menusToOpen.add(m);
 	}
 	
 	public void closeMenu(Menu m) {
@@ -94,6 +102,13 @@ public class MenuManager {
 			fonts[0].setColor(Color.WHITE);
 			fonts[0].draw(batch, "Press f to dock at " + player.getDockable().getName(), 0, 32, screenSize.x, Align.center, false);
 		}
+	}
+	
+	public void toggleShipMenu() {
+		if(activeMenus.contains(shipMenu))
+			closeMenu(shipMenu);
+		else
+			openMenu(shipMenu);
 	}
 
 	public MainGame getGame() {

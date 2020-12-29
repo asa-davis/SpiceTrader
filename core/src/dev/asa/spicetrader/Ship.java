@@ -191,4 +191,16 @@ public abstract class Ship extends Entity {
 	public float getCurrSpeed() {
 		return currSpeed;
 	}
+	
+	public float getAccel() {
+		return accel;
+	}
+	
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+	
+	public float getRotationSpeed() {
+		return rotationSpeed;
+	}
  }
