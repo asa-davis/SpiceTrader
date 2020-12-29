@@ -1,8 +1,8 @@
-TODO (12/19/20)
+TODO (12/29/20)
 - Features to Add
     - hud/inventory menus (in progress)
         - biggest thing to add at this point is items/inventory data structure
-        - hover over item for name tag (dark background, white text, minecraft style)
+        - hover over item for name tag (dark background, white text, stats if applicable. see minecraft...)
         - double click item to equip
     - trading 
         - expand on docked menu
@@ -15,7 +15,6 @@ TODO (12/19/20)
         - display safety radius?
     - pirate bases
     - cooldown on cannons
-    - cannons use cannon balls
     - different map hitboxes for different tile types
     - falling off world death/outer world textures
     - starting area/upgrade shop
