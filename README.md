@@ -24,6 +24,8 @@ TODO (12/19/20)
     
 - Features to Investigate
     - have camera rotate when you turn
+    - random items
+    - health bars
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
