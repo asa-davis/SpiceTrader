@@ -26,6 +26,7 @@ TODO (12/29/20)
     - random items
     - health bars
     - customize starting stats at beginning of game, fallout style
+    - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
