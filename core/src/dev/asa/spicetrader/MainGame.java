@@ -40,7 +40,7 @@ public class MainGame extends ApplicationAdapter {
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 3;
 	static final int NUM_VILLAGES = 10;
-	static final int NUM_PIRATES = 0;
+	static final int NUM_PIRATES = 30;
 
 //	--GAME VARIABLES--
 	

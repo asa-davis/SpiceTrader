@@ -8,15 +8,25 @@ import com.badlogic.gdx.utils.Array;
 
 public class Player extends Ship {
 	
-	private int maxHull;
+	//starting stats
+	private static int INIT_HULL = 3;
+	//these are in view mode and must be converted before they are applied
+	private static int INIT_MAX_SPEED = 3;
+	private static int INIT_ACCEL = 3;
+	private static int INIT_TURNING = 3;
+	private static int INIT_DAMAGE = 3;
+	private static int INIT_RANGE = 3;
+	
+	
+	private int maxHull;	//currHull is managed by ship class
 	private int currCargo;
 	private int maxCargo;
 	
-	private int gold = 999;
-	private int cannonBalls = 5;
+	private int gold;
+	private int cannonBalls;
 	
-	private int cannonDamage = 5;
-	private float cannonRange = 9;
+	private int cannonDamage;
+	private float cannonRange;
 	
 	//player playerSprites:
 	//	0 = base ship
@@ -30,25 +40,31 @@ public class Player extends Ship {
 	private final static int FIRING_SPRITE_COOLDOWN = 10; 
 	
 	//These variables make sure the proper sprite is displayed after firing for the proper number of frames
-	private int firingLeftSpriteCooldown;
-	private int firingRightSpriteCooldown;
-	private boolean firingLeft;
-	private boolean firingRight;
+	private int firingLeftSpriteCooldown = 0;
+	private int firingRightSpriteCooldown = 0;
+	private boolean firingLeft = false;
+	private boolean firingRight = false;
 	
 	//for determining when/where a player can dock
-	private Village dockable;
+	private Village dockable = null;
 	
-	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map, int maxHull) {
-		super(pos, playerSprites[Player.INIT_SPRITE], map, 0.8f, 0.2f, 1f, 0, maxHull);
-		this.maxHull = maxHull;
+	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
+		super(pos, playerSprites[INIT_SPRITE], map, Utils.statToUse(INIT_MAX_SPEED, 'm'), Utils.statToUse(INIT_ACCEL, 'a'), Utils.statToUse(INIT_TURNING, 't'), 0, INIT_HULL);
 		this.playerSprites = playerSprites;
 		this.cannonBallSprite = cannonBallSprite;
-		this.firingLeftSpriteCooldown = 0;
-		this.firingRightSpriteCooldown = 0;
-		this.firingLeft = false;
-		this.firingRight = false;
-		this.dockable = null;
 		
+		//initialize stats
+		cannonDamage = (int) Utils.statToUse(INIT_DAMAGE, 'd');
+		cannonRange = Utils.statToUse(INIT_RANGE, 'r');
+		
+		gold = 0;
+		cannonBalls = 99;
+		
+		maxHull = INIT_HULL;
+		maxCargo = 3;
+		currCargo = 0;
+		
+		//calc initial pathfinding to player
 		this.getMap().getDijkstraMap().calcPlayerDistMap(this.getHitCenter());
 	}
 	

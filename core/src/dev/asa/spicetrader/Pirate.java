@@ -8,12 +8,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Pirate extends Ship{
 	private List<Vector2> currPath;
-	private static final float initMaxSpeed = 1f;
-	private static final float initAccel = 0.02f;
-	private static final float initRotationSpeed = 2f;
+	private static int DEFAULT_MAX_SPEED = 4;
+	private static int DEFAULT_ACCEL = 3;
+	private static int DEFAULT_TURNING = 2;
+	private static int DEFAULT_HULL = 3;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
-		super(pos, sprite, map, initMaxSpeed, initAccel, initRotationSpeed, initialDirection, 5);
+		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
 	}
 
 	@Override
