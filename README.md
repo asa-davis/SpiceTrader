@@ -25,6 +25,7 @@ TODO (12/29/20)
     - have camera rotate when you turn
     - random items
     - health bars
+    - customize starting stats at beginning of game, fallout style
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
