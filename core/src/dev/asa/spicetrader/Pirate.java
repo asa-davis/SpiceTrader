@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Pirate extends Ship{
 	private List<Vector2> currPath;
-	private static int DEFAULT_MAX_SPEED = 4;
-	private static int DEFAULT_ACCEL = 3;
-	private static int DEFAULT_TURNING = 2;
+	private static int DEFAULT_MAX_SPEED = 2;
+	private static int DEFAULT_ACCEL = 4;
+	private static int DEFAULT_TURNING = 5;
 	private static int DEFAULT_HULL = 3;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
