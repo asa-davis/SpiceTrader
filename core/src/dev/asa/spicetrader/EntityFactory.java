@@ -23,6 +23,7 @@ public class EntityFactory {
 			Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2) + 3, screenCenter.y - (playerSprites[0].getHeight() / 2) + 3);
 			Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
 			Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
+			player.giveItem(new Item("test item", atlas.findRegion("items/test_item")));
 			
 			return player;
 		}

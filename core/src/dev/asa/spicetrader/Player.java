@@ -87,6 +87,10 @@ public class Player extends Ship {
 		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
 	}
 	
+	public void giveItem(Item item) {
+		cargo.add(item);
+	}
+	
 	public CannonBall fireCannonLeft() {
 		if(cannonBalls > 0) {
 			cannonBalls--;
