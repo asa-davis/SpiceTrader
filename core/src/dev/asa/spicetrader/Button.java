@@ -66,7 +66,3 @@ public class Button {
 	
 	private enum State {DEFAULT, HOVER, CLICK}
 }
-
-//the input handler passes the mouse pos/click status to all the menus each frame
-//the menu will check the mouse pos against all buttons and tell them to update their texture appropriately
-//when the menu observes a mouse click on a button it runs the onClickListener method which is defined inside the menu

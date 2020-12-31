@@ -1,5 +1,8 @@
 package dev.asa.spicetrader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Polygon;
@@ -17,6 +20,7 @@ public class Player extends Ship {
 	private static int INIT_DAMAGE = 3;
 	private static int INIT_RANGE = 3;
 	
+	private List<Item> cargo;
 	
 	private int maxHull;	//currHull is managed by ship class
 	private int currCargo;
@@ -63,6 +67,8 @@ public class Player extends Ship {
 		maxHull = INIT_HULL;
 		maxCargo = 3;
 		currCargo = 0;
+		
+		cargo = new ArrayList<Item>();
 		
 		//calc initial pathfinding to player
 		this.getMap().getDijkstraMap().calcPlayerDistMap(this.getHitCenter());
