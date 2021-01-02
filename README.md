@@ -1,5 +1,9 @@
-TODO (1/1/21)
+TODO (1/2/21)
 - Features to Add
+    - pirate avoidance ai - make them separate when they get too close
+    - pirate wandering
+        - requires generalized dijkstra
+        - pick a random point as their new goal and build a new dijkstra map for it. when they get there, pick another.
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
@@ -7,11 +11,10 @@ TODO (1/1/21)
         - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
     - pirate bases
         - spawn pirates
-        - pirates wander nearby their base unless a player approaches. (use dijkstra map class?)
+        - pirates wander nearby their base unless a player approaches.
         - shoot at player
         - these increase in frequency the farther out from center of map you go
         - destroying a pirate base allows player to dock there and acquire gold/items
-    - cooldown on cannons
     - dont let pirates get within a certain radius of friendly ports. display radius?
     - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
@@ -20,16 +23,17 @@ TODO (1/1/21)
     - quest/winning the game
     
 - Features to Investigate
-    - better approach to pirates - make them deal damage on contact and only board at low hull? Add mechanic to fight them off?
     - health bars above enemies
     - customize starting stats at beginning of game, fallout style
     - randomly generated equippable items, bordlerlands style
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
     - have camera rotate when you turn - would need to change textures to top down only :(
+    - rewards for killing pirates
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
     - don't let pirates spawn next to beach tiles, they get stuck
+    - fix bug where you can sail underneath pirates
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
     - generalize dijkstra map methods
