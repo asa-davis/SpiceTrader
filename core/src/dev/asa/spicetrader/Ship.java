@@ -17,8 +17,12 @@ public abstract class Ship extends Entity {
 	private boolean inReverse;
 	//health of ship
 	private int hull;
+	private boolean dead;
 	//number of frames until sprite color goes back to normal
 	private int strikeCooldown;
+	
+	private float xMove;
+	private float yMove;
 	
 	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float maxSpeed, float accel, float rotationSpeed, float direction, int hull) {
 		super(pos, sprite);
@@ -28,18 +32,19 @@ public abstract class Ship extends Entity {
 		this.rotationSpeed = rotationSpeed;
 		this.direction = direction;
 		this.hull = hull;
-		this.getHitbox().setRotation(direction);
-		this.getSprite().setRotation(direction);
+		getHitbox().setRotation(direction);
+		getSprite().setRotation(direction);
 		
 		strikeCooldown = 0;
 		currSpeed = 0;
 		inReverse = false;
 		decel = 0.01f;
+		dead = false;
 	}
 	
 	public void tick() {
 		//handle acceleration behavior
-		this.move();
+		move();
 		if(currSpeed > 0) {
 			currSpeed -= decel;
 			if(currSpeed <= 0) {
@@ -49,14 +54,14 @@ public abstract class Ship extends Entity {
 		}
 		
 		//handle red shading on strike
-		if(this.strikeCooldown > 0) {
-			this.strikeCooldown--;
-			if(this.strikeCooldown > 0)
-				this.getSprite().setColor(Color.RED);
+		if(strikeCooldown > 0) {
+			strikeCooldown--;
+			if(strikeCooldown > 0)
+				getSprite().setColor(Color.RED);
 			else {
-				this.getSprite().setColor(Color.WHITE);
-				if(this.hull <= 0)
-					this.exists = false;
+				getSprite().setColor(Color.WHITE);
+				if(hull <= 0 && getClass() == Pirate.class)
+					exists = false;
 			}
 		}
 	}
@@ -81,9 +86,7 @@ public abstract class Ship extends Entity {
 		}
 	}
 	
-	public void move() {
-		float xMove;
-		float yMove;
+	private void move() {
 		if(!inReverse) {
 			xMove = -1 * (float) Math.sin(0.0175 * direction);
 			yMove = (float) Math.cos(0.0175 * direction);
@@ -91,14 +94,17 @@ public abstract class Ship extends Entity {
 			xMove = (float) Math.sin(0.0175 * direction);
 			yMove = -1 * (float) Math.cos(0.0175 * direction);
 		}
-		this.updatePosition(xMove * currSpeed, yMove * currSpeed);
+		updatePosition(xMove * currSpeed, yMove * currSpeed);
 		
-		//collision detection - undo move if hitting map 
+		//collision detection - for collisions with other entities: 
+		//pirates are kept from overlapping player with bounce back. 
+		//ships are kept from overlapping map hitbox with pixel perfect retracement step.
+		//pirates are kept from overlapping with other pirates too much by avoidance ai
 		int numBacktracks = 4;
 		float backtrackAmount = currSpeed / 4f; 
 		while(!map.validShipPosition(this) && numBacktracks >= 0) {
 			currSpeed = 0;
-			this.updatePosition(-1 * backtrackAmount * xMove, -1 * backtrackAmount * yMove);
+			updatePosition(-1 * backtrackAmount * xMove, -1 * backtrackAmount * yMove);
 			numBacktracks--;
 		}
 	}
@@ -109,7 +115,7 @@ public abstract class Ship extends Entity {
 		else 
 			direction += rotationSpeed;
 		
-		this.updateRotation();
+		updateRotation();
 		
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (rotationSpeed + 1);
@@ -118,7 +124,7 @@ public abstract class Ship extends Entity {
 				direction += 1;
 			else 
 				direction -= 1;
-			this.updateRotation();
+			updateRotation();
 			numMoves--;
 		}
 	}
@@ -129,7 +135,7 @@ public abstract class Ship extends Entity {
 		else
 			direction -= rotationSpeed;
 		
-		this.updateRotation();
+		updateRotation();
 		
 		//collision detection - undo move if hitting map
 		int numMoves = (int) (rotationSpeed + 1);
@@ -138,14 +144,24 @@ public abstract class Ship extends Entity {
 				direction -= 1;
 			else 
 				direction += 1;
-			this.updateRotation();
+			updateRotation();
 			numMoves--;
 		}
 	}
 	
 	public void strike(int damage) {
-		this.hull -= damage;
-		this.strikeCooldown = 10;
+		hull -= damage;
+		if(hull <= 0)
+			dead = true;
+		strikeCooldown = 10;
+	}
+	
+	public boolean isDead() {
+		return dead;
+	}
+	
+	public boolean isInReverse() {
+		return inReverse;
 	}
 	
 	private void updateRotation() {
@@ -156,16 +172,16 @@ public abstract class Ship extends Entity {
 			direction -= 360;
 		
 		//System.out.println("" + direction);
-		this.getHitbox().setRotation(direction);
-		this.getSprite().setRotation(direction);
+		getHitbox().setRotation(direction);
+		getSprite().setRotation(direction);
 	}
 	
 	public void setDirection(float d) {
 		//System.out.println("" + d);
 		direction = d;
 		
-		this.getHitbox().setRotation(d);
-		this.getSprite().setRotation(d);
+		getHitbox().setRotation(d);
+		getSprite().setRotation(d);
 	}
 	
 	public static Polygon getShipHitbox(float spriteWidth, float spriteHeight, int xOffset) {
@@ -177,7 +193,7 @@ public abstract class Ship extends Entity {
 	@Override
 	public void setSprite(Sprite sprite) {
 		super.setSprite(sprite);
-		this.getSprite().setRotation(direction);
+		getSprite().setRotation(direction);
 	}
 	
 	public float getDirection() {

@@ -77,8 +77,11 @@ public class EntityManager {
 		//drunk mode
 		//camera.rotate(1, 0, 0, 1);
 		
-		//process collisions
-		this.processCollisions();
+		//check if player is dead
+		if(player.isDead()) {
+			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
+			menuManager.openMenu(boarded);
+		}
 		
 		//check for deleted entities and tick the others
 		entitiesToRemove.clear();
@@ -92,10 +95,13 @@ public class EntityManager {
 		//delete entities which no longer exist
 		for(Entity e : entitiesToRemove)
 			this.remove(e);
+		
+		//process collisions
+		this.processCollisions();
 	}
 	
 	//Performs the following checks each frame: 
-	//	1. Every pirate against player. this starts the "you have been boarded" event and pauses gameplay
+	//	1. Every pirate against player. this collision bounces back pirate and damages player
 	//	2. Every pirate against every cannon ball. this deletes cannon ball and calls the strike() event on the pirate
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
 	//	3. Every dock against player. When a player is in dock hit box, the dockable variable on player should be set to the appropriate village.
@@ -103,16 +109,18 @@ public class EntityManager {
 	//NOTE: collisions between ships and the map are handled in the validShipPosition method in the map class, which should always be called when a ship moves
 	private void processCollisions() {
 		for(Pirate p : allPirates) {
-			//1.
-			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
-				menuManager.openMenu(boarded);
-			}
-			//2.
-			for(CannonBall c : allCanBalls) {
-				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
-					c.exists = false;
-					p.strike(c.getDamage());
+			if(!p.isDead()) {
+				//1.
+				if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
+					player.strike(1);
+					p.bounceBack();
+				}
+				//2.
+				for(CannonBall c : allCanBalls) {
+					if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
+						c.exists = false;
+						p.strike(c.getDamage());
+					}
 				}
 			}
 		}

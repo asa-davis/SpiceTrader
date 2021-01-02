@@ -13,8 +13,12 @@ public class Pirate extends Ship{
 	private static int DEFAULT_TURNING = 5;
 	private static int DEFAULT_HULL = 3;
 	
+	//keeps pirate from moving for a few frames after knocking player.
+	private int movementCooldown;
+	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
 		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
+		movementCooldown = 0;
 	}
 
 	@Override
@@ -31,8 +35,13 @@ public class Pirate extends Ship{
 		
 		//move towards next point on path
 		if(currPath.size() > 1) {
-			Vector2 nextPoint = currPath.get(1);
-			this.moveTowardsPoint(nextPoint);
+			if(movementCooldown <= 0) {
+				this.moveTowardsPoint(currPath.get(1));
+			}
+			else {
+				movementCooldown--;
+				System.out.println("movement cooldown");
+			}
 		}
 	}
 	
@@ -43,7 +52,7 @@ public class Pirate extends Ship{
 		//determines the precision with which a pirate must be pointing towards a point before it can move forward
 		int prec = 5;
 		//calc directional vector
-		Vector2 dVec = new Vector2(point).sub(this.getHitCenter());
+		Vector2 dVec = new Vector2(point).sub(getHitCenter());
 		//convert to radians
 		float directionToPoint = (float) Math.atan(dVec.y / dVec.x);
 		//convert to degrees
@@ -58,21 +67,19 @@ public class Pirate extends Ship{
 			directionToPoint = 360 + directionToPoint;
 		
 		//turn to correct direction 
-		float diff = directionToPoint - this.getDirection();
-		if(Math.abs(diff) > prec) {
+		float diff = directionToPoint - getDirection();
+		if(Math.abs(diff) > prec && !isInReverse()) {
 			if(diff < 0)
 				diff += 360;
-			if(diff > 180)
+			if(diff > 180) 
 				this.turnRight();
-			else
+			else 
 				this.turnLeft();
 		}
 		//move forward
 		else {
 			this.accelForward();
 		}
-		
-		//this.setDirection(directionToPoint);
 	}
 	
 	@Override
@@ -93,5 +100,12 @@ public class Pirate extends Ship{
 			renderer.line(currPoint, nextPoint);
 			currPoint = nextPoint;
 		}
+	}
+	
+	public void bounceBack() {
+		for(int i = 0; i < 40; i++) {
+			accelBackward();
+		}
+		movementCooldown = 15;
 	}
  }
