@@ -33,7 +33,6 @@ public class EntityManager {
 	MainGame game;
 	Camera camera;
 	
-	
 	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, Camera camera) {
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
@@ -106,13 +105,14 @@ public class EntityManager {
 		for(Pirate p : allPirates) {
 			//1.
 			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				menuManager.showBoardedMenu();
+				Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
+				menuManager.openMenu(boarded);
 			}
 			//2.
 			for(CannonBall c : allCanBalls) {
 				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
 					c.exists = false;
-					p.strike();
+					p.strike(c.getDamage());
 				}
 			}
 		}

@@ -98,6 +98,10 @@ public class VillageFactory {
 		//generate position so that sprite is centered on 2x2 square.
 		Vector2 pixelCenter = map.getPixelCoordsFromTile(location.tileOrigin.add(1, 1));
 		Vector2 pos = new Vector2(pixelCenter.x - s.getWidth()/2, pixelCenter.y - s.getHeight()/2);
+		int roundPosX = (int)pos.x;
+		int roundPosY = (int)pos.y;
+		pos.x = (float)roundPosX;
+		pos.y = (float)roundPosY;
 		
 		//choose a random dock position
 		int numDockLocations = location.validDockLocations.size();

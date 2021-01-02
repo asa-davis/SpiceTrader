@@ -36,7 +36,7 @@ public class InputHandler {
 	private void handlePlayerControls() {
 		//docking
 		if(player.getDockable() != null && Gdx.input.isKeyPressed(Input.Keys.F)) {
-			menuManager.showDockedMenu(player.getDockable());
+			menuManager.openMenu(MenuFactory.createMenu(menuManager, "DockedMenu"));
 		} 
 		
 		//movement
@@ -55,10 +55,14 @@ public class InputHandler {
 		
 		//shooting
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-			entManager.add(player.fireCannonLeft());
+			CannonBall c = player.fireCannonLeft();
+			if(c != null)
+				entManager.add(c);
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-			entManager.add(player.fireCannonRight());
+			CannonBall c = player.fireCannonRight();
+			if(c != null)
+				entManager.add(c);
 		}
 	}
 }

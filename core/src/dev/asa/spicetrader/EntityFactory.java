@@ -10,51 +10,49 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class EntityFactory {
-
-	TextureAtlas atlas;
-	SpiceTraderMap map;
-	Vector2 screenCenter;
 	
-	public EntityFactory(TextureAtlas atlas, SpiceTraderMap map, Vector2 screenCenter) {
-		this.screenCenter = screenCenter;
-		this.atlas = atlas;
-		this.map = map;
-	}
-	
-	public Player getPlayer() {
-		//get sprites for player object
-		Array<AtlasRegion> playerSpriteTextures = this.atlas.findRegions("ships/player");
-		Sprite[] playerSprites = new Sprite[playerSpriteTextures.size];
-		for(int i = 0; i < playerSpriteTextures.size; i++) 
-			playerSprites[i] = new Sprite(playerSpriteTextures.get(i));
-		
-		//calculate player start position
-		Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2) + 3, screenCenter.y - (playerSprites[0].getHeight() / 2) + 3);
-		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
-		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
-		
-		return player;
-	}
-	
-	//temporary method for testing - eventually the pirate villages will generate pirates
-	//adds pirates randomly to the map
-	public List<Pirate> getRandomPirates(int numPirates) {
-		List<Pirate> pirates = new ArrayList<Pirate>();
-		for(int i = 0; i < numPirates; i++) {
-			Sprite pirateSprite = atlas.createSprite("ships/pirate");
-			Pirate p = new Pirate(this.getRandShipPos(pirateSprite), pirateSprite, this.map, 0);
-			while(!this.map.validShipPosition(p)) {
-				p.setPosition(this.getRandShipPos(pirateSprite));
-			}
-			pirates.add(p);
+	public static Entity createEntity(String entityType, TextureAtlas atlas, SpiceTraderMap map, Vector2 screenCenter) {
+		if(entityType.equals("Player")) {
+			//get sprites for player object
+			Array<AtlasRegion> playerSpriteTextures = atlas.findRegions("ships/player");
+			Sprite[] playerSprites = new Sprite[playerSpriteTextures.size];
+			for(int i = 0; i < playerSpriteTextures.size; i++) 
+				playerSprites[i] = new Sprite(playerSpriteTextures.get(i));
+			
+			//calculate player start position
+			Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2) + 3, screenCenter.y - (playerSprites[0].getHeight() / 2) + 3);
+			Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
+			Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
+			
+			Item ginger = new Item("Ginger", atlas.findRegion("items/ginger"));
+			Item peppercorn = new Item("Peppercorn", atlas.findRegion("items/peppercorn"));
+			Item cinnamon = new Item("Cinnamon", atlas.findRegion("items/cinnamon"));
+			Item cloves = new Item("Cloves", atlas.findRegion("items/cloves"));
+			Item nutmeg = new Item("Nutmeg", atlas.findRegion("items/nutmeg"));
+			
+			player.addToCargo(ginger);
+			player.addToCargo(peppercorn);
+			player.addToCargo(cinnamon);
+			player.addToCargo(cloves);
+			player.addToCargo(nutmeg);
+			
+			player.removeFromCargo(player.getItemFromCargo(1));
+			
+			return player;
 		}
 		
-		return pirates;
-	}
-	
-	private Vector2 getRandShipPos(Sprite sprite) {
-		float xPos = (float) Utils.randInt(0, (int) (this.map.getSizePixels().x - sprite.getWidth()));
-		float yPos = (float) Utils.randInt(0, (int) (this.map.getSizePixels().y - sprite.getHeight()));
-		return new Vector2(xPos, yPos);
+		//temporarily generates pirate in random valid location
+		//in the future, pirates will be spawned by pirate bases
+		else if(entityType.contentEquals("Pirate")) {
+			Sprite pirateSprite = atlas.createSprite("ships/pirate");
+			Pirate pirate = new Pirate(Utils.getRandShipPos(pirateSprite, map), pirateSprite, map, 0);
+			while(!map.validShipPosition(pirate)) {
+				pirate.setPosition(Utils.getRandShipPos(pirateSprite, map));
+			}
+			
+			return pirate;
+		}
+		
+		return null;
 	}
 }

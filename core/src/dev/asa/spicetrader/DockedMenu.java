@@ -13,12 +13,13 @@ public class DockedMenu extends Menu {
 	
 	private Village village;
 
-	public DockedMenu(MenuManager manager, Vector2 screenSize, TextureAtlas atlas, BitmapFont[] fonts, Village village) {
-		super(manager, screenSize, atlas, fonts, true);
-		this.village = village;
+	public DockedMenu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture) {
+		super(manager, pos, backgroundTexture, true);
+		
+		this.village = manager.getPlayer().getDockable();
 		
 		//create leave button 
-		Array<AtlasRegion> leaveButtonTextures = atlas.findRegions("ui/leave_button");
+		Array<AtlasRegion> leaveButtonTextures = manager.getAtlas().findRegions("ui/leave_button");
 		Vector2 leaveButtonPos = new Vector2(this.getPos().x + ((this.getSize().x/2)- (leaveButtonTextures.get(0).getRegionWidth()/2)), this.getPos().y + 32);
 		Button leaveButton = new Button(leaveButtonTextures, leaveButtonPos);
 		leaveButton.setOnClick(new OnClickListener(){
@@ -28,37 +29,24 @@ public class DockedMenu extends Menu {
             }
 		});
 		
-		this.addButton(leaveButton);
-	}
-
-	@Override
-	protected void setPos() {
-		int topGap = 128;
-		float x = (this.getScreenSize().x / 2) - (this.getSize().x / 2);
-		float y = this.getScreenSize().y - this.getSize().y - topGap;
-		this.setPos(new Vector2(x, y));
-	}
-
-	@Override
-	protected void setBackground() {
-		this.setBackgroundTexture(this.findRegion("ui/game_over_menu_background"));
+		addButton(leaveButton);
 	}
 	
 	@Override
 	public void draw(SpriteBatch batch) {
 		super.draw(batch);
-		this.drawTitle(batch, "You have docked at " + village.getName());
-		this.drawBody(batch, "In the future, you will be able to trade spices for silver from this menu. For the best deals, you will be able to trade spices for spices directly.");
+		drawTitle(batch, "You have docked at " + village.getName());
+		drawBody(batch, "In the future, you will be able to trade spices for gold from this menu. For the best deals, you will be able to trade spices for spices directly.");
 	}
 	
+	//TEMPORARY: menu contents will drastically change in future
 	private void drawTitle(SpriteBatch batch, String title) {
-		this.getFont(1).setColor(Color.DARK_GRAY);
-		this.getFont(1).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 16, this.getSize().x, Align.center, true);
+		manager.getFont(2).setColor(Color.DARK_GRAY);
+		manager.getFont(2).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 16, this.getSize().x, Align.center, true);
 	}
 	
 	private void drawBody(SpriteBatch batch, String body) {
-		this.getFont(0).setColor(Color.DARK_GRAY);
-		this.getFont(0).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
+		manager.getFont(1).setColor(Color.DARK_GRAY);
+		manager.getFont(1).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
 	}
-
 }

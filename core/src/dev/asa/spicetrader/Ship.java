@@ -20,17 +20,17 @@ public abstract class Ship extends Entity {
 	//number of frames until sprite color goes back to normal
 	private int strikeCooldown;
 	
-	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float maxSpeed, float accel, float rotationSpeed, float direction) {
+	public Ship(Vector2 pos, Sprite sprite, SpiceTraderMap map, float maxSpeed, float accel, float rotationSpeed, float direction, int hull) {
 		super(pos, sprite);
 		this.map = map;
 		this.maxSpeed = maxSpeed;
 		this.accel = accel;
 		this.rotationSpeed = rotationSpeed;
 		this.direction = direction;
+		this.hull = hull;
 		this.getHitbox().setRotation(direction);
 		this.getSprite().setRotation(direction);
 		
-		hull = 2;
 		strikeCooldown = 0;
 		currSpeed = 0;
 		inReverse = false;
@@ -143,8 +143,8 @@ public abstract class Ship extends Entity {
 		}
 	}
 	
-	public void strike() {
-		this.hull -= 2;
+	public void strike(int damage) {
+		this.hull -= damage;
 		this.strikeCooldown = 10;
 	}
 	
@@ -190,5 +190,21 @@ public abstract class Ship extends Entity {
 	
 	public float getCurrSpeed() {
 		return currSpeed;
+	}
+	
+	public float getAccel() {
+		return accel;
+	}
+	
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+	
+	public float getRotationSpeed() {
+		return rotationSpeed;
+	}
+	
+	public int getCurrHull() {
+		return hull;
 	}
  }

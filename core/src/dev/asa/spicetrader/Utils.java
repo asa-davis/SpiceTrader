@@ -7,6 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Vector2;
@@ -98,24 +99,117 @@ public class Utils {
 	
 	//returns three fonts in order from smallest to largest
 	public static BitmapFont[] getPixelFonts() {
-		BitmapFont[] fonts = new BitmapFont[3];
+		BitmapFont[] fonts = new BitmapFont[4];
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Perfect DOS VGA 437 Win.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'()>?";
-		
-		parameter.size = 24;
+
+		parameter.size = 16;
 		fonts[0] = generator.generateFont(parameter);
 		fonts[0].setColor(Color.DARK_GRAY);
 		
-		parameter.size = 32;
+		parameter.size = 24;
 		fonts[1] = generator.generateFont(parameter);
 		fonts[1].setColor(Color.DARK_GRAY);
 		
-		parameter.size = 48;
+		parameter.size = 32;
 		fonts[2] = generator.generateFont(parameter);
 		fonts[2].setColor(Color.DARK_GRAY);
 		
+		parameter.size = 48;
+		fonts[3] = generator.generateFont(parameter);
+		fonts[3].setColor(Color.DARK_GRAY);
+		
 		generator.dispose();
 		return fonts;
+	}
+	
+	public static Vector2 getRandShipPos(Sprite sprite, SpiceTraderMap map) {
+		float xPos = (float) Utils.randInt(0, (int) (map.getSizePixels().x - sprite.getWidth()));
+		float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
+		return new Vector2(xPos, yPos);
+	}
+	
+	//for fitting movement stats to a nicer 1 - 11 range instead of their true float values
+	//true value ranges:
+	//		max speed 	0.8 - 3		 	
+	//		accel		0.02 - 0.2	
+	//		turning		1 - 6		
+	//		range		4 - 9		
+	//		damage		1 - 10 	
+	
+	//for scaling a number x in a range [min, max] to a different range [a, b] we can use
+	
+//		   (b-a)(x - min)
+//	f(x) = --------------  + a
+//			  max - min
+	
+	
+	public static int statToView(float val, char stat) {
+		float min = 0;
+		float max = 0;
+		float a = 1;
+		float b = 10;
+		
+		switch(stat) {
+			case 'm':
+				min = 0.8f;
+				max = 3;
+				break;
+			case 'a':
+				min = 0.02f;
+				max = 0.2f;
+				break;
+			case 't':
+				min = 1;
+				max = 6;
+				break;
+			case 'r':
+				min = 4;
+				max = 9;
+				break;
+			case 'd':
+				min = 1;
+				max = 10;
+				break;
+			default:
+				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
+		}
+		
+		return (int) ((((b - a) * (val - min))/(max - min)) + a);
+	}
+	
+	public static float statToUse(int val, char stat) {
+		float min = 1;
+		float max = 10;
+		float a = 0;
+		float b = 0;
+		
+		switch(stat) {
+		case 'm':
+			a = 0.8f;
+			b = 3;
+			break;
+		case 'a':
+			a = 0.02f;
+			b = 0.2f;
+			break;
+		case 't':
+			a = 1;
+			b = 6;
+			break;
+		case 'r':
+			a = 4;
+			b = 9;
+			break;
+		case 'd':
+			a = 1;
+			b = 10;
+			break;
+			default:
+				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
+		}
+		
+		return ((((b - a) * (val - min))/(max - min)) + a);
 	}
 }
