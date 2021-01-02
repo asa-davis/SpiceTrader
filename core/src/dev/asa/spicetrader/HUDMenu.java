@@ -31,14 +31,6 @@ public class HUDMenu extends Menu {
 		this.addButton(shipButton);
 	}
 	
-	//this method draws each item in the player inventory using the ItemVisualizer, which knows the mouse pos.
-	//the items are drawn on top of buttons each correspond to an index in the player inventory list.
-	//these buttons take care of the functionality of equiping/unequiping/trading items depending on the context, and whether an item is present in that index.
-	//these buttons also must be dynamically drawn depending on the amount of cargo space the player has.
-	private void drawCargo(SpriteBatch batch) {
-		
-	}
-	
 	private void drawHullBar(SpriteBatch batch) {
 		Array<AtlasRegion> hullBarTexture = manager.getAtlas().findRegions("ui/hullbar");
 

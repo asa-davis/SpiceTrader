@@ -23,4 +23,12 @@ public class Item {
 		this.stats = stats;
 		equipable = true;
 	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public AtlasRegion getTexture() {
+		return texture;
+	}
 }

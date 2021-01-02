@@ -20,11 +20,17 @@ public class Player extends Ship {
 	private static int INIT_DAMAGE = 3;
 	private static int INIT_RANGE = 3;
 	
-	private List<Item> cargo;
+	//cargo is expandable so we need a constant to know when we can expand it n stuff
+	private static final int TRUE_MAX_CARGO = 12;
+	
+	private Item[] cargo;
+	private Item[] equipped;
 	
 	private int maxHull;	//currHull is managed by ship class
 	private int currCargo;
 	private int maxCargo;
+	private int currEquipped;
+	private int maxEquipped;
 	
 	private int gold;
 	private int cannonBalls;
@@ -65,10 +71,13 @@ public class Player extends Ship {
 		cannonBalls = 99;
 		
 		maxHull = INIT_HULL;
-		maxCargo = 3;
+		maxCargo = 6;
 		currCargo = 0;
+		currEquipped = 0;
+		maxEquipped = 4;
 		
-		cargo = new ArrayList<Item>();
+		cargo = new Item[TRUE_MAX_CARGO];
+		equipped = new Item[maxEquipped];
 		
 		//calc initial pathfinding to player
 		this.getMap().getDijkstraMap().calcPlayerDistMap(this.getHitCenter());
@@ -87,8 +96,48 @@ public class Player extends Ship {
 		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
 	}
 	
-	public void giveItem(Item item) {
-		cargo.add(item);
+	public void addToCargo(Item item) {
+		if(currCargo < maxCargo) {
+			for(int i = 0; i < maxCargo; i++) {
+				if(cargo[i] == null) {
+					cargo[i] = item;
+					i = maxCargo;
+				}
+			}
+			currCargo++;
+		}
+	}
+	
+	public void addToEquipped(Item item) {
+		if(currEquipped < maxEquipped) {
+			for(int i = 0; i < maxEquipped; i++) {
+				if(equipped[i] == null) {
+					equipped[i] = item;
+					i = maxEquipped;
+				}
+			}
+			currEquipped++;
+		}
+	}
+	
+	public void removeFromCargo(Item item) {
+		for(int i = 0; i < maxCargo; i++) {
+			if(cargo[i] != null && cargo[i].equals(item)) {
+				cargo[i] = null;
+				currCargo--;
+				i = maxCargo;
+			}
+		}
+	}
+	
+	public void removeFromEquipped(Item item) {
+		for(int i = 0; i < maxEquipped; i++) {
+			if(equipped[i] != null && equipped[i].equals(item)) {
+				equipped[i] = null;
+				currEquipped--;
+				i = maxEquipped;
+			}
+		}
 	}
 	
 	public CannonBall fireCannonLeft() {
@@ -159,6 +208,20 @@ public class Player extends Ship {
 
 	public int getCannonBalls() {
 		return cannonBalls;
+	}
+	
+	public Item getItemFromCargo(int i) {
+		if(i < maxCargo)
+			return cargo[i];
+		else 
+			return null;
+	}
+	
+	public Item getItemFromEquipped(int i) {
+		if(i < maxEquipped)
+			return equipped[i];
+		else 
+			return null;
 	}
 	
 	//TODO: Move cannon firing stuff to another class so pirate villages can use it

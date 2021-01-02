@@ -65,4 +65,8 @@ public class Button {
 	}
 	
 	private enum State {DEFAULT, HOVER, CLICK}
+
+	public Vector2 getPos() {
+		return pos;
+	}
 }
