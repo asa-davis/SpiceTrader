@@ -1,32 +1,31 @@
-TODO (12/29/20)
+TODO (1/1/21)
 - Features to Add
-    - hud/inventory menus (in progress)
-        - biggest thing to add at this point is items/inventory data structure
-        - hover over item for name tag (dark background, white text, stats if applicable. see minecraft...)
-        - double click item to equip
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
         - unique names for villages
         - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
-    - pirate wandering (use dijkstra map class?)
-    - pirates shouldn't come after player when he gets within certain radius of village
-        - remove code that pauses game when docked
-        - display safety radius?
     - pirate bases
+        - spawn pirates
+        - pirates wander nearby their base unless a player approaches. (use dijkstra map class?)
+        - shoot at player
+        - these increase in frequency the farther out from center of map you go
+        - destroying a pirate base allows player to dock there and acquire gold/items
     - cooldown on cannons
-    - different map hitboxes for different tile types
+    - dont let pirates get within a certain radius of friendly ports. display radius?
+    - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
     - starting area/upgrade shop
     - sea monsters
     - quest/winning the game
     
 - Features to Investigate
-    - have camera rotate when you turn
-    - random items
-    - health bars
+    - better approach to pirates - make them deal damage on contact and only board at low hull? Add mechanic to fight them off?
+    - health bars above enemies
     - customize starting stats at beginning of game, fallout style
+    - randomly generated equippable items, bordlerlands style
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
+    - have camera rotate when you turn - would need to change textures to top down only :(
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
