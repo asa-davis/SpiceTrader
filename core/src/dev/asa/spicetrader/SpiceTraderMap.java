@@ -239,7 +239,7 @@ public class SpiceTraderMap {
 		return new Vector2(tileWidth, tileHeight);
 	}
 	
-	public DijkstraMap getDijkstraMap() {
+	public DijkstraMap getPlayerDijkstraMap() {
 		return playerDistMap;
 	}
 }

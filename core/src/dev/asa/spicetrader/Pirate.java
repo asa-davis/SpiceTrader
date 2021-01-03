@@ -31,17 +31,19 @@ public class Pirate extends Ship{
 		super.tick();
 		
 		//generate path to player
-		currPath = this.getMap().getDijkstraMap().getPathToPlayer(this.getHitCenter());
+		//currPath = this.getMap().getDijkstraMap().getPathToPlayer(this.getHitCenter());
 		
-		//move towards next point on path
-		if(currPath.size() > 1) {
-			if(movementCooldown <= 0) {
-				this.moveTowardsPoint(currPath.get(1));
-			}
-			else {
+		if(getMap().getPlayerDijkstraMap().inRange(getHitCenter())) {
+			Vector2 goal = getMap().getPlayerDijkstraMap().getNextMove(getHitCenter());
+			
+			if(movementCooldown <= 0) 
+				moveTowardsPoint(goal);
+			
+			else 
 				movementCooldown--;
-				System.out.println("movement cooldown");
-			}
+		}
+		else {
+			//wander
 		}
 	}
 	

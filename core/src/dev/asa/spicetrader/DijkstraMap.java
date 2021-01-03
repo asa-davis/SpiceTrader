@@ -29,6 +29,21 @@ public class DijkstraMap {
 		dijkstraMap = new int[windowSize][windowSize];
 	}
 	
+	//checks if a given pos is inside the dijkstra map
+	public boolean inRange(Vector2 pos) {
+		//turn start pos into tile coords
+		int[] tilePos = map.getTileCoordsFromPixels(pos);
+		
+		//check if position is inside window - if not, return empty path
+		if(tilePos[0] < origin.x || tilePos[0] >= origin.x + windowSize) 
+			return false;
+		
+		if(tilePos[1] < origin.y || tilePos[1] >= origin.y + windowSize) 
+			return false;
+		
+		return true;
+	}
+	
 	//creates a "dijkstra" map representing the distance from the player for every tile
 	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
 	//this is nice because all pirates can share one copy of this map for chasing the player
@@ -121,6 +136,45 @@ public class DijkstraMap {
 				System.out.print('\n');
 			}
 		}
+	}
+	
+	//returns the pixel coords for the next tile to travel to given a position
+	public Vector2 getNextMove(Vector2 startPos) {
+		//check for out of range
+		if(!inRange(startPos))
+			return null;
+		
+		//turn start pos into tile coords
+		int[] currPos = map.getTileCoordsFromPixels(startPos);
+		//change position into coordinates relative to window
+		toDijkstraWindowCoords(currPos);
+		
+		//get value at current location
+		int currVal = dijkstraMap[currPos[1]][currPos[0]];
+		
+		//check if pos is already at goal
+		if(currVal == 0)
+			return startPos;
+		
+		//otherwise, find lowest value neighbor square
+		List<int[]> neighbors = Utils.getNeighborCoords(currPos[0], currPos[1], windowSize, windowSize, false, true);
+		int lowestVal = currVal;
+		int[] lowestPos = currPos;
+		
+		//iterate through neighbors and look for tiles with lower weights than current
+		for(int[] neighborPos : neighbors) {
+			if(neighborPos != null) {
+				int neighborVal = dijkstraMap[neighborPos[1]][neighborPos[0]];
+				if(neighborVal < lowestVal && validMove(currPos, neighborPos)) {
+					lowestPos = neighborPos;
+					lowestVal = neighborVal;
+				}
+			}
+		}
+		
+		//return lowest value moveable square - must turn back into map coords and then into pixel coords
+		toMapCoords(lowestPos);
+		return map.getPixelCoordsFromTile(lowestPos);
 	}
 	
 	//returns a set of points representing the center tiles of the path to the player
