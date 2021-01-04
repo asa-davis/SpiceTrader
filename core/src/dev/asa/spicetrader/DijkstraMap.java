@@ -199,7 +199,8 @@ public class DijkstraMap {
 		for(int[] neighborPos : neighbors) {
 			if(neighborPos != null) {
 				int neighborVal = dijkstraMap[neighborPos[1]][neighborPos[0]];
-				if(neighborVal < lowestVal && validMove(currPos, neighborPos)) {
+				if(neighborVal < lowestVal) {
+				//if(neighborVal < lowestVal && validMove(currPos, neighborPos)) {
 					lowestPos = neighborPos;
 					lowestVal = neighborVal;
 				}
