@@ -86,7 +86,7 @@ public class Player extends Ship {
 		equipped = new Item[maxEquipped];
 		
 		//calc initial pathfinding to player
-		getMap().getPlayerDijkstraMap().calcPlayerDistMap(getHitCenter());
+		getMap().getPlayerDijkstraMap().calcDijkstraMapToPixelCoords(getHitCenter());
 	}
 	
 	@Override
@@ -96,7 +96,7 @@ public class Player extends Ship {
 		calcPlayerFiringSprite();
 		
 		if(getCurrSpeed() > 0)
-			getMap().getPlayerDijkstraMap().calcPlayerDistMap(getHitCenter());
+			getMap().getPlayerDijkstraMap().calcDijkstraMapToPixelCoords(getHitCenter());
 		
 		if(damageCooldown > 0) 
 			damageCooldown--;

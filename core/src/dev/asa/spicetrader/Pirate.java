@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class Pirate extends Ship{
-	private List<Vector2> currPath;
 	private static int DEFAULT_MAX_SPEED = 2;
 	private static int DEFAULT_ACCEL = 4;
 	private static int DEFAULT_TURNING = 5;
@@ -15,6 +14,9 @@ public class Pirate extends Ship{
 	
 	//keeps pirate from moving for a few frames after knocking player.
 	private int movementCooldown;
+	
+	//where the pirate is currently headed.
+	private Vector2 currGoal;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
 		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
@@ -30,20 +32,13 @@ public class Pirate extends Ship{
 	public void tick() {
 		super.tick();
 		
-		//generate path to player
-		//currPath = this.getMap().getDijkstraMap().getPathToPlayer(this.getHitCenter());
-		
-		if(getMap().getPlayerDijkstraMap().inRange(getHitCenter())) {
-			Vector2 goal = getMap().getPlayerDijkstraMap().getNextMove(getHitCenter());
-			
+		//fetch goal to move towards and move unless on movement cooldown from hitting player
+		currGoal = getMap().getPlayerDijkstraMap().getNextMove(getHitCenter());
+		if(currGoal != null) {
 			if(movementCooldown <= 0) 
-				moveTowardsPoint(goal);
-			
+				this.moveTowardsPoint(currGoal);
 			else 
 				movementCooldown--;
-		}
-		else {
-			//wander
 		}
 	}
 	
@@ -91,17 +86,11 @@ public class Pirate extends Ship{
 	}
 	
 	private void drawCurrPath(ShapeRenderer renderer) {
-		if(currPath.size() > 1)
-			renderer.circle(currPath.get(1).x, currPath.get(1).y, 1);
-		
-		Vector2 currPoint;
-		Vector2 nextPoint;
-		for(int i = 1; i < currPath.size(); i++) {
-			currPoint = currPath.get(i - 1);
-			nextPoint = currPath.get(i);
-			renderer.line(currPoint, nextPoint);
-			currPoint = nextPoint;
-		}
+		if(currGoal == null)
+			return;
+
+		renderer.circle(currGoal.x, currGoal.y, 1);
+		renderer.line(getHitCenter(), currGoal);
 	}
 	
 	public void bounceBack() {
