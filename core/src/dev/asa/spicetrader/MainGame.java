@@ -105,29 +105,24 @@ public class MainGame extends ApplicationAdapter {
 		
 		//Entities
 		List<Entity> allEnts = new ArrayList<Entity>();
+		EntityFactory entFac = new EntityFactory(map, atlas);
 		
 		//player
-		Player player = (Player) EntityFactory.createEntity("Player", atlas, map, screenCenter);
+		Player player = entFac.createPlayer(screenCenter);
 		allEnts.add(player);
 		
 		//pirates
 		for(int i = 0; i < NUM_PIRATES; i++) {
-			allEnts.add(EntityFactory.createEntity("Pirate", atlas, map, screenCenter));
+			allEnts.add(entFac.createRandPirate());
 		}
+		
+		//villages
+		List<Village> villages = entFac.createVillages();
+		allEnts.addAll(villages);
+		map.addVillages(villages);
 		
 		//menus
 		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
-		
-		//villages
-		VillageFactory villFac = new VillageFactory(map, atlas);
-		try {
-			List<Village> villages = villFac.getVillages(NUM_VILLAGES);
-			allEnts.addAll(villages);
-			map.addVillages(villages);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
 		
 		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera);
 		entManager.addAll(allEnts);
