@@ -1,4 +1,4 @@
-TODO (1/2/21)
+TODO (1/4/21)
 - Features to Add
     - pirate avoidance ai - make them separate when they get too close
     - pirate wandering
@@ -29,6 +29,7 @@ TODO (1/2/21)
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
     - have camera rotate when you turn - would need to change textures to top down only :(
     - rewards for killing pirates
+    - persistant upgrades/unlocks
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
