@@ -1,6 +1,7 @@
 package dev.asa.spicetrader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -66,13 +67,13 @@ public class EntityFactory {
 		List<Village> villages = new ArrayList<Village>();
 		
 		int maxNumVillages = villageLocations.size();
-		for(int i = 0; i < maxNumVillages/2; i++) {
+		for(int i = 0; i < maxNumVillages; i++) {
 			VillageLocation nextLocation = villageLocations.get(Utils.randInt(0, villageLocations.size() - 1));
 			villages.add(makeVillage(nextLocation));
 			villageLocations.remove(nextLocation);
 		}
 		
-		System.out.println("Generated " + maxNumVillages/2 + " villages.");
+		System.out.println("Generated " + maxNumVillages + " villages.");
 		
 		return villages;
 	}
@@ -84,12 +85,16 @@ public class EntityFactory {
 		List<VillageLocation> validVillageLocations = new ArrayList<VillageLocation>();
 		
 		//use the bitmask map to check for pure grass with valid dock locations. skip every other row/col so locations never overlap.
+		List<List<Integer>> usedTiles = new ArrayList<List<Integer>>();
 		int[][] bmMap = map.getBitmaskMap();
-		for(int row = 0; row < bmMap.length; row += 3) {
-			for(int col = 0; col < bmMap[0].length; col += 3) {
+		for(int row = 0; row < bmMap.length; row++) {
+			for(int col = 0; col < bmMap[0].length; col++) {
 				
-				//check for 2x2 pure grass square
-				if(bmMap[row][col] == 255 && bmMap[row + 1][col] == 255 && bmMap[row][col + 1] == 255 && bmMap[row + 1][col + 1] == 255) {
+				//check for 2x2 pure grass square that hasn't been used before
+				boolean occupied = false;
+				if(usedTiles.contains(Arrays.asList(col, row)) || usedTiles.contains(Arrays.asList(col + 1, row)) || usedTiles.contains(Arrays.asList(col, row + 1)) || usedTiles.contains(Arrays.asList(col + 1, row + 1)))
+					occupied = true;
+				if(!occupied && bmMap[row][col] == 255 && bmMap[row + 1][col] == 255 && bmMap[row][col + 1] == 255 && bmMap[row + 1][col + 1] == 255) {
 					//check all 8 possible dock locations (adjacent non-diagonal tiles to 2x2 square)
 					//if they are a straight beach tile, add them to list. 
 					//cleaner way to do this?? loops?
@@ -123,6 +128,10 @@ public class EntityFactory {
 					if(dockLocations.size() > 0) {
 						VillageLocation l = new VillageLocation(new Vector2(col, row), dockLocations);
 						validVillageLocations.add(l);
+						usedTiles.add(Arrays.asList(col, row));
+						usedTiles.add(Arrays.asList(col + 1, row));
+						usedTiles.add(Arrays.asList(col, row + 1));
+						usedTiles.add(Arrays.asList(col + 1, row + 1));
 					}
 				}
 			}
