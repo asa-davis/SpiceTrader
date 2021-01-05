@@ -1,6 +1,11 @@
 TODO (1/4/21)
 - Features to Add
-    - pirate avoidance ai - make them separate when they get too close
+    - pirate bases
+        - spawn pirates
+        - pirates wander nearby their base unless a player approaches.
+        - shoot at player
+        - these increase in frequency the farther out from center of map you go
+        - destroying a pirate base allows player to dock there and acquire gold/items
     - pirate wandering
         - requires generalized dijkstra
         - pick a random point as their new goal and build a new dijkstra map for it. when they get there, pick another.
@@ -9,18 +14,13 @@ TODO (1/4/21)
         - add datastructures to Village to hold current trade, inventory, etc.
         - unique names for villages
         - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
-    - pirate bases
-        - spawn pirates
-        - pirates wander nearby their base unless a player approaches.
-        - shoot at player
-        - these increase in frequency the farther out from center of map you go
-        - destroying a pirate base allows player to dock there and acquire gold/items
     - dont let pirates get within a certain radius of friendly ports. display radius?
     - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
     - starting area/upgrade shop
     - sea monsters
     - quest/winning the game
+    - whitewater trail behind ships
     
 - Features to Investigate
     - health bars above enemies
@@ -30,12 +30,9 @@ TODO (1/4/21)
     - have camera rotate when you turn - would need to change textures to top down only :(
     - rewards for killing pirates
     - persistant upgrades/unlocks
+    - map
 
 - Fixes/Refactoring
     - merge village factory class with ent factory. What do we do with village location inner class???
-    - don't let pirates spawn next to beach tiles, they get stuck
     - fix bug where you can sail underneath pirates
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
-    - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
-    - generalize dijkstra map methods
-    - fix bug where dead pirates board player in the time between when they take a hit and get deleted
