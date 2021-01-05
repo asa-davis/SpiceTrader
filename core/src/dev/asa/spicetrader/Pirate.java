@@ -32,13 +32,21 @@ public class Pirate extends Ship{
 	public void tick() {
 		super.tick();
 		
-		//fetch goal to move towards and move unless on movement cooldown from hitting player
-		currGoal = getMap().getPlayerDijkstraMap().getNextMove(getHitCenter());
-		if(currGoal != null) {
-			if(movementCooldown <= 0) 
-				this.moveTowardsPoint(currGoal);
-			else 
-				movementCooldown--;
+		//check if in chase range of player
+		if(getMap().getPlayerDijkstraMap().inRange(getHitCenter())) {
+			//get next move towards player
+			currGoal = getMap().getPlayerDijkstraMap().getNextMove(getHitCenter());
+			
+			//check with entity manager that goal isnt shared by other pirates
+			currGoal = getManager().avoidOtherPirates(currGoal);
+			
+			//check if pirate can still move
+			if(currGoal != null) {
+				if(movementCooldown <= 0) 
+					moveTowardsPoint(currGoal);
+				else 
+					movementCooldown--;
+			}
 		}
 	}
 	

@@ -22,30 +22,38 @@ import com.badlogic.gdx.math.Vector2;
 
 public class EntityManager {
 	
-	Player player;
+	private Player player;
 	private List<Entity> allEntities;
 	private List<CannonBall> allCanBalls;
 	private List<Pirate> allPirates;
 	private List<Village> allVillages;
 	private List<Entity> entitiesToRemove;
 	private ShapeRenderer hitboxRenderer;
-	MenuManager menuManager;
-	MainGame game;
-	Camera camera;
+	private MenuManager menuManager;
+	private MainGame game;
+	private SpiceTraderMap map;
+	private Camera camera;
 	
-	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, Camera camera) {
+	private List<Vector2> pirateGoals;
+	
+	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera) {
+		this.menuManager = menuManager;
+		this.game = game;
+		this.camera = camera;
+		this.map = map;
+		
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
 		allPirates = new ArrayList<Pirate>();
 		allVillages = new ArrayList<Village>();
 		entitiesToRemove = new ArrayList<Entity>();
-		this.menuManager = menuManager;
-		this.game = game;
-		this.camera = camera;
 		
 		//for showing hitboxes
 		hitboxRenderer = new ShapeRenderer();
 		hitboxRenderer.setColor(Color.BLUE);
+		
+		//for making pirates separate
+		pirateGoals = new ArrayList<Vector2>();
 	}
 	
 	public void render(SpriteBatch batch, OrthographicCamera camera, boolean showHitboxes) {
@@ -82,6 +90,9 @@ public class EntityManager {
 			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
 			menuManager.openMenu(boarded);
 		}
+		
+		//clear pirate goals
+		pirateGoals.clear();
 		
 		//check for deleted entities and tick the others
 		entitiesToRemove.clear();
@@ -133,6 +144,19 @@ public class EntityManager {
 		}
 		player.setDockable(dockable);
 	}
+	
+	//checks if other pirates share this goal this frame and moves or deletes it if so
+	public Vector2 avoidOtherPirates(Vector2 currGoal) {
+		//if goal is not shared, return it and add it to list
+		if(!pirateGoals.contains(currGoal)) {
+			pirateGoals.add(currGoal);
+			return currGoal;
+		}
+		//otherwise pirate cant move this frame
+		else 
+			return null;
+	}
+	
 
 	public void add(Entity e) {
 		allEntities.add(e);
@@ -144,6 +168,7 @@ public class EntityManager {
 			allPirates.add((Pirate) e);
 		if(e instanceof Village)
 			allVillages.add((Village) e);
+		e.setManager(this);
 	}
 	
 	public void addAll(List<Entity> el) {

@@ -22,6 +22,8 @@ public abstract class Entity {
 	private Vector2 hitCenter;
 	private Sprite sprite;
 	
+	EntityManager manager;
+	
 	public Entity(Vector2 pos, Sprite sprite) {
 		this.exists = true;
 		
@@ -101,5 +103,13 @@ public abstract class Entity {
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 		this.sprite.setPosition(pos.x, pos.y);
+	}
+	
+	public EntityManager getManager() {
+		return manager;
+	}
+	
+	public void setManager(EntityManager manager) {
+		this.manager = manager;
 	}
 }

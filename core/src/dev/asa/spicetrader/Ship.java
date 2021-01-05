@@ -118,12 +118,11 @@ public abstract class Ship extends Entity {
 		vectorsToTry.add(new Vector2(0, 1));
 		vectorsToTry.add(new Vector2(-1, 0));
 		vectorsToTry.add(new Vector2(0, -1));
-		//diagonals, in case trapped in corner
+		//diagonals, in case trapped in corner?
 		vectorsToTry.add(new Vector2(0.70710678118f, 0.70710678118f));
 		vectorsToTry.add(new Vector2(0.70710678118f, -0.70710678118f));
 		vectorsToTry.add(new Vector2(-0.70710678118f, 0.70710678118f));
 		vectorsToTry.add(new Vector2(-0.70710678118f, -0.70710678118f));
-		//vectorsToTry.add(getMoveVector(0));
 		
 		int i = 0;
 		while(!map.validShipPosition(this)) {
@@ -133,7 +132,6 @@ public abstract class Ship extends Entity {
 		}
 		
 		Vector2 awayFromWall = vectorsToTry.get(i);
-		System.out.println(awayFromWall.toString());
 		
 		//once we find correct direction away from wall, we move back to original position and slowly backtrack to get pixel perfect collision
 		updatePosition(-1 * maxSpeed * awayFromWall.x, -1 * maxSpeed * awayFromWall.y);
