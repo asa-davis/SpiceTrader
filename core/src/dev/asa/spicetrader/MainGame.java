@@ -129,7 +129,7 @@ public class MainGame extends ApplicationAdapter {
 			Gdx.app.exit();
 		}
 		
-		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, camera);
+		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera);
 		entManager.addAll(allEnts);
 		
 		//input

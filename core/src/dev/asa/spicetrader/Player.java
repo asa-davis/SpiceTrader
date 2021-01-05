@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 public class Player extends Ship {
 	
 	//starting stats
-	private static int INIT_HULL = 3;
+	private static int INIT_HULL = 12;
 	//these are in view mode and must be converted before they are applied
 	private static int INIT_MAX_SPEED = 3;
 	private static int INIT_ACCEL = 3;
@@ -58,6 +58,10 @@ public class Player extends Ship {
 	//for determining when/where a player can dock
 	private Village dockable = null;
 	
+	//this determines the rate at which a player can take damage
+	private final static int PLAYER_DAMAGE_COOLDOWN = 20;
+	private int damageCooldown;
+	
 	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
 		super(pos, playerSprites[INIT_SPRITE], map, Utils.statToUse(INIT_MAX_SPEED, 'm'), Utils.statToUse(INIT_ACCEL, 'a'), Utils.statToUse(INIT_TURNING, 't'), 0, INIT_HULL);
 		this.playerSprites = playerSprites;
@@ -66,6 +70,8 @@ public class Player extends Ship {
 		//initialize stats
 		cannonDamage = (int) Utils.statToUse(INIT_DAMAGE, 'd');
 		cannonRange = Utils.statToUse(INIT_RANGE, 'r');
+		
+		damageCooldown = 0;
 		
 		gold = 0;
 		cannonBalls = 99;
@@ -80,20 +86,25 @@ public class Player extends Ship {
 		equipped = new Item[maxEquipped];
 		
 		//calc initial pathfinding to player
-		this.getMap().getDijkstraMap().calcPlayerDistMap(this.getHitCenter());
+		getMap().getPlayerDijkstraMap().calcDijkstraMapToPixelCoords(getHitCenter());
 	}
 	
 	@Override
 	public void tick() {
 		super.tick();
-		this.calcPlayerFiringSprite();
-		if(this.getCurrSpeed() > 0)
-			this.getMap().getDijkstraMap().calcPlayerDistMap(this.getHitCenter());
+		
+		calcPlayerFiringSprite();
+		
+		if(getCurrSpeed() > 0)
+			getMap().getPlayerDijkstraMap().calcDijkstraMapToPixelCoords(getHitCenter());
+		
+		if(damageCooldown > 0) 
+			damageCooldown--;
 	}
 	
 	@Override
 	protected void createHitbox() {
-		this.setHitbox(Ship.getShipHitbox(this.getWidth(), this.getHeight(), 3));
+		setHitbox(Ship.getShipHitbox(getWidth(), getHeight(), 3));
 	}
 	
 	public void addToCargo(Item item) {
@@ -143,13 +154,13 @@ public class Player extends Ship {
 	public CannonBall fireCannonLeft() {
 		if(cannonBalls > 0) {
 			cannonBalls--;
-			CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() + 90, cannonRange, cannonDamage);
-			this.firingLeft = true;
-			this.firingLeftSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
-			if(this.firingRight) 
-				this.setSprite(playerSprites[4]);
+			CannonBall shot = new CannonBall(calcBallInitPos(), new Sprite(cannonBallSprite), getDirection() + 90, cannonRange, cannonDamage);
+			firingLeft = true;
+			firingLeftSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
+			if(firingRight) 
+				setSprite(playerSprites[4]);
 			else
-				this.setSprite(playerSprites[2]);
+				setSprite(playerSprites[2]);
 			return shot;
 		}
 		return null;
@@ -158,16 +169,24 @@ public class Player extends Ship {
 	public CannonBall fireCannonRight() {
 		if(cannonBalls > 0) {
 			cannonBalls--;
-			CannonBall shot = new CannonBall(this.calcBallInitPos(), new Sprite(this.cannonBallSprite), this.getDirection() - 90, cannonRange, cannonDamage);
-			this.firingRight = true;
-			this.firingRightSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
-			if(this.firingLeft) 
-				this.setSprite(playerSprites[4]);
+			CannonBall shot = new CannonBall(calcBallInitPos(), new Sprite(cannonBallSprite), getDirection() - 90, cannonRange, cannonDamage);
+			firingRight = true;
+			firingRightSpriteCooldown = Player.FIRING_SPRITE_COOLDOWN;
+			if(firingLeft) 
+				setSprite(playerSprites[4]);
 			else
-				this.setSprite(playerSprites[3]);
+				setSprite(playerSprites[3]);
 			return shot;
 		}
 		return null;
+	}
+	
+	@Override
+	public void strike(int damage) {
+		if(damageCooldown == 0) {
+			super.strike(damage);
+			damageCooldown = PLAYER_DAMAGE_COOLDOWN;
+		}
 	}
 	
 	//returns normalized values of stats fit to scale
@@ -227,35 +246,35 @@ public class Player extends Ship {
 	//TODO: Move cannon firing stuff to another class so pirate villages can use it
 	private Vector2 calcBallInitPos() {
 		Vector2 initPos = new Vector2();
-		Vector2 centerOfShip = this.getHitCenter();
-		initPos.x = centerOfShip.x - (this.cannonBallSprite.getWidth()/2);
-		initPos.y = centerOfShip.y - (this.cannonBallSprite.getHeight()/2);
+		Vector2 centerOfShip = getHitCenter();
+		initPos.x = centerOfShip.x - (cannonBallSprite.getWidth()/2);
+		initPos.y = centerOfShip.y - (cannonBallSprite.getHeight()/2);
 		return initPos;
 	}
 	
 	//logic for setting correct firing playerSprites
 	private void calcPlayerFiringSprite() {
-		if(this.firingLeft) {
-			this.firingLeftSpriteCooldown--;
-			if(this.firingLeftSpriteCooldown == 0) {
-				this.firingLeft = false;
-				if(this.firingRight) {
-					this.setSprite(playerSprites[3]);
+		if(firingLeft) {
+			firingLeftSpriteCooldown--;
+			if(firingLeftSpriteCooldown == 0) {
+				firingLeft = false;
+				if(firingRight) {
+					setSprite(playerSprites[3]);
 				}
 				else {
-					this.setSprite(playerSprites[Player.INIT_SPRITE]);
+					setSprite(playerSprites[Player.INIT_SPRITE]);
 				}
 			}
 		}
-		if(this.firingRight) {
-			this.firingRightSpriteCooldown--;
-			if(this.firingRightSpriteCooldown == 0) {
-				this.firingRight = false;
-				if(this.firingLeft) {
-					this.setSprite(playerSprites[2]);
+		if(firingRight) {
+			firingRightSpriteCooldown--;
+			if(firingRightSpriteCooldown == 0) {
+				firingRight = false;
+				if(firingLeft) {
+					setSprite(playerSprites[2]);
 				}
 				else {
-					this.setSprite(playerSprites[Player.INIT_SPRITE]);
+					setSprite(playerSprites[Player.INIT_SPRITE]);
 				}
 			}
 		}

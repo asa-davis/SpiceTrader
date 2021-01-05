@@ -1,5 +1,8 @@
 package dev.asa.spicetrader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
@@ -17,6 +20,7 @@ public abstract class Ship extends Entity {
 	private boolean inReverse;
 	//health of ship
 	private int hull;
+	private boolean dead;
 	//number of frames until sprite color goes back to normal
 	private int strikeCooldown;
 	
@@ -28,18 +32,19 @@ public abstract class Ship extends Entity {
 		this.rotationSpeed = rotationSpeed;
 		this.direction = direction;
 		this.hull = hull;
-		this.getHitbox().setRotation(direction);
-		this.getSprite().setRotation(direction);
+		getHitbox().setRotation(direction);
+		getSprite().setRotation(direction);
 		
 		strikeCooldown = 0;
 		currSpeed = 0;
 		inReverse = false;
 		decel = 0.01f;
+		dead = false;
 	}
 	
 	public void tick() {
 		//handle acceleration behavior
-		this.move();
+		move();
 		if(currSpeed > 0) {
 			currSpeed -= decel;
 			if(currSpeed <= 0) {
@@ -49,14 +54,14 @@ public abstract class Ship extends Entity {
 		}
 		
 		//handle red shading on strike
-		if(this.strikeCooldown > 0) {
-			this.strikeCooldown--;
-			if(this.strikeCooldown > 0)
-				this.getSprite().setColor(Color.RED);
+		if(strikeCooldown > 0) {
+			strikeCooldown--;
+			if(strikeCooldown > 0)
+				getSprite().setColor(Color.RED);
 			else {
-				this.getSprite().setColor(Color.WHITE);
-				if(this.hull <= 0)
-					this.exists = false;
+				getSprite().setColor(Color.WHITE);
+				if(hull <= 0 && getClass() == Pirate.class)
+					exists = false;
 			}
 		}
 	}
@@ -81,26 +86,81 @@ public abstract class Ship extends Entity {
 		}
 	}
 	
-	public void move() {
-		float xMove;
-		float yMove;
-		if(!inReverse) {
-			xMove = -1 * (float) Math.sin(0.0175 * direction);
-			yMove = (float) Math.cos(0.0175 * direction);
-		} else {
-			xMove = (float) Math.sin(0.0175 * direction);
-			yMove = -1 * (float) Math.cos(0.0175 * direction);
-		}
-		this.updatePosition(xMove * currSpeed, yMove * currSpeed);
+	private void move() {
+		Vector2 moveVector;
 		
-		//collision detection - undo move if hitting map 
-		int numBacktracks = 4;
-		float backtrackAmount = currSpeed / 4f; 
-		while(!map.validShipPosition(this) && numBacktracks >= 0) {
+		if(!inReverse) {
+			moveVector = getMoveVector(direction);
+		} else {
+			moveVector = getMoveVector(direction + 180);
+		}
+		
+		updatePosition(moveVector.x * currSpeed, moveVector.y * currSpeed);
+		
+		//collision detection - for collisions with other entities: 
+		//pirates are kept from overlapping player with bounce back. 
+		//ships are kept from overlapping map hitbox with pixel perfect retracement step.
+		//pirates are kept from overlapping with other pirates too much by avoidance ai
+
+		if(!map.validShipPosition(this)) {
 			currSpeed = 0;
-			this.updatePosition(-1 * backtrackAmount * xMove, -1 * backtrackAmount * yMove);
+			handleMapCollisionSticky(moveVector);
+		}
+	}
+	
+	//slippery approach: ship will move away from the wall perpendicularly until no longer colliding. Note: current approach must be revised when new map tile hitboxes are added.
+	private void handleMapCollisionSlippery() {
+		//try all 4 directions
+		List<Vector2> vectorsToTry = new ArrayList<Vector2>();
+		vectorsToTry.add(new Vector2(0, 0));
+		//cardinal directions
+		vectorsToTry.add(new Vector2(1, 0));
+		vectorsToTry.add(new Vector2(0, 1));
+		vectorsToTry.add(new Vector2(-1, 0));
+		vectorsToTry.add(new Vector2(0, -1));
+		//diagonals, in case trapped in corner?
+		vectorsToTry.add(new Vector2(0.70710678118f, 0.70710678118f));
+		vectorsToTry.add(new Vector2(0.70710678118f, -0.70710678118f));
+		vectorsToTry.add(new Vector2(-0.70710678118f, 0.70710678118f));
+		vectorsToTry.add(new Vector2(-0.70710678118f, -0.70710678118f));
+		
+		int i = 0;
+		while(!map.validShipPosition(this)) {
+			updatePosition(-1 * vectorsToTry.get(i).x * maxSpeed, -1 * vectorsToTry.get(i).y * maxSpeed);
+			i++;
+			updatePosition(vectorsToTry.get(i).x * maxSpeed, vectorsToTry.get(i).y * maxSpeed);
+		}
+		
+		Vector2 awayFromWall = vectorsToTry.get(i);
+		
+		//once we find correct direction away from wall, we move back to original position and slowly backtrack to get pixel perfect collision
+		updatePosition(-1 * maxSpeed * awayFromWall.x, -1 * maxSpeed * awayFromWall.y);
+		int numBacktracks = 32;
+		float backtrackAmount = maxSpeed / numBacktracks; 
+		while(!map.validShipPosition(this) && numBacktracks >= 0) {
+			updatePosition(backtrackAmount * awayFromWall.x, backtrackAmount * awayFromWall.y);
 			numBacktracks--;
 		}
+	}
+	
+	//stick approach: ship will move backwards on it's moveVector until no longer colliding. Results in ships sticking to walls.
+	private void handleMapCollisionSticky(Vector2 moveVector) {
+		float numBacktracks = 32;
+		float backtrackAmount = maxSpeed / numBacktracks; 
+		while(!map.validShipPosition(this) && numBacktracks >= 0) {
+			updatePosition(-1 * backtrackAmount * moveVector.x, -1 * backtrackAmount * moveVector.y);
+			numBacktracks--;
+		}
+	}
+	
+	//takes a direction in degrees and returns a normalized movement vector
+	private Vector2 getMoveVector(float direction) {
+		Vector2 moveVector = new Vector2();
+		
+		moveVector.x = -1 * (float) Math.sin(0.0175 * direction);
+		moveVector.y = (float) Math.cos(0.0175 * direction);
+		
+		return moveVector;
 	}
 	
 	public void turnRight() {
@@ -109,18 +169,10 @@ public abstract class Ship extends Entity {
 		else 
 			direction += rotationSpeed;
 		
-		this.updateRotation();
+		updateRotation();
 		
-		//collision detection - undo move if hitting map
-		int numMoves = (int) (rotationSpeed + 1);
-		while(!map.validShipPosition(this) && numMoves >= 0) {
-			if(!inReverse) 
-				direction += 1;
-			else 
-				direction -= 1;
-			this.updateRotation();
-			numMoves--;
-		}
+		if(!map.validShipPosition(this))
+			handleMapCollisionSlippery();
 	}
 	
 	public void turnLeft() {
@@ -129,23 +181,25 @@ public abstract class Ship extends Entity {
 		else
 			direction -= rotationSpeed;
 		
-		this.updateRotation();
+		updateRotation();
 		
-		//collision detection - undo move if hitting map
-		int numMoves = (int) (rotationSpeed + 1);
-		while(!map.validShipPosition(this) && numMoves >= 0) {
-			if(!inReverse) 
-				direction -= 1;
-			else 
-				direction += 1;
-			this.updateRotation();
-			numMoves--;
-		}
+		if(!map.validShipPosition(this))
+			handleMapCollisionSlippery();
 	}
 	
 	public void strike(int damage) {
-		this.hull -= damage;
-		this.strikeCooldown = 10;
+		hull -= damage;
+		if(hull <= 0)
+			dead = true;
+		strikeCooldown = 10;
+	}
+	
+	public boolean isDead() {
+		return dead;
+	}
+	
+	public boolean isInReverse() {
+		return inReverse;
 	}
 	
 	private void updateRotation() {
@@ -156,16 +210,16 @@ public abstract class Ship extends Entity {
 			direction -= 360;
 		
 		//System.out.println("" + direction);
-		this.getHitbox().setRotation(direction);
-		this.getSprite().setRotation(direction);
+		getHitbox().setRotation(direction);
+		getSprite().setRotation(direction);
 	}
 	
 	public void setDirection(float d) {
 		//System.out.println("" + d);
 		direction = d;
 		
-		this.getHitbox().setRotation(d);
-		this.getSprite().setRotation(d);
+		getHitbox().setRotation(d);
+		getSprite().setRotation(d);
 	}
 	
 	public static Polygon getShipHitbox(float spriteWidth, float spriteHeight, int xOffset) {
@@ -177,7 +231,7 @@ public abstract class Ship extends Entity {
 	@Override
 	public void setSprite(Sprite sprite) {
 		super.setSprite(sprite);
-		this.getSprite().setRotation(direction);
+		getSprite().setRotation(direction);
 	}
 	
 	public float getDirection() {

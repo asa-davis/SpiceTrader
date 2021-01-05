@@ -22,30 +22,38 @@ import com.badlogic.gdx.math.Vector2;
 
 public class EntityManager {
 	
-	Player player;
+	private Player player;
 	private List<Entity> allEntities;
 	private List<CannonBall> allCanBalls;
 	private List<Pirate> allPirates;
 	private List<Village> allVillages;
 	private List<Entity> entitiesToRemove;
 	private ShapeRenderer hitboxRenderer;
-	MenuManager menuManager;
-	MainGame game;
-	Camera camera;
+	private MenuManager menuManager;
+	private MainGame game;
+	private SpiceTraderMap map;
+	private Camera camera;
 	
-	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, Camera camera) {
+	private List<Vector2> pirateGoals;
+	
+	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera) {
+		this.menuManager = menuManager;
+		this.game = game;
+		this.camera = camera;
+		this.map = map;
+		
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
 		allPirates = new ArrayList<Pirate>();
 		allVillages = new ArrayList<Village>();
 		entitiesToRemove = new ArrayList<Entity>();
-		this.menuManager = menuManager;
-		this.game = game;
-		this.camera = camera;
 		
 		//for showing hitboxes
 		hitboxRenderer = new ShapeRenderer();
 		hitboxRenderer.setColor(Color.BLUE);
+		
+		//for making pirates separate
+		pirateGoals = new ArrayList<Vector2>();
 	}
 	
 	public void render(SpriteBatch batch, OrthographicCamera camera, boolean showHitboxes) {
@@ -77,8 +85,14 @@ public class EntityManager {
 		//drunk mode
 		//camera.rotate(1, 0, 0, 1);
 		
-		//process collisions
-		this.processCollisions();
+		//check if player is dead
+		if(player.isDead()) {
+			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
+			menuManager.openMenu(boarded);
+		}
+		
+		//clear pirate goals
+		pirateGoals.clear();
 		
 		//check for deleted entities and tick the others
 		entitiesToRemove.clear();
@@ -92,10 +106,13 @@ public class EntityManager {
 		//delete entities which no longer exist
 		for(Entity e : entitiesToRemove)
 			this.remove(e);
+		
+		//process collisions
+		this.processCollisions();
 	}
 	
 	//Performs the following checks each frame: 
-	//	1. Every pirate against player. this starts the "you have been boarded" event and pauses gameplay
+	//	1. Every pirate against player. this collision bounces back pirate and damages player
 	//	2. Every pirate against every cannon ball. this deletes cannon ball and calls the strike() event on the pirate
 	//	   (eventually, cannon balls will be checked against player as well as villages. Pirate villages will fire at player and can be attacked)
 	//	3. Every dock against player. When a player is in dock hit box, the dockable variable on player should be set to the appropriate village.
@@ -103,16 +120,18 @@ public class EntityManager {
 	//NOTE: collisions between ships and the map are handled in the validShipPosition method in the map class, which should always be called when a ship moves
 	private void processCollisions() {
 		for(Pirate p : allPirates) {
-			//1.
-			if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
-				Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
-				menuManager.openMenu(boarded);
-			}
-			//2.
-			for(CannonBall c : allCanBalls) {
-				if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
-					c.exists = false;
-					p.strike(c.getDamage());
+			if(!p.isDead()) {
+				//1.
+				if(Intersector.overlapConvexPolygons(player.getHitbox(), p.getHitbox())) {
+					player.strike(1);
+					p.bounceBack();
+				}
+				//2.
+				for(CannonBall c : allCanBalls) {
+					if(Intersector.overlapConvexPolygons(c.getHitbox(), p.getHitbox())) {
+						c.exists = false;
+						p.strike(c.getDamage());
+					}
 				}
 			}
 		}
@@ -125,6 +144,19 @@ public class EntityManager {
 		}
 		player.setDockable(dockable);
 	}
+	
+	//checks if other pirates share this goal this frame and moves or deletes it if so
+	public Vector2 avoidOtherPirates(Vector2 currGoal) {
+		//if goal is not shared, return it and add it to list
+		if(!pirateGoals.contains(currGoal)) {
+			pirateGoals.add(currGoal);
+			return currGoal;
+		}
+		//otherwise pirate cant move this frame
+		else 
+			return null;
+	}
+	
 
 	public void add(Entity e) {
 		allEntities.add(e);
@@ -136,6 +168,7 @@ public class EntityManager {
 			allPirates.add((Pirate) e);
 		if(e instanceof Village)
 			allVillages.add((Village) e);
+		e.setManager(this);
 	}
 	
 	public void addAll(List<Entity> el) {

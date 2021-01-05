@@ -4,24 +4,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class DijkstraMap {
+	
+	//creates a "dijkstra" map representing the distance from the goal for every tile
+	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
+	
 	private int windowSize;
 	private SpiceTraderMap map;
+	
 	//the col and row on actual map of the bottom left dijkstra tile and player
-	private Vector2 origin;
-	private Vector2 playerTilePos;
-	//holds the values for each tile in the map - 
+	private Vector2 originMapPos;
+	private Vector2 goalMapPos;
+	
+	//holds the values for each tile in the map
 	int[][] dijkstraMap;
 	
 	public DijkstraMap(int windowSize, SpiceTraderMap map) {
-		//window size must be odd so that player can be in very center
+		//window size must be odd so that goal can be in very center
 		if(windowSize % 2 != 0)
 			this.windowSize = windowSize;
 		else
 			this.windowSize = windowSize - 1;
-		
 		
 		this.map = map;
 		
@@ -29,25 +35,39 @@ public class DijkstraMap {
 		dijkstraMap = new int[windowSize][windowSize];
 	}
 	
-	//creates a "dijkstra" map representing the distance from the player for every tile
-	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
-	//this is nice because all pirates can share one copy of this map for chasing the player
-	public void calcPlayerDistMap(Vector2 playerPixPos) {
-		//0. calculate new player tile position on actual map. if unchanged, we dont do anything
-		Vector2 newPlayerTilePos = new Vector2(map.getTileCoordsFromPixels(playerPixPos)[0], map.getTileCoordsFromPixels(playerPixPos)[1]);
-		if(newPlayerTilePos.equals(playerTilePos))
+	//checks if a given pos is inside the dijkstra map
+	public boolean inRange(Vector2 pos) {
+		//turn start pos into tile coords
+		int[] tilePos = map.getTileCoordsFromPixels(pos);
+		
+		//check if position is inside window - if not, return empty path
+		if(tilePos[0] < originMapPos.x || tilePos[0] >= originMapPos.x + windowSize) 
+			return false;
+		
+		if(tilePos[1] < originMapPos.y || tilePos[1] >= originMapPos.y + windowSize) 
+			return false;
+		
+		return true;
+	}
+	
+	//calculates map for given pixel destination
+	public void calcDijkstraMapToPixelCoords(Vector2 goalPixelPos) {
+		Vector2 goalTilePos = new Vector2(map.getTileCoordsFromPixels(goalPixelPos)[0], map.getTileCoordsFromPixels(goalPixelPos)[1]);
+		calcDijkstraMapToTile(goalTilePos);
+	}
+	
+	//calculates map for given tile destination
+	public void calcDijkstraMapToTile(Vector2 newGoalTilePos) {
+		//0. check if goal has moved since last calculated. if it hasn't dont do anything to map.
+		if(newGoalTilePos.equals(goalMapPos))
 			return;
 	
-		//1a. if player has changed tiles, we continue with algorithm by calculating window origin and saving current player tile pos
-		playerTilePos = newPlayerTilePos;
-		origin = new Vector2(playerTilePos);
-		origin.add(-1 * (windowSize/2), -1 * (windowSize/2));
+		//1a. if goal has changed tiles, we continue with algorithm by calculating window origin. note: goal always in center
+		goalMapPos = newGoalTilePos;
+		originMapPos = new Vector2(goalMapPos);
+		originMapPos.add(-1 * (windowSize/2), -1 * (windowSize/2));
 		
-		//debug
-		//System.out.println("Window origin: (" + origin.x + ", " + origin.y + ")");
-
-		
-		//1b. fill map with maximum value except for at player position (center), where value = 0
+		//1b. fill map with maximum value except for at goal position (center), where value = 0
 		for(int[] row : dijkstraMap) 
 			Arrays.fill(row, windowSize * windowSize);
 		dijkstraMap[windowSize/2][windowSize/2] = 0;
@@ -62,8 +82,8 @@ public class DijkstraMap {
 			for(int row = 0; row < windowSize; row++) {
 				for(int col = 0; col < windowSize; col++) {
 					//convert these coords to coords relative to actual map
-					int actualCol = (int) (col + origin.x);
-					int actualRow = (int) (row + origin.y);
+					int actualCol = (int) (col + originMapPos.x);
+					int actualRow = (int) (row + originMapPos.y);
 
 					//only process ocean tiles and tiles in bounds
 					boolean inBounds = true;
@@ -123,72 +143,72 @@ public class DijkstraMap {
 		}
 	}
 	
-	//returns a set of points representing the center tiles of the path to the player
-	public List<Vector2> getPathToPlayer(Vector2 startPos) {
+	public List<Vector2> getPathToGoal(Vector2 hitCenter) {
+		//start list
 		List<Vector2> path = new ArrayList<Vector2>();
 		
-		//turn start pos into tile coords
-		int[] currPos = map.getTileCoordsFromPixels(startPos);
+		boolean done = false;
 		
-		//check if position is inside window - if not, return empty path
-		if(currPos[0] < origin.x || currPos[0] >= origin.x + windowSize) 
-			return path;
+		Vector2 curr = hitCenter;
+		Vector2 next = null;
 		
-		if(currPos[1] < origin.y || currPos[1] >= origin.y + windowSize) 
-			return path;
-		
-		//change position into coordinates relative to window
-		toDijkstraWindowCoords(currPos);
-		
-		//generate path of tile coords
-		List<int[]> tilePath = new ArrayList<int[]>();
-		tilePath.add(currPos);
-		tilePath = getPathToPlayerHelper(currPos, tilePath);
-		
-		//turn tile path back into coords relative to actual map
-		for(int[] tile : tilePath) {
-			toMapCoords(tile);
+		while(!done) {
+			next = getNextMove(curr);
+			if(next != null && !next.equals(curr)) {
+				path.add(curr);
+				curr = next;
+			}
+			else
+				done = true;
 		}
-		
-		//turn tile coords path into pixel path where each point is center of tile
-		for(int[] tile : tilePath)
-			path.add(map.getPixelCoordsFromTile(tile).add(new Vector2(map.getTileSize().x/2, map.getTileSize().y/2)));
 		
 		return path;
 	}
 	
-	//recursive helper method - deals only with tile coords
-	private List<int[]> getPathToPlayerHelper(int[] currPos, List<int[]> currPath) {
-		int currVal = dijkstraMap[currPos[1]][currPos[0]];
-		//if current position is on player tile, we are done
-		if(currVal == 0) 
-			return currPath;
+	//returns the pixel coords for the next tile to travel to given a pixel position
+	public Vector2 getNextMove(Vector2 startPos) {
+		//check for out of range
+		if(!inRange(startPos))
+			return null;
 		
-		//otherwise, find lowest value neighbor square, set it to currPos, add it to currPath and continue
+		//turn start pos into tile coords
+		int[] currPos = map.getTileCoordsFromPixels(startPos);
+		int[] bestMove = getNextMove(currPos);
+		
+		return map.getPixelCoordsFromTile(bestMove).add(8, 8);
+	}
+	
+	//return map coords for the next tile to travel to given a map position
+	private int[] getNextMove(int[] currPos) {
+		//change position into coordinates relative to window
+		toDijkstraWindowCoords(currPos);
+		
+		//get value at current location
+		int currVal = dijkstraMap[currPos[1]][currPos[0]];
+		
+		//check if pos is already at goal
+		if(currVal == 0)
+			return currPos;
+		
+		//otherwise, find lowest value neighbor square
 		List<int[]> neighbors = Utils.getNeighborCoords(currPos[0], currPos[1], windowSize, windowSize, false, true);
 		int lowestVal = currVal;
 		int[] lowestPos = currPos;
 		
 		//iterate through neighbors and look for tiles with lower weights than current
-		boolean foundPath = false;
 		for(int[] neighborPos : neighbors) {
 			if(neighborPos != null) {
 				int neighborVal = dijkstraMap[neighborPos[1]][neighborPos[0]];
 				if(neighborVal < lowestVal && validMove(currPos, neighborPos)) {
 					lowestPos = neighborPos;
 					lowestVal = neighborVal;
-					foundPath = true;
 				}
 			}
 		}
 		
-		//check for no valid path forward - when no neighbors have lower path than current
-		if(!foundPath) 
-			return currPath;
-		
-		
-		currPath.add(lowestPos);
-		return getPathToPlayerHelper(lowestPos, currPath);
+		//return lowest value moveable square - must turn back into map coords and then into pixel coords
+		toMapCoords(lowestPos);
+		return lowestPos;
 	}
 	
 	//AVOID DIAGONALS THAT CUT CORNERS ON LAND - THESE MAKE PIRATES GET STUCK
@@ -197,7 +217,6 @@ public class DijkstraMap {
 	//			1P12
 	//			###3
 	//			7654
-	
 	private boolean validMove(int[] curr, int[] next) {
 		toMapCoords(next);
 		toMapCoords(curr);
@@ -219,12 +238,27 @@ public class DijkstraMap {
 	}
 	
 	private void toMapCoords(int[] tile) {
-		tile[0] += origin.x;
-		tile[1] += origin.y;
+		tile[0] += originMapPos.x;
+		tile[1] += originMapPos.y;
 	}
 	
 	private void toDijkstraWindowCoords(int[] tile) {
-		tile[0] -= origin.x;
-		tile[1] -= origin.y;
+		tile[0] -= originMapPos.x;
+		tile[1] -= originMapPos.y;
+	}
+	
+	//moved this from pirate code to here in case we need it again
+	private void drawCurrPath(ShapeRenderer renderer, List<Vector2> currPath) {
+		if(currPath.size() > 1)
+			renderer.circle(currPath.get(1).x, currPath.get(1).y, 1);
+		
+		Vector2 currPoint;
+		Vector2 nextPoint;
+		for(int i = 1; i < currPath.size(); i++) {
+			currPoint = currPath.get(i - 1);
+			nextPoint = currPath.get(i);
+			renderer.line(currPoint, nextPoint);
+			currPoint = nextPoint;
+		}
 	}
 }
