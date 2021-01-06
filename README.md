@@ -21,6 +21,7 @@ TODO (1/4/21)
     - sea monsters
     - quest/winning the game
     - whitewater trail behind ships
+    - loading screen
     
 - Features to Investigate
     - health bars above enemies
@@ -31,6 +32,7 @@ TODO (1/4/21)
     - rewards for killing pirates
     - persistant upgrades/unlocks
     - map
+    - biomes
 
 - Fixes/Refactoring
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
