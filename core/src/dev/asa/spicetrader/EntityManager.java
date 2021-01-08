@@ -28,6 +28,7 @@ public class EntityManager {
 	private List<Pirate> allPirates;
 	private List<Village> allVillages;
 	private List<Entity> entitiesToRemove;
+	private List<Entity> entitiesToAdd;
 	private ShapeRenderer hitboxRenderer;
 	private MenuManager menuManager;
 	private MainGame game;
@@ -47,6 +48,7 @@ public class EntityManager {
 		allPirates = new ArrayList<Pirate>();
 		allVillages = new ArrayList<Village>();
 		entitiesToRemove = new ArrayList<Entity>();
+		entitiesToAdd = new ArrayList<Entity>();
 		
 		//for showing hitboxes
 		hitboxRenderer = new ShapeRenderer();
@@ -94,6 +96,10 @@ public class EntityManager {
 		//clear pirate goals
 		pirateGoals.clear();
 		
+		//add any entities that need to be added
+		addAll(entitiesToAdd);
+		entitiesToAdd.clear();
+		
 		//check for deleted entities and tick the others
 		entitiesToRemove.clear();
 		for(Entity e : allEntities) {
@@ -105,10 +111,10 @@ public class EntityManager {
 		
 		//delete entities which no longer exist
 		for(Entity e : entitiesToRemove)
-			this.remove(e);
+			remove(e);
 		
 		//process collisions
-		this.processCollisions();
+		processCollisions();
 	}
 	
 	//Performs the following checks each frame: 
@@ -157,6 +163,9 @@ public class EntityManager {
 			return null;
 	}
 	
+	public void addNextTick(Entity e) {
+		entitiesToAdd.add(e);
+	}
 
 	public void add(Entity e) {
 		allEntities.add(e);
@@ -173,20 +182,20 @@ public class EntityManager {
 	
 	public void addAll(List<Entity> el) {
 		for(Entity e : el) {
-			this.add(e);
+			add(e);
 		}
 	}
 	
 	public void remove(Entity e) {
-		this.allEntities.remove(e);
+		allEntities.remove(e);
 		if(e instanceof Player) {
-			this.player = null;
+			player = null;
 		}
 		else if(e instanceof Pirate) {
-			this.allPirates.remove((Pirate) e);
+			allPirates.remove((Pirate) e);
 		}
 		else if(e instanceof CannonBall) {
-			this.allCanBalls.remove((CannonBall) e);
+			allCanBalls.remove((CannonBall) e);
 		}
 	}
 }

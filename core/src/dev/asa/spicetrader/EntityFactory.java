@@ -126,6 +126,7 @@ public class EntityFactory {
 					//if they are a straight beach tile, add them to list. 
 					//cleaner way to do this?? loops?
 					List<Vector2> dockLocations = new ArrayList<Vector2>();
+					List<Vector2> spawnLocations = new ArrayList<Vector2>();
 					if(bmMap[row - 1][col] == 31 || bmMap[row - 1][col] == 107 || bmMap[row - 1][col] == 214 || bmMap[row - 1][col] == 248) {
 						dockLocations.add(new Vector2(col, row - 1));
 					}
@@ -151,9 +152,36 @@ public class EntityFactory {
 						dockLocations.add(new Vector2(col + 1, row + 2));
 					}
 					
-					//add village if at least one valid dock
+					//check each dock and if it doesnt have a valid spawn location next to it, remove it.
+					List<Vector2> badDocks = new ArrayList<Vector2>();
+					for(Vector2 dockLocation : dockLocations) {
+						boolean goodDock = false;
+						
+						List<int[]> dockNeighbors = Utils.getNeighborCoords((int)dockLocation.x, (int)dockLocation.y, (int)map.getSizeTiles().x, (int)map.getSizeTiles().y, false, false);
+						for(int[] dockNeighbor : dockNeighbors) 
+							if(dockNeighbor != null && map.getTileId(dockNeighbor) == 0) {
+								goodDock = true;
+								break;
+							}
+						
+						if(!goodDock)
+							badDocks.add(dockLocation);
+					}
+					dockLocations.removeAll(badDocks);
+					
+					//if a village has atleast one dock, check if it has valid spawn. if so, add it. 
 					if(dockLocations.size() > 0) {
-						VillageLocation l = new VillageLocation(new Vector2(col, row), dockLocations, screenCenter);
+						Vector2 dockTile = dockLocations.get(Utils.randInt(0, dockLocations.size() - 1));
+						Vector2 spawnLocation = null;
+						List<int[]> dockNeighbors = Utils.getNeighborCoords((int) dockTile.x, (int) dockTile.y, (int)map.getSizeTiles().x, (int)map.getSizeTiles().y, false, false);
+						for(int[] dockNeighbor : dockNeighbors) {
+							if(dockNeighbor != null && map.getTileId(dockNeighbor) == 0) {
+								spawnLocation = new Vector2(map.getPixelCoordsFromTile(dockNeighbor).add(1, 1));
+								break;
+							}
+						}
+						
+						VillageLocation l = new VillageLocation(new Vector2(col, row), dockTile, spawnLocation, screenCenter);
 						validVillageLocations.add(l);
 						usedTiles.add(Arrays.asList(col, row));
 						usedTiles.add(Arrays.asList(col + 1, row));
@@ -179,12 +207,8 @@ public class EntityFactory {
 		pos.x = (float)roundPosX;
 		pos.y = (float)roundPosY;
 		
-		//choose a random dock position
-		int numDockLocations = location.validDockLocations.size();
-		Vector2 dockTile = location.validDockLocations.get(Utils.randInt(0, numDockLocations - 1));
-		
 		//construct dock hitbox
-		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(dockTile);
+		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(location.dockTile);
 		int offset = 2;
 		Vector2 tileSize = map.getTileSize();
 		float[] dockHitboxVert = {	dockPixelOrigin.x - offset, dockPixelOrigin.y - offset, 
@@ -194,7 +218,7 @@ public class EntityFactory {
 		Polygon dockHitbox = new Polygon(dockHitboxVert);
 		
 		//return
-		return new Village(pos, s, location.tileOrigin, dockTile, dockHitbox, location.distFromCenter);
+		return new Village(pos, s, location.tileOrigin, location.dockTile, dockHitbox, location.distFromCenter);
 	}
 	
 	private PirateVillage makePirateVillage(VillageLocation location) {
@@ -210,12 +234,8 @@ public class EntityFactory {
 		pos.x = (float)roundPosX;
 		pos.y = (float)roundPosY;
 		
-		//choose a random dock position
-		int numDockLocations = location.validDockLocations.size();
-		Vector2 dockTile = location.validDockLocations.get(Utils.randInt(0, numDockLocations - 1));
-		
 		//construct dock hitbox
-		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(dockTile);
+		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(location.dockTile);
 		int offset = 2;
 		Vector2 tileSize = map.getTileSize();
 		float[] dockHitboxVert = {	dockPixelOrigin.x - offset, dockPixelOrigin.y - offset, 
@@ -224,20 +244,25 @@ public class EntityFactory {
 									dockPixelOrigin.x - offset, dockPixelOrigin.y + tileSize.y + offset};
 		Polygon dockHitbox = new Polygon(dockHitboxVert);
 		
+		//pirate sprite
+		Sprite pirateSprite = atlas.createSprite("ships/pirate");
+		
 		//return
-		return new PirateVillage(pos, s, location.tileOrigin, dockTile, dockHitbox, location.distFromCenter);
+		return new PirateVillage(pos, s, location.tileOrigin, location.dockTile, dockHitbox, location.distFromCenter, map, pirateSprite, location.spawnLocation);
 	}
 	
 	private class VillageLocation {
 		//all variables are tilewise
 		//note: village takes up the 2x2 square with the bottom left tile on the "location"
 		private Vector2 tileOrigin;
-		private List<Vector2> validDockLocations;
+		private Vector2 dockTile;
+		private Vector2 spawnLocation;//this is the spot where pirates spawn for pirate village. it is useful to ensure this tile exists for all villages so we don't get inaccessible villages
 		private float distFromCenter;
 		
-		public VillageLocation(Vector2 tileOrigin, List<Vector2> validDockLocations, Vector2 screenCenter) {
+		public VillageLocation(Vector2 tileOrigin, Vector2 dockTile, Vector2 spawnLocation, Vector2 screenCenter) {
 			this.tileOrigin = tileOrigin;
-			this.validDockLocations = validDockLocations;
+			this.dockTile = dockTile;
+			this.spawnLocation = spawnLocation;
 			
 			//calc dist from center
 			Vector2 pixelCenter = map.getPixelCoordsFromTile(new Vector2(tileOrigin).add(1, 1));

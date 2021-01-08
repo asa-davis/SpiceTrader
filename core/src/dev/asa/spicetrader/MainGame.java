@@ -33,10 +33,10 @@ public class MainGame extends ApplicationAdapter {
 	
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;
-	static final float ZOOM_LEVEL = 3;
+	static final float ZOOM_LEVEL = 3;	//use 3 for gameplay
 	
 	//map settings
-	static final int MAP_SIZE = 400; 
+	static final int MAP_SIZE = 100; //400 seems pretty good for games.
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int VILLAGE_RATIO = 7;							//higher = less villages
@@ -113,8 +113,8 @@ public class MainGame extends ApplicationAdapter {
 		allEnts.add(player);
 		
 		//pirates
-		//for(int i = 0; i < NUM_PIRATES; i++) {
-			//allEnts.add(entFac.createRandPirate());
+		//for(int i = 0; i < 30; i++) {
+		//	allEnts.add(entFac.createRandPirate());
 		//}
 		
 		//villages
