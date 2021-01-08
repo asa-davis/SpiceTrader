@@ -206,10 +206,14 @@ public class Utils {
 			a = 1;
 			b = 10;
 			break;
-			default:
-				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
+		default:
+			System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
 		}
 		
 		return ((((b - a) * (val - min))/(max - min)) + a);
+	}
+	
+	public static float scaleToRange(float input, float inMin, float inMax, float outMin, float outMax) {
+		return ((((outMax - outMin) * (input - inMin))/(inMax - inMin)) + outMin);
 	}
 }

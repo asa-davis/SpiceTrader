@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PirateVillage extends Village {
 
-	public PirateVillage(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox) {
-		super(pos, sprite, originTile, dockTile, dockHitbox);
+	public PirateVillage(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox, float distFromCenter) {
+		super(pos, sprite, originTile, dockTile, dockHitbox, distFromCenter);
 		// TODO Auto-generated constructor stub
 	}
 	

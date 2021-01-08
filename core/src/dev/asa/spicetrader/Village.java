@@ -5,17 +5,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
-public class Village extends Entity{
+public class Village extends Entity {
 	
 	Vector2 originTile;
 	Vector2 dockTile;
 	Polygon dockHitbox;
+	float distFromCenter;
 	
-	public Village(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox) {
+	public Village(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox, float distFromCenter) {
 		super(pos, sprite);
 		this.originTile = originTile;
 		this.dockTile = dockTile;
 		this.dockHitbox = dockHitbox;
+		this.distFromCenter = distFromCenter;
 	}
 
 	@Override
@@ -42,6 +44,6 @@ public class Village extends Entity{
 	}
 
 	public String getName() {
-		return "some village";
+		return "Distance from Center: " + distFromCenter;
 	}
 }

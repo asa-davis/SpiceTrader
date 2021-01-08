@@ -36,11 +36,12 @@ public class MainGame extends ApplicationAdapter {
 	static final float ZOOM_LEVEL = 3;
 	
 	//map settings
-	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
+	static final int MAP_SIZE = 400; 
 	static final int SMOOTHING_ITERATIONS = 5;
-	static final int SEA_LEVEL_OFFSET = 3;
-	static final int NUM_VILLAGES = 10;
-	static final int NUM_PIRATES = 30;
+	static final int SEA_LEVEL_OFFSET = 2;
+	static final int VILLAGE_RATIO = 7;							//higher = less villages
+	static final float MIN_PIRATEVILLAGE_PROBABILITY = 0.1f; 	//probability of pirate villages generating near center of map
+	static final float MAX_PIRATEVILLAGE_PROBABILITY = 0.85f; 	//probability of pirate villages generating near edges of map
 
 //	--GAME VARIABLES--
 	
@@ -105,22 +106,23 @@ public class MainGame extends ApplicationAdapter {
 		
 		//Entities
 		List<Entity> allEnts = new ArrayList<Entity>();
-		EntityFactory entFac = new EntityFactory(map, atlas);
+		EntityFactory entFac = new EntityFactory(map, atlas, screenCenter);
 		
 		//player
-		Player player = entFac.createPlayer(screenCenter);
+		Player player = entFac.createPlayer();
 		allEnts.add(player);
 		
 		//pirates
-		for(int i = 0; i < NUM_PIRATES; i++) {
-			allEnts.add(entFac.createRandPirate());
-		}
+		//for(int i = 0; i < NUM_PIRATES; i++) {
+			//allEnts.add(entFac.createRandPirate());
+		//}
 		
 		//villages
-		List<Village> villages = entFac.createVillages();
+		List<Village> villages = entFac.createVillages(VILLAGE_RATIO);
+		villages.addAll(entFac.createPirateVillages(MIN_PIRATEVILLAGE_PROBABILITY, MAX_PIRATEVILLAGE_PROBABILITY));
 		allEnts.addAll(villages);
 		map.addVillages(villages);
-		
+
 		//menus
 		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
 		
