@@ -30,9 +30,8 @@ public class PirateVillage extends Village {
 		//spawn a new pirate every spawn interval
 		if(spawnCounter >= spawnInterval) {
 			spawnCounter = 0;
-			Pirate p = new Pirate(spawnLocation, pirateSprite, map, 0);
-			p.setPosition(spawnLocation);
-			//getManager().addNextTick(p);
+			Pirate p = new Pirate(new Vector2(spawnLocation), new Sprite(pirateSprite), map, 0);
+			getManager().addNextTick(p);
 		}
 		else 
 			spawnCounter++;
