@@ -18,9 +18,12 @@ public class Pirate extends Ship{
 	//where the pirate is currently headed.
 	private Vector2 currGoal;
 	
-	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
+	private PirateVillage base;
+	
+	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection, PirateVillage base) {
 		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
 		movementCooldown = 0;
+		this.base = base;
 	}
 
 	@Override
@@ -106,5 +109,9 @@ public class Pirate extends Ship{
 			accelBackward();
 		}
 		movementCooldown = 15;
+	}
+	
+	public PirateVillage getPirateVillage() {
+		return base;
 	}
  }

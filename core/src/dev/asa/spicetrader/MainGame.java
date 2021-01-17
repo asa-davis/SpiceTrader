@@ -25,11 +25,11 @@ public class MainGame extends ApplicationAdapter {
 //	--GAME SETTINGS--
 	
 	private enum DisplayMode { WINDOWED, FULLSCREEN, BORDERLESS_WINDOWED}
-	static final DisplayMode DISPLAY_MODE = DisplayMode.WINDOWED;
+	static final DisplayMode DISPLAY_MODE = DisplayMode.BORDERLESS_WINDOWED;
 	
 	static final boolean SHOW_HITBOXES = false;
 	static final boolean SHOW_GRID = false;
-	static final boolean ROUND_CAMERA_POS = false;	//fixes texture bleeding but makes player sprite appear to shake
+	static final boolean ROUND_CAMERA_POS = true;	//fixes texture bleeding but makes player sprite appear to shake
 	
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;

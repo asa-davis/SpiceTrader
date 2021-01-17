@@ -88,9 +88,10 @@ public class EntityManager {
 		//camera.rotate(1, 0, 0, 1);
 		
 		//check if player is dead
-		if(player.isDead()) {
+		if(!player.exists) {
 			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
 			menuManager.openMenu(boarded);
+			return;
 		}
 		
 		//clear pirate goals
@@ -110,8 +111,12 @@ public class EntityManager {
 		}
 		
 		//delete entities which no longer exist
-		for(Entity e : entitiesToRemove)
+		for(Entity e : entitiesToRemove) {
+			if(e.getClass().equals(Pirate.class)) {
+				((Pirate) e).getPirateVillage().removePirate();
+			}
 			remove(e);
+		}
 		
 		//process collisions
 		processCollisions();

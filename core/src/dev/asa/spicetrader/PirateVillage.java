@@ -9,11 +9,16 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PirateVillage extends Village {
 	
+	private static final int NUM_SECONDS_BETWEENS_SPAWNS = 5;
+	private static final int MAX_ACTIVE_PIRATES = 2;
+	
+	private SpiceTraderMap map;
+	
 	private Vector2 spawnLocation;
 	private int spawnCounter;
 	private int spawnInterval;
-	private SpiceTraderMap map;
 	private Sprite pirateSprite;
+	private int numActivePirates;
 	
 	public PirateVillage(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox, float distFromCenter, SpiceTraderMap map, Sprite pirateSprite, Vector2 spawnLocation) {
 		super(pos, sprite, originTile, dockTile, dockHitbox, distFromCenter);
@@ -21,8 +26,11 @@ public class PirateVillage extends Village {
 		this.pirateSprite = pirateSprite;
 		this.spawnLocation = spawnLocation;
 		
-		spawnCounter = 0;
-		spawnInterval = 180;
+		//random starting spawn counter for each instance
+		spawnCounter = Utils.randInt(0, 180);
+		spawnInterval = 60 * NUM_SECONDS_BETWEENS_SPAWNS;
+		
+		numActivePirates = 0;
 	}
 	
 	@Override
@@ -30,11 +38,18 @@ public class PirateVillage extends Village {
 		//spawn a new pirate every spawn interval
 		if(spawnCounter >= spawnInterval) {
 			spawnCounter = 0;
-			Pirate p = new Pirate(new Vector2(spawnLocation), new Sprite(pirateSprite), map, 0);
-			getManager().addNextTick(p);
+			//try and spawn a pirate if max hasnt been hit
+			if(numActivePirates < MAX_ACTIVE_PIRATES) {
+				Pirate p = new Pirate(new Vector2(spawnLocation), new Sprite(pirateSprite), map, 0, this);
+				getManager().addNextTick(p);
+				numActivePirates++;
+			}
 		}
 		else 
 			spawnCounter++;
-		
+	}
+	
+	public void removePirate() {
+		numActivePirates--;
 	}
 }

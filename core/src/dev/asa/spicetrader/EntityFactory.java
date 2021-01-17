@@ -54,15 +54,17 @@ public class EntityFactory {
 		return player;
 	}
 	
-	public Pirate createRandPirate() {
-		Sprite pirateSprite = atlas.createSprite("ships/pirate");
-		Pirate pirate = new Pirate(Utils.getRandShipPos(pirateSprite, map), pirateSprite, map, 0);
-		while(!map.validShipPosition(pirate)) {
-			pirate.setPosition(Utils.getRandShipPos(pirateSprite, map));
-		}
-		
-		return pirate;
-	}
+	
+	//DEPRECATED
+	//public Pirate createRandPirate() {
+	//	Sprite pirateSprite = atlas.createSprite("ships/pirate");
+	//	Pirate pirate = new Pirate(Utils.getRandShipPos(pirateSprite, map), pirateSprite, map, 0);
+	//	while(!map.validShipPosition(pirate)) {
+	//		pirate.setPosition(Utils.getRandShipPos(pirateSprite, map));
+	//	}
+	//	
+	//	return pirate;
+	//}
 	
 	//creates 1/ratio the max number of villages
 	public List<Village> createVillages(int villageRatio) {

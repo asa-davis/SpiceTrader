@@ -124,11 +124,12 @@ public class Utils {
 		return fonts;
 	}
 	
-	public static Vector2 getRandShipPos(Sprite sprite, SpiceTraderMap map) {
-		float xPos = (float) Utils.randInt(0, (int) (map.getSizePixels().x - sprite.getWidth()));
-		float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
-		return new Vector2(xPos, yPos);
-	}
+	//DEPRECATED
+	//public static Vector2 getRandShipPos(Sprite sprite, SpiceTraderMap map) {
+	//	float xPos = (float) Utils.randInt(0, (int) (map.getSizePixels().x - sprite.getWidth()));
+	//	float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
+	//	return new Vector2(xPos, yPos);
+	//}
 	
 	//for fitting movement stats to a nicer 1 - 11 range instead of their true float values
 	//true value ranges:
