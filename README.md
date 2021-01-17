@@ -35,6 +35,8 @@ TODO (1/4/21)
     - biomes
 
 - Fixes/Refactoring
+    - replicate and fix bug where player flashes red when firing cannon
+    - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
     - merge village factory class with ent factory. What do we do with village location inner class???
     - fix bug where you can sail underneath pirates
