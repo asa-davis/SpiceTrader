@@ -1,9 +1,10 @@
 TODO (5/31/21)
 - Features to Add
     - pirate wandering 
-        - two modes: wander and chase
-        - chase already implemented, wander tells pirate to go to a random location within radius of its village
-        - after reaching wander destination, pirate doesn't do anything for a few seconds before receiving new destination
+        - two modes: guard and chase
+        - have each pirate village generate a dijkstra map once pointing back to spawn location.
+        - would like to have pirates wander, but this requires too much dijkstra map generation.
+        - Could potentially switch to A* to achieve this at a later date.
     - cooldown on cannons
     - trading 
         - expand on docked menu
