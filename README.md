@@ -1,10 +1,9 @@
-TODO (1/4/21)
+TODO (5/31/21)
 - Features to Add
     - pirate wandering 
         - two modes: wander and chase
         - chase already implemented, wander tells pirate to go to a random location within radius of its village
         - after reaching wander destination, pirate doesn't do anything for a few seconds before receiving new destination
-    - hud/inventory menus (extend menu/menu manager)
     - cooldown on cannons
     - trading 
         - expand on docked menu
