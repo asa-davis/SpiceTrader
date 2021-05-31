@@ -19,7 +19,7 @@ TODO (5/31/21)
     - quest/winning the game (sea monsters)
     - add better pirate death textures
     - whitewater trail behind ships
-    - Startup screen
+    - Startup screen and loading screen
     
 - Features to Investigate
     - health bars above enemies
