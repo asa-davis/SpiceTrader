@@ -4,7 +4,6 @@ TODO (1/4/21)
         - two modes: wander and chase
         - chase already implemented, wander tells pirate to go to a random location within radius of its village
         - after reaching wander destination, pirate doesn't do anything for a few seconds before receiving new destination
-    - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
     - hud/inventory menus (extend menu/menu manager)
     - cooldown on cannons
     - trading 
@@ -29,12 +28,10 @@ TODO (1/4/21)
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
     - have camera rotate when you turn - would need to change textures to top down only :(
     - rewards for killing pirates
-    - persistant upgrades/unlocks
-    - map
+    - persistant upgrades/unlocks?
     - biomes
 
 - Fixes/Refactoring
-    - replicate and fix bug where player flashes red when firing cannon
     - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
     - merge village factory class with ent factory. What do we do with village location inner class???
@@ -42,3 +39,5 @@ TODO (1/4/21)
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - fix bug where dead pirates board player in the time between when they take a hit and get deleted
     - fix rare damage flash bug
+    - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
+    - keep pirate villages from spawning near trading villages
