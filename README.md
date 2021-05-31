@@ -11,7 +11,7 @@ TODO (5/31/21)
         - add datastructures to Village to hold current trade, inventory, etc.
         - unique names for villages
         - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
-    - dont let pirates get within a certain radius of friendly ports. display radius?
+    - send pirates back to base if you dock, dont pause game
     - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
     - starting area/upgrade shop
