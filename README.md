@@ -1,4 +1,4 @@
-TODO (12/16/20)
+TODO (1/4/21)
 - Features to Add
     - pirate wandering 
         - two modes: wander and chase
@@ -10,18 +10,35 @@ TODO (12/16/20)
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
-    - different map hitboxes for different tile types
-    - falling off world death
+        - unique names for villages
+        - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
+    - dont let pirates get within a certain radius of friendly ports. display radius?
+    - (IMPORTANT) different map hitboxes for different tile types
+    - falling off world death/outer world textures
     - starting area/upgrade shop
     - sea monsters
     - quest/winning the game (sea monsters)
     - add better pirate death textures
+    - whitewater trail behind ships
+    - Startup screen
     
 - Features to Investigate
-    - have camera rotate when you turn
+    - health bars above enemies
+    - customize starting stats at beginning of game, fallout style
+    - randomly generated equippable items, bordlerlands style
+    - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
+    - have camera rotate when you turn - would need to change textures to top down only :(
+    - rewards for killing pirates
+    - persistant upgrades/unlocks
+    - map
+    - biomes
 
 - Fixes/Refactoring
-    - don't let pirates spawn next to beach tiles, they get stuck
+    - replicate and fix bug where player flashes red when firing cannon
+    - only players should have strike cooldown, not pirates
+    - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
+    - merge village factory class with ent factory. What do we do with village location inner class???
+    - fix bug where you can sail underneath pirates
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - fix bug where dead pirates board player in the time between when they take a hit and get deleted
     - fix rare damage flash bug
