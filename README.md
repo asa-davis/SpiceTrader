@@ -14,7 +14,8 @@ TODO (12/16/20)
     - falling off world death
     - starting area/upgrade shop
     - sea monsters
-    - quest/winning the game
+    - quest/winning the game (sea monsters)
+    - add better pirate death textures
     
 - Features to Investigate
     - have camera rotate when you turn
@@ -22,6 +23,5 @@ TODO (12/16/20)
 - Fixes/Refactoring
     - don't let pirates spawn next to beach tiles, they get stuck
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
-    - instead of getting entire path, pirates should only be requesting next tile from dijkstra map
-    - generalize dijkstra map methods
     - fix bug where dead pirates board player in the time between when they take a hit and get deleted
+    - fix rare damage flash bug
