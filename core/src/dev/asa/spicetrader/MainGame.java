@@ -25,22 +25,23 @@ public class MainGame extends ApplicationAdapter {
 //	--GAME SETTINGS--
 	
 	private enum DisplayMode { WINDOWED, FULLSCREEN, BORDERLESS_WINDOWED}
-	static final DisplayMode DISPLAY_MODE = DisplayMode.WINDOWED;
+	static final DisplayMode DISPLAY_MODE = DisplayMode.BORDERLESS_WINDOWED;
 	
 	static final boolean SHOW_HITBOXES = false;
 	static final boolean SHOW_GRID = false;
-	static final boolean ROUND_CAMERA_POS = false;	//fixes texture bleeding but makes player sprite appear to shake
+	static final boolean ROUND_CAMERA_POS = true;	//fixes texture bleeding but makes player sprite appear to shake
 	
 	static final int TILE_WIDTH = 16;
 	static final int TILE_HEIGHT = 16;
-	static final float ZOOM_LEVEL = 3;
+	static final float ZOOM_LEVEL = 3;	//use 3 for gameplay
 	
 	//map settings
-	static final int MAP_SIZE = 100;//use even numbers plz - greater than 32
+	static final int MAP_SIZE = 100; //400 seems pretty good for games.
 	static final int SMOOTHING_ITERATIONS = 5;
-	static final int SEA_LEVEL_OFFSET = 3;
-	static final int NUM_VILLAGES = 10;
-	static final int NUM_PIRATES = 30;
+	static final int SEA_LEVEL_OFFSET = 2;
+	static final int VILLAGE_RATIO = 7;							//higher = less villages
+	static final float MIN_PIRATEVILLAGE_PROBABILITY = 0.1f; 	//probability of pirate villages generating near center of map
+	static final float MAX_PIRATEVILLAGE_PROBABILITY = 0.85f; 	//probability of pirate villages generating near edges of map
 
 //	--GAME VARIABLES--
 	
@@ -105,29 +106,25 @@ public class MainGame extends ApplicationAdapter {
 		
 		//Entities
 		List<Entity> allEnts = new ArrayList<Entity>();
+		EntityFactory entFac = new EntityFactory(map, atlas, screenCenter);
 		
 		//player
-		Player player = (Player) EntityFactory.createEntity("Player", atlas, map, screenCenter);
+		Player player = entFac.createPlayer();
 		allEnts.add(player);
 		
 		//pirates
-		for(int i = 0; i < NUM_PIRATES; i++) {
-			allEnts.add(EntityFactory.createEntity("Pirate", atlas, map, screenCenter));
-		}
-		
-		//menus
-		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
+		//for(int i = 0; i < 30; i++) {
+		//	allEnts.add(entFac.createRandPirate());
+		//}
 		
 		//villages
-		VillageFactory villFac = new VillageFactory(map, atlas);
-		try {
-			List<Village> villages = villFac.getVillages(NUM_VILLAGES);
-			allEnts.addAll(villages);
-			map.addVillages(villages);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
+		List<Village> villages = entFac.createVillages(VILLAGE_RATIO);
+		villages.addAll(entFac.createPirateVillages(MIN_PIRATEVILLAGE_PROBABILITY, MAX_PIRATEVILLAGE_PROBABILITY));
+		allEnts.addAll(villages);
+		map.addVillages(villages);
+
+		//menus
+		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
 		
 		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera);
 		entManager.addAll(allEnts);

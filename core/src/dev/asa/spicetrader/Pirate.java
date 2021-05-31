@@ -15,12 +15,23 @@ public class Pirate extends Ship{
 	//keeps pirate from moving for a few frames after knocking player.
 	private int movementCooldown;
 	
+	//dijkstra map for finding path to player updated by map 
+	DijkstraMap pathToPlayer;
+	
 	//where the pirate is currently headed.
 	private Vector2 currGoal;
 	
-	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection) {
+	private PirateVillage base;
+	
+	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection, PirateVillage base) {
 		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
+		
+		this.base = base;
+		
 		movementCooldown = 0;
+		
+		pathToPlayer = getMap().getPlayerDijkstraMap();
+		
 	}
 
 	@Override
@@ -33,9 +44,9 @@ public class Pirate extends Ship{
 		super.tick();
 		
 		//check if in chase range of player
-		if(getMap().getPlayerDijkstraMap().inRange(getHitCenter())) {
+		if(pathToPlayer.inRange(getHitCenter())) {
 			//get next move towards player
-			currGoal = getMap().getPlayerDijkstraMap().getNextMove(getHitCenter());
+			currGoal = pathToPlayer.getNextMove(getHitCenter());
 			
 			//check with entity manager that goal isnt shared by other pirates
 			currGoal = getManager().avoidOtherPirates(currGoal);
@@ -106,5 +117,9 @@ public class Pirate extends Ship{
 			accelBackward();
 		}
 		movementCooldown = 15;
+	}
+	
+	public PirateVillage getPirateVillage() {
+		return base;
 	}
  }

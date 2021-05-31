@@ -1,14 +1,12 @@
 TODO (1/4/21)
 - Features to Add
-    - pirate bases
-        - spawn pirates
-        - pirates wander nearby their base unless a player approaches.
-        - shoot at player
-        - these increase in frequency the farther out from center of map you go
-        - destroying a pirate base allows player to dock there and acquire gold/items
-    - pirate wandering
-        - requires generalized dijkstra
-        - pick a random point as their new goal and build a new dijkstra map for it. when they get there, pick another.
+    - pirate wandering 
+        - two modes: wander and chase
+        - chase already implemented, wander tells pirate to go to a random location within radius of its village
+        - after reaching wander destination, pirate doesn't do anything for a few seconds before receiving new destination
+    - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
+    - hud/inventory menus (extend menu/menu manager)
+    - cooldown on cannons
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
@@ -19,9 +17,10 @@ TODO (1/4/21)
     - falling off world death/outer world textures
     - starting area/upgrade shop
     - sea monsters
-    - quest/winning the game
+    - quest/winning the game (sea monsters)
+    - add better pirate death textures
     - whitewater trail behind ships
-    - loading screen
+    - Startup screen
     
 - Features to Investigate
     - health bars above enemies
@@ -41,3 +40,5 @@ TODO (1/4/21)
     - merge village factory class with ent factory. What do we do with village location inner class???
     - fix bug where you can sail underneath pirates
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
+    - fix bug where dead pirates board player in the time between when they take a hit and get deleted
+    - fix rare damage flash bug

@@ -60,10 +60,20 @@ public abstract class Ship extends Entity {
 				getSprite().setColor(Color.RED);
 			else {
 				getSprite().setColor(Color.WHITE);
-				if(hull <= 0 && getClass() == Pirate.class)
+				if(hull <= 0) {
 					exists = false;
+				}
 			}
 		}
+	}
+	
+	public void strike(int damage) {
+		hull -= damage;
+		strikeCooldown = 10;
+	}
+	
+	public boolean isDead() {
+		return dead;
 	}
 	
 	public void accelForward() {
@@ -185,17 +195,6 @@ public abstract class Ship extends Entity {
 		
 		if(!map.validShipPosition(this))
 			handleMapCollisionSlippery();
-	}
-	
-	public void strike(int damage) {
-		hull -= damage;
-		if(hull <= 0)
-			dead = true;
-		strikeCooldown = 10;
-	}
-	
-	public boolean isDead() {
-		return dead;
 	}
 	
 	public boolean isInReverse() {

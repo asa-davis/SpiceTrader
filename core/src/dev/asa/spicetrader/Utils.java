@@ -124,11 +124,12 @@ public class Utils {
 		return fonts;
 	}
 	
-	public static Vector2 getRandShipPos(Sprite sprite, SpiceTraderMap map) {
-		float xPos = (float) Utils.randInt(0, (int) (map.getSizePixels().x - sprite.getWidth()));
-		float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
-		return new Vector2(xPos, yPos);
-	}
+	//DEPRECATED
+	//public static Vector2 getRandShipPos(Sprite sprite, SpiceTraderMap map) {
+	//	float xPos = (float) Utils.randInt(0, (int) (map.getSizePixels().x - sprite.getWidth()));
+	//	float yPos = (float) Utils.randInt(0, (int) (map.getSizePixels().y - sprite.getHeight()));
+	//	return new Vector2(xPos, yPos);
+	//}
 	
 	//for fitting movement stats to a nicer 1 - 11 range instead of their true float values
 	//true value ranges:
@@ -206,10 +207,14 @@ public class Utils {
 			a = 1;
 			b = 10;
 			break;
-			default:
-				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
+		default:
+			System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
 		}
 		
 		return ((((b - a) * (val - min))/(max - min)) + a);
+	}
+	
+	public static float scaleToRange(float input, float inMin, float inMax, float outMin, float outMax) {
+		return ((((outMax - outMin) * (input - inMin))/(inMax - inMin)) + outMin);
 	}
 }
