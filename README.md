@@ -1,6 +1,9 @@
 TODO (12/16/20)
 - Features to Add
-    - pirate wandering (use dijkstra map class?)
+    - pirate wandering 
+        - two modes: wander and chase
+        - chase already implemented, wander tells pirate to go to a random location within radius of its village
+        - after reaching wander destination, pirate doesn't do anything for a few seconds before receiving new destination
     - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
     - hud/inventory menus (extend menu/menu manager)
     - cooldown on cannons
