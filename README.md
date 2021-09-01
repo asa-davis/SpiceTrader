@@ -1,11 +1,8 @@
-TODO (5/31/21)
+TODO (9/1/21)
 - Features to Add
-    - pirate wandering 
-        - two modes: guard and chase
-        - have each pirate village generate a dijkstra map once pointing back to spawn location.
-        - would like to have pirates wander, but this requires too much dijkstra map generation.
-        - Could potentially switch to A* to achieve this at a later date.
-    - cooldown on cannons
+    - pirate wandering
+    - starting area/upgrade shop 
+    - cooldown on cannons?
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
@@ -14,7 +11,6 @@ TODO (5/31/21)
     - send pirates back to base if you dock, dont pause game
     - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
-    - starting area/upgrade shop
     - sea monsters
     - quest/winning the game (sea monsters)
     - add better pirate death textures
