@@ -15,8 +15,11 @@ public class Pirate extends Ship{
 	//keeps pirate from moving for a few frames after knocking player.
 	private int movementCooldown;
 	
-	//dijkstra map for finding path to player updated by map 
-	DijkstraMap pathToPlayer;
+	//updated by map when player moves
+	private DijkstraMap pathToPlayer;
+
+	//created once by pirate base
+	private DijkstraMap pathToSpawn;
 	
 	//where the pirate is currently headed.
 	private Vector2 currGoal;
@@ -30,7 +33,8 @@ public class Pirate extends Ship{
 		
 		movementCooldown = 0;
 		
-		pathToPlayer = getMap().getPlayerDijkstraMap();
+		pathToPlayer = map.getPlayerDijkstraMap();
+		pathToSpawn	 = base.getSpawnDijkstraMap();
 		
 	}
 
@@ -47,18 +51,22 @@ public class Pirate extends Ship{
 		if(pathToPlayer.inRange(getHitCenter())) {
 			//get next move towards player
 			currGoal = pathToPlayer.getNextMove(getHitCenter());
-			
-			//check with entity manager that goal isnt shared by other pirates
-			currGoal = getManager().avoidOtherPirates(currGoal);
-			
-			//check if pirate can still move
-			if(currGoal != null) {
-				if(movementCooldown <= 0) 
-					moveTowardsPoint(currGoal);
-				else 
-					movementCooldown--;
-			}
 		}
+		else {
+			currGoal = pathToSpawn.getNextMove(getHitCenter());
+		}
+
+		//check with entity manager that goal isnt shared by other pirates
+		currGoal = getManager().avoidOtherPirates(currGoal);
+
+		//check if pirate can still move
+		if(currGoal != null) {
+			if(movementCooldown <= 0)
+				moveTowardsPoint(currGoal);
+			else
+				movementCooldown--;
+		}
+
 	}
 	
 	//first version of pirate path following behavior

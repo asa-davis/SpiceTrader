@@ -19,13 +19,18 @@ public class PirateVillage extends Village {
 	private int spawnInterval;
 	private Sprite pirateSprite;
 	private int numActivePirates;
+
+	private DijkstraMap pathToSpawn;
 	
 	public PirateVillage(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox, float distFromCenter, SpiceTraderMap map, Sprite pirateSprite, Vector2 spawnLocation) {
 		super(pos, sprite, originTile, dockTile, dockHitbox, distFromCenter);
 		this.map = map;
 		this.pirateSprite = pirateSprite;
 		this.spawnLocation = spawnLocation;
-		
+
+		pathToSpawn = new DijkstraMap(((int)map.getSizeTiles().x * 2) - 1, map);
+		pathToSpawn.calcDijkstraMapToPixelCoords(spawnLocation);
+
 		//random starting spawn counter for each instance
 		spawnCounter = Utils.randInt(0, 180);
 		spawnInterval = 60 * NUM_SECONDS_BETWEENS_SPAWNS;
@@ -51,5 +56,9 @@ public class PirateVillage extends Village {
 	
 	public void removePirate() {
 		numActivePirates--;
+	}
+
+	public DijkstraMap getSpawnDijkstraMap() {
+		return pathToSpawn;
 	}
 }
