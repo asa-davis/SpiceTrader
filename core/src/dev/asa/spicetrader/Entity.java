@@ -72,6 +72,7 @@ public abstract class Entity {
 	}
 	
 	public void drawHitbox(ShapeRenderer renderer) {
+		renderer.setColor(Color.BLUE);
 		renderer.polygon(hitbox.getTransformedVertices());
 		//renderer.circle(hitCenter.x, hitCenter.y, 1);
 	}

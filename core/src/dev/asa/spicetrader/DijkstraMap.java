@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class DijkstraMap {
+
+	private static final int ALMOST_OUT_OF_RANGE_BUFFER = 3; // how many tiles away from out of bounds pirates can go
 	
 	//creates a "dijkstra" map representing the distance from the goal for every tile
 	//algorithm taken from here: http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
 	
-	private int windowSize;
+	private int windowSize;	//in tiles
 	private SpiceTraderMap map;
 	
 	//the col and row on actual map of the bottom left dijkstra tile and player
@@ -39,36 +42,38 @@ public class DijkstraMap {
 	public boolean inRange(Vector2 pos) {
 		//turn start pos into tile coords
 		int[] tilePos = map.getTileCoordsFromPixels(pos);
-		
+
 		//check if position is inside window - if not, return empty path
-		if(tilePos[0] < originMapPos.x || tilePos[0] >= originMapPos.x + windowSize) 
+		if(tilePos[0] < originMapPos.x || tilePos[0] >= originMapPos.x + windowSize)
 			return false;
-		
-		if(tilePos[1] < originMapPos.y || tilePos[1] >= originMapPos.y + windowSize) 
+
+		if(tilePos[1] < originMapPos.y || tilePos[1] >= originMapPos.y + windowSize)
 			return false;
-		
+
 		return true;
 	}
 
 	//returns true only if a given pos is in range, but within 1 tile of being out of range
 	public boolean almostOutOfRange(Vector2 pos) {
-		//turn start pos into tile coords
-		int[] tilePos = map.getTileCoordsFromPixels(pos);
+		int tileSize = (int) map.getTileSize().x;
+		int windowSizePixels = windowSize * tileSize;
+		int almostOutOfRangeBuffer = ALMOST_OUT_OF_RANGE_BUFFER * tileSize;
+		Vector2 originMapPosPixels = map.getPixelCoordsFromTile(originMapPos);
 
-		//check if position is inside a 16 pixel wide strip bordering the inside of the map range
-		if(tilePos[0] > originMapPos.x && tilePos[0] <= originMapPos.x + 16)
-			return false;
+		//check if position is inside a strip of tile width ALMOST_OUT_OF_RANGE_BUFFER
+		if(pos.x > originMapPosPixels.x && pos.x <= originMapPosPixels.x + almostOutOfRangeBuffer)
+			return true;
 
-		if(tilePos[0] < originMapPos.x + windowSize && tilePos[0] >= originMapPos.x + windowSize - 16)
-			return false;
+		if(pos.x < originMapPosPixels.x + windowSizePixels && pos.x >= originMapPosPixels.x + windowSizePixels - (almostOutOfRangeBuffer * 2))
+			return true;
 
-		if(tilePos[1] > originMapPos.y && tilePos[1] <= originMapPos.y + 16)
-			return false;
+		if(pos.y > originMapPosPixels.y && pos.y <= originMapPosPixels.y + almostOutOfRangeBuffer)
+			return true;
 
-		if(tilePos[1] < originMapPos.y + windowSize && tilePos[1] >= originMapPos.y + windowSize - 16)
-			return false;
+		if(pos.y < originMapPosPixels.y + windowSizePixels && pos.y >= originMapPosPixels.y + windowSizePixels - (almostOutOfRangeBuffer * 2))
+			return true;
 
-		return true;
+		return false;
 	}
 
 	//calculates map for given pixel destination
@@ -281,5 +286,17 @@ public class DijkstraMap {
 			renderer.line(currPoint, nextPoint);
 			currPoint = nextPoint;
 		}
+	}
+
+	//for debugging - draws the range of the dijkstra map and the almost out of range boundary
+	public void drawRange(ShapeRenderer renderer) {
+		int tileSize = (int) map.getTileSize().x;
+		int windowSizePixels = windowSize * tileSize;
+		int almostOutOfRangeBuffer = ALMOST_OUT_OF_RANGE_BUFFER * tileSize;
+		Vector2 originMapPosPixels = map.getPixelCoordsFromTile(originMapPos);
+
+		renderer.setColor(Color.GREEN);
+		renderer.rect(originMapPosPixels.x, originMapPosPixels.y, windowSizePixels, windowSizePixels);
+		renderer.rect(originMapPosPixels.x + almostOutOfRangeBuffer, originMapPosPixels.y + almostOutOfRangeBuffer, windowSizePixels - (almostOutOfRangeBuffer * 2), windowSizePixels - (almostOutOfRangeBuffer * 2));
 	}
 }

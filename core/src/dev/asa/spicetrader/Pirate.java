@@ -2,6 +2,7 @@ package dev.asa.spicetrader;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -80,7 +81,7 @@ public class Pirate extends Ship{
 		switch(currMoveMode) {
 			case WANDER:
 				//TODO: defined and implement wander behavior
-				return getHitCenter();
+				return null;
 			case CHASE:
 				return pathToPlayer.getNextMove(getHitCenter());
 			case RETURN:
@@ -129,10 +130,12 @@ public class Pirate extends Ship{
 	@Override
 	public void drawHitbox(ShapeRenderer renderer) {
 		super.drawHitbox(renderer);
-		this.drawCurrPath(renderer);
+		drawCurrPath(renderer);
+		pathToSpawn.drawRange(renderer);
 	}
 	
 	private void drawCurrPath(ShapeRenderer renderer) {
+		renderer.setColor(Color.BLACK);
 		if(currGoal == null)
 			return;
 
