@@ -24,6 +24,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class SpiceTraderMap {
+	private final static int PLAYER_CHASE_RANGE = 20; //tiles
+
 	private int numCols;
 	private int numRows;
 	private int tileWidth;
@@ -69,7 +71,7 @@ public class SpiceTraderMap {
 		potentialCollisions = new ArrayList<Polygon>();
 		
 		//for pirate pathfinding
-		playerDistMap = new DijkstraMap(15, this);
+		playerDistMap = new DijkstraMap(PLAYER_CHASE_RANGE, this);
 		
 	}
 	
@@ -101,7 +103,9 @@ public class SpiceTraderMap {
 			hitboxRenderer.setColor(Color.RED);
 			for(Polygon tileHitbox : potentialCollisions) 
 				hitboxRenderer.polygon(tileHitbox.getVertices());
-			
+
+			playerDistMap.drawRange(hitboxRenderer);
+
 			hitboxRenderer.end();
 		}
 	}

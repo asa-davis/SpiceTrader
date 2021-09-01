@@ -11,6 +11,8 @@ public class PirateVillage extends Village {
 	
 	private static final int NUM_SECONDS_BETWEENS_SPAWNS = 5;
 	private static final int MAX_ACTIVE_PIRATES = 2;
+	private static final int WANDER_DISTANCE = 30;	// size of square around spawn in tiles that pirates are allowed to travel within
+													// ^^ used to calculate size of dijkstra map
 	
 	private SpiceTraderMap map;
 	
@@ -28,7 +30,7 @@ public class PirateVillage extends Village {
 		this.pirateSprite = pirateSprite;
 		this.spawnLocation = spawnLocation;
 
-		pathToSpawn = new DijkstraMap(((int)map.getSizeTiles().x * 2) - 1, map);
+		pathToSpawn = new DijkstraMap(WANDER_DISTANCE, map);
 		pathToSpawn.calcDijkstraMapToPixelCoords(spawnLocation);
 
 		//random starting spawn counter for each instance
