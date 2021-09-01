@@ -49,7 +49,28 @@ public class DijkstraMap {
 		
 		return true;
 	}
-	
+
+	//returns true only if a given pos is in range, but within 1 tile of being out of range
+	public boolean almostOutOfRange(Vector2 pos) {
+		//turn start pos into tile coords
+		int[] tilePos = map.getTileCoordsFromPixels(pos);
+
+		//check if position is inside a 16 pixel wide strip bordering the inside of the map range
+		if(tilePos[0] > originMapPos.x && tilePos[0] <= originMapPos.x + 16)
+			return false;
+
+		if(tilePos[0] < originMapPos.x + windowSize && tilePos[0] >= originMapPos.x + windowSize - 16)
+			return false;
+
+		if(tilePos[1] > originMapPos.y && tilePos[1] <= originMapPos.y + 16)
+			return false;
+
+		if(tilePos[1] < originMapPos.y + windowSize && tilePos[1] >= originMapPos.y + windowSize - 16)
+			return false;
+
+		return true;
+	}
+
 	//calculates map for given pixel destination
 	public void calcDijkstraMapToPixelCoords(Vector2 goalPixelPos) {
 		Vector2 goalTilePos = new Vector2(map.getTileCoordsFromPixels(goalPixelPos)[0], map.getTileCoordsFromPixels(goalPixelPos)[1]);

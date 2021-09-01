@@ -25,6 +25,14 @@ public class Pirate extends Ship{
 	private Vector2 currGoal;
 	
 	private PirateVillage base;
+
+	private enum MoveMode {
+			WANDER,		// WHEN NOT IN CHASE RANGE OF PLAYER, AND NOT ALMOST OUT OF BASE RANGE - undefined
+			CHASE,		// WHEN IN CHASE RANGE OF PLAYER, AND NOT ALMOST OUT OF BASE RANGE - follow player
+			RETURN		// WHEN ALMOST OUT OF BASE RANGE - return to spawn until not almost out of base range
+	}
+
+	private MoveMode currMoveMode;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection, PirateVillage base) {
 		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
@@ -35,7 +43,6 @@ public class Pirate extends Ship{
 		
 		pathToPlayer = map.getPlayerDijkstraMap();
 		pathToSpawn	 = base.getSpawnDijkstraMap();
-		
 	}
 
 	@Override
@@ -46,18 +53,9 @@ public class Pirate extends Ship{
 	@Override
 	public void tick() {
 		super.tick();
-		
-		//check if in chase range of player
-		if(pathToPlayer.inRange(getHitCenter())) {
-			//get next move towards player
-			currGoal = pathToPlayer.getNextMove(getHitCenter());
-		}
-		else {
-			currGoal = pathToSpawn.getNextMove(getHitCenter());
-		}
 
-		//check with entity manager that goal isnt shared by other pirates
-		currGoal = getManager().avoidOtherPirates(currGoal);
+		currMoveMode = calcCurrMoveMode();
+		currGoal = getNextMove();
 
 		//check if pirate can still move
 		if(currGoal != null) {
@@ -68,7 +66,29 @@ public class Pirate extends Ship{
 		}
 
 	}
-	
+
+	private MoveMode calcCurrMoveMode() {
+		if(pathToSpawn.almostOutOfRange(getHitCenter()))
+			return MoveMode.RETURN;
+		if(pathToPlayer.inRange(getHitCenter()))
+			return MoveMode.CHASE;
+		else
+			return MoveMode.WANDER;
+	}
+
+	private Vector2 getNextMove() {
+		switch(currMoveMode) {
+			case WANDER:
+				//TODO: defined and implement wander behavior
+				return getHitCenter();
+			case CHASE:
+				return pathToPlayer.getNextMove(getHitCenter());
+			case RETURN:
+				return pathToSpawn.getNextMove(getHitCenter());
+		}
+		return null;
+	}
+
 	//first version of pirate path following behavior
 	//	- If pirate isn't pointing towards point by +- prec degree, then turn towards it
 	//	- If pirate is pointing towards point by +- prec degree, accel forward
