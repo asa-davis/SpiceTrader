@@ -107,7 +107,7 @@ public class Player extends Ship {
 		setHitbox(Ship.getShipHitbox(getWidth(), getHeight(), 3));
 	}
 	
-	public void addToCargo(Item item) {
+	public boolean addToCargo(Item item) {
 		if(currCargo < maxCargo) {
 			for(int i = 0; i < maxCargo; i++) {
 				if(cargo[i] == null) {
@@ -116,10 +116,12 @@ public class Player extends Ship {
 				}
 			}
 			currCargo++;
+			return true;
 		}
+		return false;
 	}
 	
-	public void addToEquipped(Item item) {
+	public boolean addToEquipped(Item item) {
 		if(currEquipped < maxEquipped) {
 			for(int i = 0; i < maxEquipped; i++) {
 				if(equipped[i] == null) {
@@ -128,7 +130,9 @@ public class Player extends Ship {
 				}
 			}
 			currEquipped++;
+			return true;
 		}
+		return false;
 	}
 	
 	public void removeFromCargo(Item item) {

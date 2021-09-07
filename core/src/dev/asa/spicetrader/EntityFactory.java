@@ -49,8 +49,6 @@ public class EntityFactory {
 		player.addToCargo(cloves);
 		player.addToCargo(nutmeg);
 		
-		player.removeFromCargo(player.getItemFromCargo(1));
-		
 		return player;
 	}
 	

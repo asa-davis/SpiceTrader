@@ -71,16 +71,16 @@ public class ShipMenu extends Menu {
 	private void handleCargoClick(int i) {
 		Item item = player.getItemFromCargo(i);
 		if(item != null) {
-			player.addToEquipped(item);
-			player.removeFromCargo(item);
+			if(player.addToEquipped(item))
+				player.removeFromCargo(item);
 		}
 	}
 	
 	private void handleEquippedClick(int i) {
 		Item item = player.getItemFromEquipped(i);
 		if(item != null) {
-			player.addToCargo(item);
-			player.removeFromEquipped(item);
+			if(player.addToCargo(item))
+				player.removeFromEquipped(item);
 		}
 	}
 	
