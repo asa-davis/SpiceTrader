@@ -37,18 +37,25 @@ public class EntityFactory {
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
 		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
 		
-		Item ginger = new Item("Ginger", atlas.findRegion("items/ginger"));
+		//Item ginger = new Item("Ginger", atlas.findRegion("items/ginger"));
 		Item peppercorn = new Item("Peppercorn", atlas.findRegion("items/peppercorn"));
 		Item cinnamon = new Item("Cinnamon", atlas.findRegion("items/cinnamon"));
 		Item cloves = new Item("Cloves", atlas.findRegion("items/cloves"));
 		Item nutmeg = new Item("Nutmeg", atlas.findRegion("items/nutmeg"));
 		
-		player.addToCargo(ginger);
+		//player.addToCargo(ginger);
 		player.addToCargo(peppercorn);
 		player.addToCargo(cinnamon);
 		player.addToCargo(cloves);
 		player.addToCargo(nutmeg);
-		
+
+		Stats testStats = new Stats();
+		testStats.range = 5;
+		testStats.damage = 5;
+		testStats.cargo = 4;
+		EquipableItem bigCannons = new EquipableItem("Big Cannons", atlas.findRegion("items/ginger"), testStats);
+		player.addToCargo(bigCannons);
+
 		return player;
 	}
 	

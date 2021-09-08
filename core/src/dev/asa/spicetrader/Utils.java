@@ -169,10 +169,6 @@ public class Utils {
 				min = 4;
 				max = 9;
 				break;
-			case 'd':
-				min = 1;
-				max = 10;
-				break;
 			default:
 				System.out.println("You passed a weird stat character to Utils.statToView() and you're probably about to get an error");
 		}

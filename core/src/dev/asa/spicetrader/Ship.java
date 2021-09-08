@@ -248,14 +248,20 @@ public abstract class Ship extends Entity {
 	public float getAccel() {
 		return accel;
 	}
+
+	public void setAccel(float accel) { this.accel = accel; }
 	
 	public float getMaxSpeed() {
 		return maxSpeed;
 	}
+
+	public void setMaxSpeed(float maxSpeed) { this.maxSpeed = maxSpeed; }
 	
 	public float getRotationSpeed() {
 		return rotationSpeed;
 	}
+
+	public void setRotationSpeed(float rotationSpeed) { this.rotationSpeed = rotationSpeed; }
 	
 	public int getCurrHull() {
 		return hull;
