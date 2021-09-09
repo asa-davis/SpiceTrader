@@ -70,17 +70,17 @@ public class ShipMenu extends Menu {
 	
 	private void handleCargoClick(int i) {
 		Item item = player.getItemFromCargo(i);
-		if(item != null) {
-			player.addToEquipped(item);
-			player.removeFromCargo(item);
+		if(item != null && item instanceof EquipableItem) {
+			if(player.addToEquipped(item))
+				player.removeFromCargo(item);
 		}
 	}
 	
 	private void handleEquippedClick(int i) {
 		Item item = player.getItemFromEquipped(i);
-		if(item != null) {
-			player.addToCargo(item);
-			player.removeFromEquipped(item);
+		if(item != null && item instanceof EquipableItem) {
+			if(player.addToCargo(item))
+				player.removeFromEquipped(item);
 		}
 	}
 	
@@ -112,12 +112,14 @@ public class ShipMenu extends Menu {
 	}
 	
 	private void drawStats(SpriteBatch batch) {
-		int[] stats = player.getStats();
+		Stats stats = player.getStats();
 		manager.getFont(0).setColor(Color.DARK_GRAY);
 		String statString;
+
+		int[] statsArr = {stats.maxSpeed, stats.accel, stats.turning, stats.damage, stats.range};
 		
 		for(int i = 0; i < 5; i++) {
-			statString = Integer.toString(stats[i]);
+			statString = Integer.toString(statsArr[i]);
 			manager.getFont(0).draw(batch, statString, this.getPos().x + 116, this.getPos().y + 204 - (16 * i));
 		}
 	}

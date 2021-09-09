@@ -19,14 +19,16 @@ public class Player extends Ship {
 	private static int INIT_TURNING = 3;
 	private static int INIT_DAMAGE = 3;
 	private static int INIT_RANGE = 3;
+	private static int INIT_MAX_CARGO = 6;
 	
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
 	
 	private Item[] cargo;
 	private Item[] equipped;
-	
-	private int maxHull;	//currHull is managed by ship class
+
+	//currHull is managed by ship class
+	private int maxHull;
 	private int currCargo;
 	private int maxCargo;
 	private int currEquipped;
@@ -68,7 +70,7 @@ public class Player extends Ship {
 		this.cannonBallSprite = cannonBallSprite;
 		
 		//initialize stats
-		cannonDamage = (int) Utils.statToUse(INIT_DAMAGE, 'd');
+		cannonDamage = INIT_DAMAGE;
 		cannonRange = Utils.statToUse(INIT_RANGE, 'r');
 		
 		damageCooldown = 0;
@@ -77,7 +79,7 @@ public class Player extends Ship {
 		cannonBalls = 99;
 		
 		maxHull = INIT_HULL;
-		maxCargo = 6;
+		maxCargo = INIT_MAX_CARGO;
 		currCargo = 0;
 		currEquipped = 0;
 		maxEquipped = 4;
@@ -107,7 +109,7 @@ public class Player extends Ship {
 		setHitbox(Ship.getShipHitbox(getWidth(), getHeight(), 3));
 	}
 	
-	public void addToCargo(Item item) {
+	public boolean addToCargo(Item item) {
 		if(currCargo < maxCargo) {
 			for(int i = 0; i < maxCargo; i++) {
 				if(cargo[i] == null) {
@@ -116,10 +118,12 @@ public class Player extends Ship {
 				}
 			}
 			currCargo++;
+			return true;
 		}
+		return false;
 	}
-	
-	public void addToEquipped(Item item) {
+
+	public boolean addToEquipped(Item item) {
 		if(currEquipped < maxEquipped) {
 			for(int i = 0; i < maxEquipped; i++) {
 				if(equipped[i] == null) {
@@ -128,7 +132,16 @@ public class Player extends Ship {
 				}
 			}
 			currEquipped++;
+
+			if(item instanceof EquipableItem) {
+				Stats currStats = getStats();
+				currStats.add(((EquipableItem) item).getStats());
+				applyStats(currStats);
+			}
+
+			return true;
 		}
+		return false;
 	}
 	
 	public void removeFromCargo(Item item) {
@@ -149,6 +162,34 @@ public class Player extends Ship {
 				i = maxEquipped;
 			}
 		}
+
+		if(item instanceof EquipableItem) {
+			Stats currStats = getStats();
+			currStats.subtract(((EquipableItem) item).getStats());
+			applyStats(currStats);
+		}
+	}
+
+	private void applyStats(Stats stats) {
+		maxHull = stats.hull;
+		maxCargo = stats.cargo;
+		cannonDamage = stats.damage;
+		cannonRange = Utils.statToUse(stats.range, 'r');
+		setAccel(Utils.statToUse(stats.accel, 'a'));
+		setMaxSpeed(Utils.statToUse(stats.maxSpeed, 'm'));
+		setRotationSpeed(Utils.statToUse(stats.turning, 't'));
+	}
+
+	public Stats getStats() {
+		Stats statsToView = new Stats();
+		statsToView.hull = maxHull;
+		statsToView.cargo = maxCargo;
+		statsToView.damage = cannonDamage;
+		statsToView.range = Utils.statToView(cannonRange, 'r');
+		statsToView.accel = Utils.statToView(getAccel(), 'a');
+		statsToView.maxSpeed = Utils.statToView(getMaxSpeed(), 'm');
+		statsToView.turning = Utils.statToView(getRotationSpeed(), 't');
+		return statsToView;
 	}
 	
 	public CannonBall fireCannonLeft() {
@@ -187,18 +228,6 @@ public class Player extends Ship {
 			super.strike(damage);
 			damageCooldown = PLAYER_DAMAGE_COOLDOWN;
 		}
-	}
-	
-	//returns normalized values of stats fit to scale
-	//0 = max speed, 1 = accel, 2 = turning, 3 = damage, 4 = range
-	public int[] getStats() {
-		int[] stats = new int[5];
-		stats[0] = Utils.statToView(getMaxSpeed(), 'm');
-		stats[1] = Utils.statToView(getAccel(), 'a');
-		stats[2] = Utils.statToView(getRotationSpeed(), 't');
-		stats[3] = Utils.statToView(cannonDamage, 'd');
-		stats[4] = Utils.statToView(cannonRange, 'r');
-		return stats;
 	}
 	
 	public void setDockable(Village dockable) {

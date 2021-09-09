@@ -25,7 +25,7 @@ public class MainGame extends ApplicationAdapter {
 //	--GAME SETTINGS--
 	
 	private enum DisplayMode { WINDOWED, FULLSCREEN, BORDERLESS_WINDOWED}
-	static final DisplayMode DISPLAY_MODE = DisplayMode.BORDERLESS_WINDOWED;
+	static final DisplayMode DISPLAY_MODE = DisplayMode.WINDOWED;
 	
 	static final boolean SHOW_HITBOXES = false;
 	static final boolean SHOW_GRID = false;
