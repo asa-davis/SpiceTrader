@@ -12,12 +12,12 @@ public class Village extends Entity {
 	Polygon dockHitbox;
 	float distFromCenter;
 	
-	public Village(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox, float distFromCenter) {
+	public Village(Vector2 pos, Sprite sprite, EntityFactory.VillageLocation location, Polygon dockHitbox) {
 		super(pos, sprite);
-		this.originTile = originTile;
-		this.dockTile = dockTile;
+		this.originTile = location.tileOrigin;
+		this.dockTile = location.dockTile;
 		this.dockHitbox = dockHitbox;
-		this.distFromCenter = distFromCenter;
+		this.distFromCenter = location.distFromCenter;
 	}
 
 	@Override

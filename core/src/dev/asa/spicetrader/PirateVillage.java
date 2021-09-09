@@ -24,11 +24,11 @@ public class PirateVillage extends Village {
 
 	private DijkstraMap pathToSpawn;
 	
-	public PirateVillage(Vector2 pos, Sprite sprite, Vector2 originTile, Vector2 dockTile, Polygon dockHitbox, float distFromCenter, SpiceTraderMap map, Sprite pirateSprite, Vector2 spawnLocation) {
-		super(pos, sprite, originTile, dockTile, dockHitbox, distFromCenter);
+	public PirateVillage(Vector2 pos, Sprite sprite, EntityFactory.VillageLocation location, Polygon dockHitbox, SpiceTraderMap map, Sprite pirateSprite) {
+		super(pos, sprite, location, dockHitbox);
 		this.map = map;
 		this.pirateSprite = pirateSprite;
-		this.spawnLocation = spawnLocation;
+		this.spawnLocation = location.spawnLocation;
 
 		pathToSpawn = new DijkstraMap(WANDER_DISTANCE, map);
 		pathToSpawn.calcDijkstraMapToPixelCoords(spawnLocation);
