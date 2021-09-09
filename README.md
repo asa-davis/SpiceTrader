@@ -1,4 +1,3 @@
-TODO (9/1/21)
 - Features to Add
     - pirate wandering
     - starting area/upgrade shop 
