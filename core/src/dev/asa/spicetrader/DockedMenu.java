@@ -1,9 +1,7 @@
 package dev.asa.spicetrader;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
@@ -11,12 +9,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class DockedMenu extends Menu {
 	
-	private Village village;
+	private LandEntity landEntity;
 
 	public DockedMenu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture) {
 		super(manager, pos, backgroundTexture, true);
 		
-		this.village = manager.getPlayer().getDockable();
+		this.landEntity = manager.getPlayer().getDockable();
 		
 		//create leave button 
 		Array<AtlasRegion> leaveButtonTextures = manager.getAtlas().findRegions("ui/leave_button");
@@ -35,8 +33,7 @@ public class DockedMenu extends Menu {
 	@Override
 	public void draw(SpriteBatch batch) {
 		super.draw(batch);
-		drawTitle(batch, "You have docked at " + village.getName());
-		drawBody(batch, "In the future, you will be able to trade spices for gold from this menu. For the best deals, you will be able to trade spices for spices directly.");
+		drawTitle(batch, "Welcome to " + landEntity.getName());
 	}
 	
 	//TEMPORARY: menu contents will drastically change in future

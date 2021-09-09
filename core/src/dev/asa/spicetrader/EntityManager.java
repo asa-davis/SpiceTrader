@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 //this class does several things:
@@ -26,7 +25,7 @@ public class EntityManager {
 	private List<Entity> allEntities;
 	private List<CannonBall> allCanBalls;
 	private List<Pirate> allPirates;
-	private List<Village> allVillages;
+	private List<LandEntity> allLandEntities;
 	private List<Entity> entitiesToRemove;
 	private List<Entity> entitiesToAdd;
 	private ShapeRenderer hitboxRenderer;
@@ -46,7 +45,7 @@ public class EntityManager {
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
 		allPirates = new ArrayList<Pirate>();
-		allVillages = new ArrayList<Village>();
+		allLandEntities = new ArrayList<LandEntity>();
 		entitiesToRemove = new ArrayList<Entity>();
 		entitiesToAdd = new ArrayList<Entity>();
 		
@@ -147,8 +146,8 @@ public class EntityManager {
 			}
 		}
 		//3.
-		Village dockable = null;
-		for(Village v : allVillages) {
+		LandEntity dockable = null;
+		for(LandEntity v : allLandEntities) {
 			if(Intersector.overlapConvexPolygons(v.getDockHitbox(), player.getHitbox())) {
 				dockable = v;
 			}
@@ -180,8 +179,8 @@ public class EntityManager {
 			allCanBalls.add((CannonBall) e);
 		if(e instanceof Pirate)
 			allPirates.add((Pirate) e);
-		if(e instanceof Village)
-			allVillages.add((Village) e);
+		if(e instanceof LandEntity)
+			allLandEntities.add((LandEntity) e);
 		e.setManager(this);
 	}
 	

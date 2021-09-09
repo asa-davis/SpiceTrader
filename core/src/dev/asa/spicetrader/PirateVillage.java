@@ -1,13 +1,10 @@
 package dev.asa.spicetrader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
-public class PirateVillage extends Village {
+public class PirateVillage extends LandEntity {
 	
 	private static final int NUM_SECONDS_BETWEENS_SPAWNS = 5;
 	private static final int MAX_ACTIVE_PIRATES = 2;
@@ -24,7 +21,7 @@ public class PirateVillage extends Village {
 
 	private DijkstraMap pathToSpawn;
 	
-	public PirateVillage(Vector2 pos, Sprite sprite, EntityFactory.VillageLocation location, Polygon dockHitbox, SpiceTraderMap map, Sprite pirateSprite) {
+	public PirateVillage(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, SpiceTraderMap map, Sprite pirateSprite) {
 		super(pos, sprite, location, dockHitbox);
 		this.map = map;
 		this.pirateSprite = pirateSprite;

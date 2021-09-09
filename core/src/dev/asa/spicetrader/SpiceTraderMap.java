@@ -1,7 +1,6 @@
 package dev.asa.spicetrader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -10,16 +9,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -181,10 +177,10 @@ public class SpiceTraderMap {
 		}
 	}
 	
-	public void addVillages(List<Village> villages) {
+	public void addVillages(List<LandEntity> landEntities) {
 		//for each village, we need to set the tiles behind the village to pure grass (no tree), and the tile for the dock
 		//then we regenerate the TiledMap and MapRenderer
-		for(Village v : villages) {
+		for(LandEntity v : landEntities) {
 			Vector2 originTile = v.getOriginTile();
 			Vector2 dockTile = v.getDockTile();
 			tileIdMap[(int) originTile.y][(int) originTile.x] = 2;

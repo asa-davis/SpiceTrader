@@ -15,14 +15,44 @@ public class EntityFactory {
 	
 	private SpiceTraderMap map;
 	private TextureAtlas atlas;
-	private List<VillageLocation> villageLocations;
-	Vector2 screenCenter;
+	private List<LandEntityLocation> landEntityLocations;
+	private Vector2 screenCenter;
+	private float maxDist;
+	private float minDist;
 	
 	public EntityFactory(SpiceTraderMap map, TextureAtlas atlas, Vector2 screenCenter) {
 		this.map = map;
 		this.atlas = atlas;
 		this.screenCenter = screenCenter;
-		villageLocations = getValidVillageLocations();
+		landEntityLocations = getValidVillageLocations();
+		calcMinMaxDist();
+		calcLocationTiers();
+	}
+
+	private void calcMinMaxDist() {
+		//calculate min/max distances for villages
+		maxDist = 0;
+		minDist = 1000;
+		for(LandEntityLocation v : landEntityLocations) {
+			if(v.distFromCenter < minDist)
+				minDist = v.distFromCenter;
+			if(v.distFromCenter > maxDist)
+				maxDist = v.distFromCenter;
+		}
+	}
+
+	// land entities either have tier 1, 2, or 3, indicating their distance from center.
+	private void calcLocationTiers() {
+		float tier1Cutoff = maxDist / 3;
+		float tier2Cutoff = tier1Cutoff * 2;
+		for(LandEntityLocation v : landEntityLocations) {
+			if(v.distFromCenter < tier1Cutoff)
+				v.tier = 1;
+			else if(v.distFromCenter < tier2Cutoff)
+				v.tier = 2;
+			else
+				v.tier = 3;
+		}
 	}
 	
 	public Player createPlayer() {
@@ -73,30 +103,30 @@ public class EntityFactory {
 	//}
 	
 	//creates 1/ratio the max number of villages
-	public List<Village> createVillages(int villageRatio) {
-		List<Village> villages = new ArrayList<Village>();
+	public List<LandEntity> createVillages(int villageRatio) {
+		List<LandEntity> landEntities = new ArrayList<LandEntity>();
 		
-		int maxNumVillages = villageLocations.size();
+		int maxNumVillages = landEntityLocations.size();
 		for(int i = 0; i < maxNumVillages / villageRatio; i++) {
-			VillageLocation nextLocation = villageLocations.get(Utils.randInt(0, villageLocations.size() - 1));
-			villages.add(makeVillage(nextLocation));
-			villageLocations.remove(nextLocation);
+			LandEntityLocation nextLocation = landEntityLocations.get(Utils.randInt(0, landEntityLocations.size() - 1));
+			landEntities.add(makeVillage(nextLocation));
+			landEntityLocations.remove(nextLocation);
 		}
 		
-		System.out.println("Generated " + maxNumVillages / villageRatio + " villages.");
+		System.out.println("Generated " + maxNumVillages / villageRatio + " landEntities.");
 		
-		return villages;
+		return landEntities;
 	}
 
 	//creates 1/ratio the max number of remaining villages
 	public List<Merchant> createMerchants(int merchantRatio) {
 		List<Merchant> merchants = new ArrayList<Merchant>();
 
-		int maxNumMerchants = villageLocations.size();
+		int maxNumMerchants = landEntityLocations.size();
 		for(int i = 0; i < maxNumMerchants / merchantRatio; i++) {
-			VillageLocation nextLocation = villageLocations.get(Utils.randInt(0, villageLocations.size() - 1));
+			LandEntityLocation nextLocation = landEntityLocations.get(Utils.randInt(0, landEntityLocations.size() - 1));
 			merchants.add(makeMerchant(nextLocation));
-			villageLocations.remove(nextLocation);
+			landEntityLocations.remove(nextLocation);
 		}
 
 		System.out.println("Generated " + maxNumMerchants / merchantRatio + " merchants.");
@@ -106,20 +136,10 @@ public class EntityFactory {
 	//fills in remaining village locations with pirate villages, more frequent the farther from center.
 	public List<PirateVillage> createPirateVillages(float minProb, float maxProb) {
 		List<PirateVillage> pirateVillages = new ArrayList<PirateVillage>();
-		
-		//calculate min/max distances for villages
-		float maxDist = 0;
-		float minDist = 1000;
-		for(VillageLocation v : villageLocations) {
-			if(v.distFromCenter < minDist)
-				minDist = v.distFromCenter;
-			if(v.distFromCenter > maxDist)
-				maxDist = v.distFromCenter;
-		}
 
 		int count = 0;
 		//for each location, scale it's distance from center into a probability of a pirate village forming there. 
-		for(VillageLocation villageLoc : villageLocations) {
+		for(LandEntityLocation villageLoc : landEntityLocations) {
 			float probability = Utils.scaleToRange(villageLoc.distFromCenter, minDist, maxDist, minProb, maxProb); 
 			if(Math.random() < probability) {
 				count++;
@@ -134,8 +154,8 @@ public class EntityFactory {
 	//VILLAGE HELPER METHODS
 	
 	//returns list of possible village locations: 2x2 square of pure grass with atleast one potential dock location
-	private List<VillageLocation> getValidVillageLocations() {
-		List<VillageLocation> validVillageLocations = new ArrayList<VillageLocation>();
+	private List<LandEntityLocation> getValidVillageLocations() {
+		List<LandEntityLocation> validLandEntityLocations = new ArrayList<LandEntityLocation>();
 		
 		//use the bitmask map to check for pure grass with valid dock locations. skip every other row/col so locations never overlap.
 		List<List<Integer>> usedTiles = new ArrayList<List<Integer>>();
@@ -207,8 +227,8 @@ public class EntityFactory {
 							}
 						}
 						
-						VillageLocation l = new VillageLocation(new Vector2(col, row), dockTile, spawnLocation, screenCenter);
-						validVillageLocations.add(l);
+						LandEntityLocation l = new LandEntityLocation(new Vector2(col, row), dockTile, spawnLocation, screenCenter);
+						validLandEntityLocations.add(l);
 						usedTiles.add(Arrays.asList(col, row));
 						usedTiles.add(Arrays.asList(col + 1, row));
 						usedTiles.add(Arrays.asList(col, row + 1));
@@ -217,10 +237,10 @@ public class EntityFactory {
 				}
 			}
 		}
-		return validVillageLocations;
+		return validLandEntityLocations;
 	}
 	
-	private Village makeVillage(VillageLocation location) {
+	private Village makeVillage(LandEntityLocation location) {
 		//pick a random village texture for sprite
 		int numVillageSprites = atlas.findRegions("village/village").size;
 		Sprite s = atlas.createSprite("village/village", Utils.randInt(0, numVillageSprites - 1));
@@ -232,14 +252,14 @@ public class EntityFactory {
 		return new Village(pos, s, location, dockHitbox);
 	}
 
-	private Merchant makeMerchant(VillageLocation location) {
+	private Merchant makeMerchant(LandEntityLocation location) {
 		Sprite s = atlas.createSprite("village/merchant");
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
 		return new Merchant(pos, s, location, dockHitbox);
 	}
 	
-	private PirateVillage makePirateVillage(VillageLocation location) {
+	private PirateVillage makePirateVillage(LandEntityLocation location) {
 		//pick a random village texture for sprite
 		int numVillageSprites = atlas.findRegions("village/pirate_village").size;
 		Sprite s = atlas.createSprite("village/pirate_village", Utils.randInt(0, numVillageSprites - 1));
@@ -253,7 +273,7 @@ public class EntityFactory {
 	}
 
 	//generate position so that sprite is centered on 2x2 square.
-	private Vector2 makeVillagePos(VillageLocation location, Sprite s) {
+	private Vector2 makeVillagePos(LandEntityLocation location, Sprite s) {
 		Vector2 pixelCenter = map.getPixelCoordsFromTile(location.tileOrigin.add(1, 1));
 		Vector2 pos = new Vector2(pixelCenter.x - s.getWidth()/2, pixelCenter.y - s.getHeight()/2);
 		int roundPosX = (int)pos.x;
@@ -263,7 +283,7 @@ public class EntityFactory {
 		return pos;
 	}
 
-	private Polygon makeDockHitbox(VillageLocation location) {
+	private Polygon makeDockHitbox(LandEntityLocation location) {
 		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(location.dockTile);
 		int offset = 2;
 		Vector2 tileSize = map.getTileSize();
@@ -275,15 +295,16 @@ public class EntityFactory {
 		return dockHitbox;
 	}
 	
-	public class VillageLocation {
+	public class LandEntityLocation {
 		//all variables are tilewise
 		//note: village takes up the 2x2 square with the bottom left tile on the "location"
 		public Vector2 tileOrigin;
 		public Vector2 dockTile;
 		public Vector2 spawnLocation;//this is the spot where pirates spawn for pirate village. it is useful to ensure this tile exists for all villages so we don't get inaccessible villages
 		public float distFromCenter;
+		public int tier;
 		
-		public VillageLocation(Vector2 tileOrigin, Vector2 dockTile, Vector2 spawnLocation, Vector2 screenCenter) {
+		public LandEntityLocation(Vector2 tileOrigin, Vector2 dockTile, Vector2 spawnLocation, Vector2 screenCenter) {
 			this.tileOrigin = tileOrigin;
 			this.dockTile = dockTile;
 			this.spawnLocation = spawnLocation;
