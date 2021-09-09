@@ -40,6 +40,7 @@ public class MainGame extends ApplicationAdapter {
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int VILLAGE_RATIO = 7;							//higher = less villages
+	static final int MERCHANT_RATIO = 10;
 	static final float MIN_PIRATEVILLAGE_PROBABILITY = 0.1f; 	//probability of pirate villages generating near center of map
 	static final float MAX_PIRATEVILLAGE_PROBABILITY = 0.85f; 	//probability of pirate villages generating near edges of map
 
@@ -120,6 +121,7 @@ public class MainGame extends ApplicationAdapter {
 		//villages
 		List<Village> villages = entFac.createVillages(VILLAGE_RATIO);
 		villages.addAll(entFac.createPirateVillages(MIN_PIRATEVILLAGE_PROBABILITY, MAX_PIRATEVILLAGE_PROBABILITY));
+		villages.addAll(entFac.createMerchants(MERCHANT_RATIO));
 		allEnts.addAll(villages);
 		map.addVillages(villages);
 

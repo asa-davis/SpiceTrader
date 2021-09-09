@@ -74,7 +74,6 @@ public class EntityFactory {
 	
 	//creates 1/ratio the max number of villages
 	public List<Village> createVillages(int villageRatio) {
-		
 		List<Village> villages = new ArrayList<Village>();
 		
 		int maxNumVillages = villageLocations.size();
@@ -87,6 +86,21 @@ public class EntityFactory {
 		System.out.println("Generated " + maxNumVillages / villageRatio + " villages.");
 		
 		return villages;
+	}
+
+	//creates 1/ratio the max number of remaining villages
+	public List<Merchant> createMerchants(int merchantRatio) {
+		List<Merchant> merchants = new ArrayList<Merchant>();
+
+		int maxNumMerchants = villageLocations.size();
+		for(int i = 0; i < maxNumMerchants / merchantRatio; i++) {
+			VillageLocation nextLocation = villageLocations.get(Utils.randInt(0, villageLocations.size() - 1));
+			merchants.add(makeMerchant(nextLocation));
+			villageLocations.remove(nextLocation);
+		}
+
+		System.out.println("Generated " + maxNumMerchants / merchantRatio + " merchants.");
+		return merchants;
 	}
 	
 	//fills in remaining village locations with pirate villages, more frequent the farther from center.
@@ -102,14 +116,18 @@ public class EntityFactory {
 			if(v.distFromCenter > maxDist)
 				maxDist = v.distFromCenter;
 		}
-		
+
+		int count = 0;
 		//for each location, scale it's distance from center into a probability of a pirate village forming there. 
 		for(VillageLocation villageLoc : villageLocations) {
 			float probability = Utils.scaleToRange(villageLoc.distFromCenter, minDist, maxDist, minProb, maxProb); 
-			if(Math.random() < probability)
+			if(Math.random() < probability) {
+				count++;
 				pirateVillages.add(makePirateVillage(villageLoc));
+			}
 		}
-		
+
+		System.out.println("Generated " + count + " pirate bases.");
 		return pirateVillages;
 	}
 
