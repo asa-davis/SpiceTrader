@@ -44,8 +44,8 @@ public class EntityFactory {
 		Item nutmeg = new Item("Nutmeg", atlas.findRegion("items/nutmeg"));
 		
 		//player.addToCargo(ginger);
-		player.addToCargo(peppercorn);
-		player.addToCargo(cinnamon);
+		//player.addToCargo(peppercorn);
+		//player.addToCargo(cinnamon);
 		player.addToCargo(cloves);
 		player.addToCargo(nutmeg);
 
@@ -53,6 +53,7 @@ public class EntityFactory {
 		testStats.range = 5;
 		testStats.damage = 5;
 		testStats.cargo = 4;
+		testStats.maxSpeed = -10;
 		EquipableItem bigCannons = new EquipableItem("Big Cannons", atlas.findRegion("items/ginger"), testStats);
 		player.addToCargo(bigCannons);
 
@@ -73,7 +74,6 @@ public class EntityFactory {
 	
 	//creates 1/ratio the max number of villages
 	public List<Village> createVillages(int villageRatio) {
-		
 		List<Village> villages = new ArrayList<Village>();
 		
 		int maxNumVillages = villageLocations.size();
@@ -86,6 +86,21 @@ public class EntityFactory {
 		System.out.println("Generated " + maxNumVillages / villageRatio + " villages.");
 		
 		return villages;
+	}
+
+	//creates 1/ratio the max number of remaining villages
+	public List<Merchant> createMerchants(int merchantRatio) {
+		List<Merchant> merchants = new ArrayList<Merchant>();
+
+		int maxNumMerchants = villageLocations.size();
+		for(int i = 0; i < maxNumMerchants / merchantRatio; i++) {
+			VillageLocation nextLocation = villageLocations.get(Utils.randInt(0, villageLocations.size() - 1));
+			merchants.add(makeMerchant(nextLocation));
+			villageLocations.remove(nextLocation);
+		}
+
+		System.out.println("Generated " + maxNumMerchants / merchantRatio + " merchants.");
+		return merchants;
 	}
 	
 	//fills in remaining village locations with pirate villages, more frequent the farther from center.
@@ -101,14 +116,18 @@ public class EntityFactory {
 			if(v.distFromCenter > maxDist)
 				maxDist = v.distFromCenter;
 		}
-		
+
+		int count = 0;
 		//for each location, scale it's distance from center into a probability of a pirate village forming there. 
 		for(VillageLocation villageLoc : villageLocations) {
 			float probability = Utils.scaleToRange(villageLoc.distFromCenter, minDist, maxDist, minProb, maxProb); 
-			if(Math.random() < probability)
+			if(Math.random() < probability) {
+				count++;
 				pirateVillages.add(makePirateVillage(villageLoc));
+			}
 		}
-		
+
+		System.out.println("Generated " + count + " pirate bases.");
 		return pirateVillages;
 	}
 
@@ -205,66 +224,64 @@ public class EntityFactory {
 		//pick a random village texture for sprite
 		int numVillageSprites = atlas.findRegions("village/village").size;
 		Sprite s = atlas.createSprite("village/village", Utils.randInt(0, numVillageSprites - 1));
-		
-		//generate position so that sprite is centered on 2x2 square.
-		Vector2 pixelCenter = map.getPixelCoordsFromTile(location.tileOrigin.add(1, 1));
-		Vector2 pos = new Vector2(pixelCenter.x - s.getWidth()/2, pixelCenter.y - s.getHeight()/2);
-		int roundPosX = (int)pos.x;
-		int roundPosY = (int)pos.y;
-		pos.x = (float)roundPosX;
-		pos.y = (float)roundPosY;
-		
-		//construct dock hitbox
-		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(location.dockTile);
-		int offset = 2;
-		Vector2 tileSize = map.getTileSize();
-		float[] dockHitboxVert = {	dockPixelOrigin.x - offset, dockPixelOrigin.y - offset, 
-									dockPixelOrigin.x + tileSize.x + offset, dockPixelOrigin.y - offset, 
-									dockPixelOrigin.x + tileSize.x + offset, dockPixelOrigin.y + tileSize.y + offset,
-									dockPixelOrigin.x - offset, dockPixelOrigin.y + tileSize.y + offset};
-		Polygon dockHitbox = new Polygon(dockHitboxVert);
+
+		Vector2 pos = makeVillagePos(location, s);
+		Polygon dockHitbox = makeDockHitbox(location);
 		
 		//return
-		return new Village(pos, s, location.tileOrigin, location.dockTile, dockHitbox, location.distFromCenter);
+		return new Village(pos, s, location, dockHitbox);
+	}
+
+	private Merchant makeMerchant(VillageLocation location) {
+		Sprite s = atlas.createSprite("village/merchant");
+		Vector2 pos = makeVillagePos(location, s);
+		Polygon dockHitbox = makeDockHitbox(location);
+		return new Merchant(pos, s, location, dockHitbox);
 	}
 	
 	private PirateVillage makePirateVillage(VillageLocation location) {
 		//pick a random village texture for sprite
 		int numVillageSprites = atlas.findRegions("village/pirate_village").size;
 		Sprite s = atlas.createSprite("village/pirate_village", Utils.randInt(0, numVillageSprites - 1));
+
+		Vector2 pos = makeVillagePos(location, s);
+		Polygon dockHitbox = makeDockHitbox(location);
+		Sprite pirateSprite = atlas.createSprite("ships/pirate");
 		
-		//generate position so that sprite is centered on 2x2 square.
+		//return
+		return new PirateVillage(pos, s, location, dockHitbox, map, pirateSprite);
+	}
+
+	//generate position so that sprite is centered on 2x2 square.
+	private Vector2 makeVillagePos(VillageLocation location, Sprite s) {
 		Vector2 pixelCenter = map.getPixelCoordsFromTile(location.tileOrigin.add(1, 1));
 		Vector2 pos = new Vector2(pixelCenter.x - s.getWidth()/2, pixelCenter.y - s.getHeight()/2);
 		int roundPosX = (int)pos.x;
 		int roundPosY = (int)pos.y;
 		pos.x = (float)roundPosX;
 		pos.y = (float)roundPosY;
-		
-		//construct dock hitbox
+		return pos;
+	}
+
+	private Polygon makeDockHitbox(VillageLocation location) {
 		Vector2 dockPixelOrigin = map.getPixelCoordsFromTile(location.dockTile);
 		int offset = 2;
 		Vector2 tileSize = map.getTileSize();
-		float[] dockHitboxVert = {	dockPixelOrigin.x - offset, dockPixelOrigin.y - offset, 
-									dockPixelOrigin.x + tileSize.x + offset, dockPixelOrigin.y - offset, 
-									dockPixelOrigin.x + tileSize.x + offset, dockPixelOrigin.y + tileSize.y + offset,
-									dockPixelOrigin.x - offset, dockPixelOrigin.y + tileSize.y + offset};
+		float[] dockHitboxVert = {	dockPixelOrigin.x - offset, dockPixelOrigin.y - offset,
+				dockPixelOrigin.x + tileSize.x + offset, dockPixelOrigin.y - offset,
+				dockPixelOrigin.x + tileSize.x + offset, dockPixelOrigin.y + tileSize.y + offset,
+				dockPixelOrigin.x - offset, dockPixelOrigin.y + tileSize.y + offset};
 		Polygon dockHitbox = new Polygon(dockHitboxVert);
-		
-		//pirate sprite
-		Sprite pirateSprite = atlas.createSprite("ships/pirate");
-		
-		//return
-		return new PirateVillage(pos, s, location.tileOrigin, location.dockTile, dockHitbox, location.distFromCenter, map, pirateSprite, location.spawnLocation);
+		return dockHitbox;
 	}
 	
-	private class VillageLocation {
+	public class VillageLocation {
 		//all variables are tilewise
 		//note: village takes up the 2x2 square with the bottom left tile on the "location"
-		private Vector2 tileOrigin;
-		private Vector2 dockTile;
-		private Vector2 spawnLocation;//this is the spot where pirates spawn for pirate village. it is useful to ensure this tile exists for all villages so we don't get inaccessible villages
-		private float distFromCenter;
+		public Vector2 tileOrigin;
+		public Vector2 dockTile;
+		public Vector2 spawnLocation;//this is the spot where pirates spawn for pirate village. it is useful to ensure this tile exists for all villages so we don't get inaccessible villages
+		public float distFromCenter;
 		
 		public VillageLocation(Vector2 tileOrigin, Vector2 dockTile, Vector2 spawnLocation, Vector2 screenCenter) {
 			this.tileOrigin = tileOrigin;
