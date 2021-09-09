@@ -2,7 +2,7 @@ TODO (9/1/21)
 - Features to Add
     - pirate wandering
     - starting area/upgrade shop 
-    - cooldown on cannons?
+    - rate of fire stat
     - trading 
         - expand on docked menu
         - add datastructures to Village to hold current trade, inventory, etc.
@@ -34,6 +34,7 @@ TODO (9/1/21)
     - fix bug where you can sail underneath pirates
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - fix bug where dead pirates board player in the time between when they take a hit and get deleted
-    - fix rare damage flash bug
+    - fix damage flash bug
     - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
-    - keep pirate villages from spawning near trading villages
+    - keep pirate villages from spawning near trading villages 
+    - keep villages from spawning on top of trees, or remove trees under village locations
