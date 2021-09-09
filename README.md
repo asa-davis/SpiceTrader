@@ -27,6 +27,7 @@
     - biomes
 
 - Fixes/Refactoring
+    - merchants spawning on invalid locations!!
     - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
     - merge village factory class with ent factory. What do we do with village location inner class???
