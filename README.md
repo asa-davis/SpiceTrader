@@ -1,4 +1,5 @@
 - Features to Add
+    - make item visualizer display stats for equipable items
     - pirate wandering
     - starting area/upgrade shop 
     - rate of fire stat
