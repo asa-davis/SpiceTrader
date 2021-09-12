@@ -97,10 +97,13 @@ public class MainGame extends ApplicationAdapter {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
-		
+
+		//Items
+		ItemFactory itemFactory = new ItemFactory(atlas);
+
 		//Entities
 		List<Entity> allEnts = new ArrayList<Entity>();
-		EntityFactory entFac = new EntityFactory(map, atlas, screenCenter);
+		EntityFactory entFac = new EntityFactory(map, atlas, screenCenter, itemFactory);
 		
 		//player
 		Player player = entFac.createPlayer();

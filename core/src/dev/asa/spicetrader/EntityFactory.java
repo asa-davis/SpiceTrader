@@ -19,11 +19,13 @@ public class EntityFactory {
 	private Vector2 screenCenter;
 	private float maxDist;
 	private float minDist;
+	private ItemFactory itemFactory;
 	
-	public EntityFactory(SpiceTraderMap map, TextureAtlas atlas, Vector2 screenCenter) {
+	public EntityFactory(SpiceTraderMap map, TextureAtlas atlas, Vector2 screenCenter, ItemFactory itemFactory) {
 		this.map = map;
 		this.atlas = atlas;
 		this.screenCenter = screenCenter;
+		this.itemFactory = itemFactory;
 		landEntityLocations = getValidVillageLocations();
 		calcMinMaxDist();
 		calcLocationTiers();
@@ -66,26 +68,11 @@ public class EntityFactory {
 		Vector2 playerStartPos = new Vector2(screenCenter.x - (playerSprites[0].getWidth() / 2) + 3, screenCenter.y - (playerSprites[0].getHeight() / 2) + 3);
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
 		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
-		
-		//Item ginger = new Item("Ginger", atlas.findRegion("items/ginger"));
-		Item peppercorn = new Item("Peppercorn", atlas.findRegion("items/peppercorn"));
-		Item cinnamon = new Item("Cinnamon", atlas.findRegion("items/cinnamon"));
-		Item cloves = new Item("Cloves", atlas.findRegion("items/cloves"));
-		Item nutmeg = new Item("Nutmeg", atlas.findRegion("items/nutmeg"));
-		
-		//player.addToCargo(ginger);
-		//player.addToCargo(peppercorn);
-		//player.addToCargo(cinnamon);
-		player.addToCargo(cloves);
-		player.addToCargo(nutmeg);
 
-		Stats testStats = new Stats();
-		testStats.range = 5;
-		testStats.damage = 5;
-		testStats.cargo = 4;
-		testStats.maxSpeed = -10;
-		EquipableItem bigCannons = new EquipableItem("Big Cannons", atlas.findRegion("items/ginger"), testStats);
-		player.addToCargo(bigCannons);
+		player.addToCargo(itemFactory.getCloves());
+		player.addToCargo(itemFactory.getCinnamon());
+
+		player.addToCargo(itemFactory.getTestEquippable());
 
 		return player;
 	}
@@ -249,14 +236,14 @@ public class EntityFactory {
 		Polygon dockHitbox = makeDockHitbox(location);
 		
 		//return
-		return new Village(pos, s, location, dockHitbox);
+		return new Village(pos, s, location, dockHitbox, itemFactory);
 	}
 
 	private Merchant makeMerchant(LandEntityLocation location) {
 		Sprite s = atlas.createSprite("village/merchant");
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
-		return new Merchant(pos, s, location, dockHitbox);
+		return new Merchant(pos, s, location, dockHitbox, itemFactory);
 	}
 	
 	private PirateVillage makePirateVillage(LandEntityLocation location) {

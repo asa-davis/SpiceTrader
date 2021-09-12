@@ -41,6 +41,10 @@ public abstract class Menu {
 	public void addButton(Button b) {
 		this.buttons.add(b);
 	}
+
+	public void addButtons(List<Button> b) {
+		this.buttons.addAll(b);
+	}
 	
 	public void draw(SpriteBatch batch) {
 		batch.draw(backgroundTexture, pos.x, pos.y);
