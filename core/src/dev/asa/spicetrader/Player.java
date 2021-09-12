@@ -69,8 +69,8 @@ public class Player extends Ship {
 		
 		damageCooldown = 0;
 		
-		gold = 0;
-		cannonBalls = 99;
+		gold = 10000;
+		cannonBalls = 1000;
 		
 		maxHull = INIT_HULL;
 		maxCargo = INIT_MAX_CARGO;
