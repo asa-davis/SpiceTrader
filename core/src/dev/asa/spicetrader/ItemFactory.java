@@ -9,24 +9,29 @@ public class ItemFactory {
         this.atlas = atlas;
     }
 
+    //tier 1
     public Item getGinger() {
-        return new Item("Ginger", atlas.findRegion("items/ginger"));
+        return new Item("Ginger", atlas.findRegion("items/ginger"), 10, 7);
     }
 
+    //tier 1 and 2
     public Item getPeppercorn() {
-        return new Item("Peppercorn", atlas.findRegion("items/peppercorn"));
+        return new Item("Peppercorn", atlas.findRegion("items/peppercorn"), 15, 10);
     }
 
+    //tier 2
     public Item getCinnamon() {
-        return new Item("Cinnamon", atlas.findRegion("items/cinnamon"));
+        return new Item("Cinnamon", atlas.findRegion("items/cinnamon"), 30, 23);
     }
 
+    //tier 2
     public Item getCloves() {
-        return new Item("Cloves", atlas.findRegion("items/cloves"));
+        return new Item("Cloves", atlas.findRegion("items/cloves"), 50, 40);
     }
 
+    //tier 2 and 3
     public Item getNutmeg() {
-        return new Item("Nutmeg", atlas.findRegion("items/nutmeg"));
+        return new Item("Nutmeg", atlas.findRegion("items/nutmeg"), 100, 80);
     }
 
     public EquipableItem getTestEquippable() {
@@ -35,6 +40,6 @@ public class ItemFactory {
         testStats.damage = 5;
         testStats.cargo = 4;
         testStats.maxSpeed = -10;
-        return new EquipableItem("Big Cannons", atlas.findRegion("items/ginger"), testStats);
+        return new EquipableItem("Big Cannons", atlas.findRegion("items/ginger"), testStats, 200, 300);
     }
 }

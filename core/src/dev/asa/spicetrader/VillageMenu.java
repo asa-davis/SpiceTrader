@@ -1,7 +1,6 @@
 package dev.asa.spicetrader;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -81,12 +80,19 @@ public class VillageMenu extends Menu {
 
 
 	private void drawItems(SpriteBatch batch) {
+		AtlasRegion coinTexture = manager.getAtlas().findRegion("ui/coin");
+
 		ArrayList<Item> items = village.getToSell();
 		int numItemsToDraw = items.size();
 		if(numItemsToDraw > 3) numItemsToDraw = 3;
 
 		for(int i = 0; i < numItemsToDraw; i++) {
 			itemVis.addToBatch(items.get(i), itemPosList.get(i));
+			//draw item prices
+			batch.draw(coinTexture, itemPosList.get(i).x - 2, itemPosList.get(i).y + 52);
+			int itemPrice = items.get(i).getBuyPrice();
+			manager.getFont(0).setColor(Color.DARK_GRAY);
+			manager.getFont(0).draw(batch, String.valueOf(itemPrice), itemPosList.get(i).x + 23, itemPosList.get(i).y + 68);
 		}
 
 		itemVis.drawBatch(batch);
