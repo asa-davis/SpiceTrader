@@ -39,7 +39,7 @@ public class MenuFactory {
 			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
 			pos = new Vector2(x, y);
 
-			return new VillageMenu(manager, pos, backgroundTexture);
+			return new MerchantMenu(manager, pos, backgroundTexture);
 		}
 		
 		else if(menuType.equals("HUDMenu")) {

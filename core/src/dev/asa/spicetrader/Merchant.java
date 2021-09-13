@@ -18,4 +18,8 @@ public class Merchant extends LandEntity {
         toBuy.add(itemFactory.getGinger());
         toBuy.add(itemFactory.getCinnamon());
     }
+
+    public ArrayList<Item> getToBuy() {
+        return toBuy;
+    }
 }
