@@ -10,6 +10,7 @@
     - Working Directory: [clone location]
 
 
+**Living List of Stuff to Work On**
 - Features to Add
     - make item visualizer display stats for equipable items
     - pirate wandering
