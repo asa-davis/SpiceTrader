@@ -10,7 +10,7 @@
     - Working Directory: [clone location]
 
 
-**Living List of Stuff to Work On**
+**Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
 - Features to Add
     - make item visualizer display stats for equipable items
     - pirate wandering
