@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 
+// Playe can buy any item in the Village's toSell list
 public class VillageMenu extends TradeMenu {
 
     private Village village;
@@ -31,6 +32,11 @@ public class VillageMenu extends TradeMenu {
     @Override
     public ArrayList<Item> getInventory() {
         return village.getToSell();
+    }
+
+    @Override
+    public int getPrice(Item i) {
+        return i.getBuyPrice();
     }
 
     @Override

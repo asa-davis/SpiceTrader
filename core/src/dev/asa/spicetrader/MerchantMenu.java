@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import java.util.ArrayList;
 import com.badlogic.gdx.utils.Array;
 
+// Player can sell any of items in the Merchant's toBuy list
 public class MerchantMenu extends TradeMenu {
     private Merchant merchant;
 
@@ -22,12 +23,23 @@ public class MerchantMenu extends TradeMenu {
 
     @Override
     public void tradeButtonClicked(int i) {
+        if(!(merchant.getToBuy().size() > i)) return;
 
+        Item toBuy = getInventory().get(i);
+        if(manager.getPlayer().hasItem(toBuy)) {
+            manager.getPlayer().removeFromCargo(toBuy.getName());
+            manager.getPlayer().addGold(toBuy.getSellPrice());
+        }
     }
 
     @Override
     public ArrayList<Item> getInventory() {
         return merchant.getToBuy();
+    }
+
+    @Override
+    public int getPrice(Item i) {
+        return i.getSellPrice();
     }
 
     @Override

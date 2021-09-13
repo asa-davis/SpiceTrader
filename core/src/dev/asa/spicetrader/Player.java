@@ -147,6 +147,22 @@ public class Player extends Ship {
 			}
 		}
 	}
+
+	public void removeFromCargo(String itemName) {
+		for(Item i : cargo) {
+			if (i != null && i.getName().equals(itemName)) {
+				removeFromCargo(i);
+				return;
+			}
+		}
+	}
+
+	public boolean hasItem(Item item) {
+		for(Item i : cargo)
+			if(i != null && i.getName().equals(item.getName()))
+				return true;
+		return false;
+	}
 	
 	public void removeFromEquipped(Item item) {
 		for(int i = 0; i < maxEquipped; i++) {

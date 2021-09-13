@@ -34,6 +34,8 @@ public abstract class TradeMenu extends Menu {
 	public abstract void tradeButtonClicked(int i);
 
 	public abstract ArrayList<Item> getInventory();
+
+	public abstract int getPrice(Item i);
 	
 	@Override
 	public void draw(SpriteBatch batch) {
@@ -97,7 +99,7 @@ public abstract class TradeMenu extends Menu {
 			itemVis.addToBatch(items.get(i), itemPosList.get(i));
 			//draw item prices
 			batch.draw(coinTexture, itemPosList.get(i).x - 2, itemPosList.get(i).y + 52);
-			int itemPrice = items.get(i).getBuyPrice();
+			int itemPrice = getPrice(items.get(i));
 			manager.getFont(0).setColor(Color.DARK_GRAY);
 			manager.getFont(0).draw(batch, String.valueOf(itemPrice), itemPosList.get(i).x + 23, itemPosList.get(i).y + 68);
 		}
