@@ -20,15 +20,26 @@ public class MenuFactory {
 			return new BoardedMenu(manager, pos, backgroundTexture);
 		}
 		
-		else if(menuType.equals("DockedMenu")) {
-			backgroundTexture = manager.getAtlas().findRegion("ui/game_over_menu_background");
+		else if(menuType.equals("VillageMenu")) {
+			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			
 			int topGap = 128;
 			float x = (manager.getScreenSize().x / 2) - (backgroundTexture.getRegionWidth() / 2);
 			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
 			pos = new Vector2(x, y);
 			
-			return new DockedMenu(manager, pos, backgroundTexture);
+			return new VillageMenu(manager, pos, backgroundTexture);
+		}
+
+		else if(menuType.equals("MerchantMenu")) {
+			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
+
+			int topGap = 128;
+			float x = (manager.getScreenSize().x / 2) - (backgroundTexture.getRegionWidth() / 2);
+			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
+			pos = new Vector2(x, y);
+
+			return new VillageMenu(manager, pos, backgroundTexture);
 		}
 		
 		else if(menuType.equals("HUDMenu")) {

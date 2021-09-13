@@ -36,7 +36,10 @@ public class InputHandler {
 	private void handlePlayerControls() {
 		//docking
 		if(player.getDockable() != null && Gdx.input.isKeyPressed(Input.Keys.F)) {
-			menuManager.openMenu(MenuFactory.createMenu(menuManager, "DockedMenu"));
+			if(player.getDockable() instanceof Village)
+				menuManager.openMenu(MenuFactory.createMenu(menuManager, "VillageMenu"));
+			else if(player.getDockable() instanceof Merchant)
+				menuManager.openMenu(MenuFactory.createMenu(menuManager, "MerchantMenu"));
 		} 
 		
 		//movement

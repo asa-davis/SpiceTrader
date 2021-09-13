@@ -35,10 +35,10 @@ public class HUDMenu extends Menu {
 		Array<AtlasRegion> hullBarTexture = manager.getAtlas().findRegions("ui/hullbar");
 
 		for(int i = 0; i < player.getMaxHull(); i++) {
-			batch.draw(hullBarTexture.get(0), getPos().x + (i * 11) - 4, getPos().y);
+			batch.draw(hullBarTexture.get(0), getPos().x + (i * 11) + 12, getPos().y);
 		}
 		for(int i = 0; i < player.getCurrHull(); i++) {
-			batch.draw(hullBarTexture.get(1), getPos().x + (i * 11) - 4, getPos().y);
+			batch.draw(hullBarTexture.get(1), getPos().x + (i * 11) + 12, getPos().y);
 		}
 	}
 	
@@ -46,10 +46,10 @@ public class HUDMenu extends Menu {
 		Array<AtlasRegion> cargoBarTexture = manager.getAtlas().findRegions("ui/cargobar");
 
 		for(int i = 0; i < player.getMaxCargo(); i++) {
-			batch.draw(cargoBarTexture.get(0), getPos().x + (i * 11) - 4, getPos().y);
+			batch.draw(cargoBarTexture.get(0), getPos().x + (i * 11) + 12, getPos().y);
 		}
 		for(int i = 0; i < player.getCurrCargo(); i++) {
-			batch.draw(cargoBarTexture.get(1), getPos().x + (i * 11) - 4, getPos().y);
+			batch.draw(cargoBarTexture.get(1), getPos().x + (i * 11) + 12, getPos().y);
 		}
 	}
 	

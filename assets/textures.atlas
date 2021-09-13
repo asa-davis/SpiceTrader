@@ -1,0 +1,825 @@
+
+textures.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+items/cinnamon
+  rotate: false
+  xy: 162, 57
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+items/cloves
+  rotate: false
+  xy: 263, 106
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+items/ginger
+  rotate: false
+  xy: 489, 306
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+items/nutmeg
+  rotate: false
+  xy: 904, 729
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+items/peppercorn
+  rotate: false
+  xy: 102, 8
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+ships/cannon_ball
+  rotate: false
+  xy: 639, 483
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+ships/pirate
+  rotate: false
+  xy: 970, 814
+  size: 12, 14
+  orig: 12, 14
+  offset: 0, 0
+  index: -1
+ships/player
+  rotate: false
+  xy: 329, 189
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: 0
+ships/player
+  rotate: false
+  xy: 760, 643
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: 1
+ships/player
+  rotate: false
+  xy: 775, 648
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: 2
+ships/player
+  rotate: false
+  xy: 852, 681
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: 3
+ships/player
+  rotate: false
+  xy: 361, 208
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: 4
+ships/player_old
+  rotate: false
+  xy: 659, 511
+  size: 12, 14
+  orig: 12, 14
+  offset: 0, 0
+  index: -1
+tile/dock
+  rotate: false
+  xy: 462, 289
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+tile/dock
+  rotate: false
+  xy: 361, 240
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+tile/dock
+  rotate: false
+  xy: 312, 187
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+tile/dock
+  rotate: false
+  xy: 344, 220
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+tile/grass
+  rotate: false
+  xy: 743, 641
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+tile/grass
+  rotate: false
+  xy: 775, 663
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+tile/grass
+  rotate: false
+  xy: 953, 812
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+tile/grass
+  rotate: false
+  xy: 984, 843
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+tile/grass
+  rotate: false
+  xy: 642, 509
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+tile/grass
+  rotate: false
+  xy: 672, 532
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 6
+tile/grass
+  rotate: false
+  xy: 695, 585
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 7
+tile/grass
+  rotate: false
+  xy: 721, 614
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 8
+tile/grass
+  rotate: false
+  xy: 211, 65
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 9
+tile/grass
+  rotate: false
+  xy: 236, 89
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 10
+tile/grass
+  rotate: false
+  xy: 538, 320
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 11
+tile/grass
+  rotate: false
+  xy: 562, 338
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 12
+tile/grass
+  rotate: false
+  xy: 852, 696
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 13
+tile/grass
+  rotate: false
+  xy: 151, 18
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 14
+tile/grass
+  rotate: false
+  xy: 151, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 15
+tile/grass
+  rotate: false
+  xy: 173, 40
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 16
+tile/grass
+  rotate: false
+  xy: 479, 289
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 17
+tile/grass
+  rotate: false
+  xy: 361, 223
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 18
+tile/grass
+  rotate: false
+  xy: 378, 240
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 19
+tile/grass
+  rotate: false
+  xy: 312, 170
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 20
+tile/grass
+  rotate: false
+  xy: 792, 663
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 21
+tile/grass
+  rotate: false
+  xy: 953, 795
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 22
+tile/grass
+  rotate: false
+  xy: 642, 492
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 23
+tile/grass
+  rotate: false
+  xy: 695, 568
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 24
+tile/grass
+  rotate: false
+  xy: 253, 89
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 25
+tile/grass
+  rotate: false
+  xy: 579, 338
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 26
+tile/grass
+  rotate: false
+  xy: 190, 40
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 27
+tile/grass
+  rotate: false
+  xy: 496, 289
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 28
+tile/grass
+  rotate: false
+  xy: 378, 223
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 29
+tile/grass
+  rotate: false
+  xy: 395, 240
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 30
+tile/grass
+  rotate: false
+  xy: 312, 153
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 31
+tile/grass
+  rotate: false
+  xy: 809, 663
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 32
+tile/grass
+  rotate: false
+  xy: 953, 778
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 33
+tile/grass
+  rotate: false
+  xy: 695, 551
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 34
+tile/grass
+  rotate: false
+  xy: 270, 89
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 35
+tile/grass
+  rotate: false
+  xy: 596, 338
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 36
+tile/grass
+  rotate: false
+  xy: 513, 289
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 37
+tile/grass
+  rotate: false
+  xy: 395, 223
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 38
+tile/grass
+  rotate: false
+  xy: 412, 240
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 39
+tile/grass
+  rotate: false
+  xy: 429, 256
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 40
+tile/grass
+  rotate: false
+  xy: 312, 136
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 41
+tile/grass
+  rotate: false
+  xy: 826, 663
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 42
+tile/grass
+  rotate: false
+  xy: 953, 761
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 43
+tile/grass
+  rotate: false
+  xy: 287, 89
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 44
+tile/grass
+  rotate: false
+  xy: 613, 338
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 45
+tile/grass
+  rotate: false
+  xy: 412, 223
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 46
+tile/grass
+  rotate: false
+  xy: 429, 239
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 47
+tile/test_tile
+  rotate: false
+  xy: 953, 744
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+tile/tree
+  rotate: false
+  xy: 1006, 925
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+tile/tree
+  rotate: false
+  xy: 1006, 908
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+tile/tree
+  rotate: false
+  xy: 1006, 891
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+tile/tree
+  rotate: false
+  xy: 1006, 874
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+tile/tree
+  rotate: false
+  xy: 875, 712
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+tile/tree
+  rotate: false
+  xy: 892, 712
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 6
+tile/tree
+  rotate: false
+  xy: 909, 712
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 7
+tile/tree
+  rotate: false
+  xy: 926, 712
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 8
+tile/water
+  rotate: false
+  xy: 462, 272
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+tile/water
+  rotate: false
+  xy: 479, 272
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+tile/water
+  rotate: false
+  xy: 496, 272
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+tile/water
+  rotate: false
+  xy: 513, 272
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+tile/water
+  rotate: false
+  xy: 344, 203
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+ui/HUD_Base
+  rotate: false
+  xy: 642, 942
+  size: 326, 81
+  orig: 326, 81
+  offset: 0, 0
+  index: -1
+ui/buy_button
+  rotate: false
+  xy: 162, 106
+  size: 100, 48
+  orig: 100, 48
+  offset: 0, 0
+  index: 1
+ui/buy_button
+  rotate: false
+  xy: 489, 355
+  size: 100, 48
+  orig: 100, 48
+  offset: 0, 0
+  index: 2
+ui/buy_button
+  rotate: false
+  xy: 803, 729
+  size: 100, 48
+  orig: 100, 48
+  offset: 0, 0
+  index: 3
+ui/cargobar
+  rotate: false
+  xy: 642, 860
+  size: 310, 81
+  orig: 310, 81
+  offset: 0, 0
+  index: 0
+ui/cargobar
+  rotate: false
+  xy: 1, 155
+  size: 310, 81
+  orig: 310, 81
+  offset: 0, 0
+  index: 1
+ui/coin
+  rotate: false
+  xy: 151, 35
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+ui/docked_menu
+  rotate: false
+  xy: 1, 703
+  size: 640, 320
+  orig: 640, 320
+  offset: 0, 0
+  index: -1
+ui/game_over_menu_background
+  rotate: false
+  xy: 1, 486
+  size: 640, 216
+  orig: 640, 216
+  offset: 0, 0
+  index: -1
+ui/hullbar
+  rotate: false
+  xy: 328, 404
+  size: 310, 81
+  orig: 310, 81
+  offset: 0, 0
+  index: 0
+ui/hullbar
+  rotate: false
+  xy: 642, 778
+  size: 310, 81
+  orig: 310, 81
+  offset: 0, 0
+  index: 1
+ui/item_slot_button
+  rotate: false
+  xy: 590, 355
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 0
+ui/item_slot_button
+  rotate: false
+  xy: 803, 680
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 1
+ui/item_slot_button
+  rotate: false
+  xy: 803, 680
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: 2
+ui/leave_button
+  rotate: false
+  xy: 1, 106
+  size: 160, 48
+  orig: 160, 48
+  offset: 0, 0
+  index: 0
+ui/leave_button
+  rotate: false
+  xy: 328, 355
+  size: 160, 48
+  orig: 160, 48
+  offset: 0, 0
+  index: 1
+ui/leave_button
+  rotate: false
+  xy: 642, 729
+  size: 160, 48
+  orig: 160, 48
+  offset: 0, 0
+  index: 2
+ui/nametag
+  rotate: false
+  xy: 312, 119
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+ui/nametag
+  rotate: false
+  xy: 1001, 843
+  size: 3, 16
+  orig: 3, 16
+  offset: 0, 0
+  index: 1
+ui/restart_button
+  rotate: false
+  xy: 1, 57
+  size: 160, 48
+  orig: 160, 48
+  offset: 0, 0
+  index: 0
+ui/restart_button
+  rotate: false
+  xy: 328, 306
+  size: 160, 48
+  orig: 160, 48
+  offset: 0, 0
+  index: 1
+ui/restart_button
+  rotate: false
+  xy: 642, 680
+  size: 160, 48
+  orig: 160, 48
+  offset: 0, 0
+  index: 2
+ui/sell_button
+  rotate: false
+  xy: 1, 8
+  size: 100, 48
+  orig: 100, 48
+  offset: 0, 0
+  index: 1
+ui/sell_button
+  rotate: false
+  xy: 328, 257
+  size: 100, 48
+  orig: 100, 48
+  offset: 0, 0
+  index: 2
+ui/sell_button
+  rotate: false
+  xy: 642, 631
+  size: 100, 48
+  orig: 100, 48
+  offset: 0, 0
+  index: 3
+ui/ship_button
+  rotate: false
+  xy: 969, 942
+  size: 52, 81
+  orig: 52, 81
+  offset: 0, 0
+  index: 0
+ui/ship_button
+  rotate: false
+  xy: 953, 860
+  size: 52, 81
+  orig: 52, 81
+  offset: 0, 0
+  index: 1
+ui/ship_button
+  rotate: false
+  xy: 642, 549
+  size: 52, 81
+  orig: 52, 81
+  offset: 0, 0
+  index: 2
+ui/ship_menu_base
+  rotate: false
+  xy: 1, 237
+  size: 326, 248
+  orig: 326, 248
+  offset: 0, 0
+  index: -1
+village/merchant
+  rotate: false
+  xy: 429, 273
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+village/pirate_village
+  rotate: false
+  xy: 312, 204
+  size: 31, 32
+  orig: 31, 32
+  offset: 0, 0
+  index: 0
+village/pirate_village
+  rotate: false
+  xy: 953, 829
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: 2
+village/pirate_village
+  rotate: false
+  xy: 211, 82
+  size: 24, 23
+  orig: 24, 23
+  offset: 0, 0
+  index: 1
+village/village
+  rotate: false
+  xy: 328, 237
+  size: 32, 19
+  orig: 32, 19
+  offset: 0, 0
+  index: 2
+village/village
+  rotate: false
+  xy: 743, 658
+  size: 31, 21
+  orig: 31, 21
+  offset: 0, 0
+  index: 5
+village/village
+  rotate: false
+  xy: 642, 526
+  size: 29, 22
+  orig: 29, 22
+  offset: 0, 0
+  index: 1
+village/village
+  rotate: false
+  xy: 695, 602
+  size: 25, 28
+  orig: 25, 28
+  offset: 0, 0
+  index: 0
+village/village
+  rotate: false
+  xy: 538, 337
+  size: 23, 17
+  orig: 23, 17
+  offset: 0, 0
+  index: 3
+village/village
+  rotate: false
+  xy: 852, 713
+  size: 22, 15
+  orig: 22, 15
+  offset: 0, 0
+  index: 4

@@ -1,49 +1,30 @@
 package dev.asa.spicetrader;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
-public class Village extends Entity {
-	
-	Vector2 originTile;
-	Vector2 dockTile;
-	Polygon dockHitbox;
-	float distFromCenter;
-	
-	public Village(Vector2 pos, Sprite sprite, EntityFactory.VillageLocation location, Polygon dockHitbox) {
-		super(pos, sprite);
-		this.originTile = location.tileOrigin;
-		this.dockTile = location.dockTile;
-		this.dockHitbox = dockHitbox;
-		this.distFromCenter = location.distFromCenter;
-	}
+import java.util.ArrayList;
 
-	@Override
-	void tick() {
-		
-	}
-	
-	@Override
-	public void drawHitbox(ShapeRenderer renderer) {
-		super.drawHitbox(renderer);
-		renderer.polygon(dockHitbox.getVertices());
-	}
-	
-	public Polygon getDockHitbox() {
-		return dockHitbox;
-	}
+public class Village extends LandEntity {
 
-	public Vector2 getOriginTile() {
-		return originTile;
-	}
-	
-	public Vector2 getDockTile() {
-		return dockTile;
-	}
+    private ItemFactory itemFactory;
+    private ArrayList<Item> toSell = new ArrayList<>();
+    private int tier;
 
-	public String getName() {
-		return "Distance from Center: " + distFromCenter;
-	}
+    public Village(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
+        super(pos, sprite, location, dockHitbox);
+        this.itemFactory = itemFactory;
+        this.tier = location.tier;
+        toSell.add(itemFactory.getGinger());
+        toSell.add(itemFactory.getCinnamon());
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public ArrayList<Item> getToSell() {
+        return toSell;
+    }
 }

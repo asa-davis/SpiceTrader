@@ -6,19 +6,12 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 public class MainGame extends ApplicationAdapter {
 	
@@ -104,10 +97,13 @@ public class MainGame extends ApplicationAdapter {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
-		
+
+		//Items
+		ItemFactory itemFactory = new ItemFactory(atlas);
+
 		//Entities
 		List<Entity> allEnts = new ArrayList<Entity>();
-		EntityFactory entFac = new EntityFactory(map, atlas, screenCenter);
+		EntityFactory entFac = new EntityFactory(map, atlas, screenCenter, itemFactory);
 		
 		//player
 		Player player = entFac.createPlayer();
@@ -118,12 +114,12 @@ public class MainGame extends ApplicationAdapter {
 		//	allEnts.add(entFac.createRandPirate());
 		//}
 		
-		//villages
-		List<Village> villages = entFac.createVillages(VILLAGE_RATIO);
-		villages.addAll(entFac.createPirateVillages(MIN_PIRATEVILLAGE_PROBABILITY, MAX_PIRATEVILLAGE_PROBABILITY));
-		villages.addAll(entFac.createMerchants(MERCHANT_RATIO));
-		allEnts.addAll(villages);
-		map.addVillages(villages);
+		//landEntities
+		List<LandEntity> landEntities = entFac.createVillages(VILLAGE_RATIO);
+		landEntities.addAll(entFac.createMerchants(MERCHANT_RATIO));
+		landEntities.addAll(entFac.createPirateVillages(MIN_PIRATEVILLAGE_PROBABILITY, MAX_PIRATEVILLAGE_PROBABILITY));
+		allEnts.addAll(landEntities);
+		map.addVillages(landEntities);
 
 		//menus
 		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 

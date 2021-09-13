@@ -35,7 +35,7 @@ public class ShipMenu extends Menu {
 			int row = i / 3;
 			int col = i - (3 * row);
 			
-			Vector2 cargoSlotButtonPos = new Vector2(this.getPos().x + 150 + (50 * col), this.getPos().y + 162 - (50 * row));
+			Vector2 cargoSlotButtonPos = new Vector2(this.getPos().x + 158 + (50 * col), this.getPos().y + 162 - (50 * row));
 			Button cargoSlotButton = new Button(itemSlotButtonTextures, cargoSlotButtonPos);
 			
 			cargoSlotButton.setOnClick(new OnClickListener(){

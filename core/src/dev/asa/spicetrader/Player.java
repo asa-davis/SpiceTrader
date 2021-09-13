@@ -1,25 +1,19 @@
 package dev.asa.spicetrader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 public class Player extends Ship {
 	
 	//starting stats
 	private static int INIT_HULL = 12;
 	//these are in view mode and must be converted before they are applied
-	private static int INIT_MAX_SPEED = 3;
-	private static int INIT_ACCEL = 3;
-	private static int INIT_TURNING = 3;
+	private static int INIT_MAX_SPEED = 5;
+	private static int INIT_ACCEL = 5;
+	private static int INIT_TURNING = 5;
 	private static int INIT_DAMAGE = 3;
 	private static int INIT_RANGE = 3;
-	private static int INIT_MAX_CARGO = 6;
+	private static int INIT_MAX_CARGO = 3;
 	
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
@@ -58,7 +52,7 @@ public class Player extends Ship {
 	private boolean firingRight = false;
 	
 	//for determining when/where a player can dock
-	private Village dockable = null;
+	private LandEntity dockable = null;
 	
 	//this determines the rate at which a player can take damage
 	private final static int PLAYER_DAMAGE_COOLDOWN = 20;
@@ -75,8 +69,8 @@ public class Player extends Ship {
 		
 		damageCooldown = 0;
 		
-		gold = 0;
-		cannonBalls = 99;
+		gold = 10000;
+		cannonBalls = 1000;
 		
 		maxHull = INIT_HULL;
 		maxCargo = INIT_MAX_CARGO;
@@ -229,12 +223,16 @@ public class Player extends Ship {
 			damageCooldown = PLAYER_DAMAGE_COOLDOWN;
 		}
 	}
+
+	public void addGold(int i) { gold += i; }
+
+	public void subtractGold(int i) { gold -= i; }
 	
-	public void setDockable(Village dockable) {
+	public void setDockable(LandEntity dockable) {
 		this.dockable = dockable;
 	}
 	
-	public Village getDockable() {
+	public LandEntity getDockable() {
 		return dockable;
 	}
 	
@@ -245,6 +243,8 @@ public class Player extends Ship {
 	public int getCurrCargo() {
 		return currCargo;
 	}
+
+	public boolean isCargoFull() { return !(currCargo < maxCargo); }
 
 	public int getMaxCargo() {
 		return maxCargo;
