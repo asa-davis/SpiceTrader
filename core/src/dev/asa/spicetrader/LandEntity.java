@@ -45,6 +45,6 @@ public abstract class LandEntity extends Entity {
 	}
 
 	public String getName() {
-		return "Unnamed Village Tier " + tier;
+		return "Unnamed Land Entity Tier " + tier;
 	}
 }

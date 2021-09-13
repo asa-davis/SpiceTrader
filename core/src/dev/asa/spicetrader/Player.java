@@ -13,7 +13,7 @@ public class Player extends Ship {
 	private static int INIT_TURNING = 5;
 	private static int INIT_DAMAGE = 3;
 	private static int INIT_RANGE = 3;
-	private static int INIT_MAX_CARGO = 3;
+	private static int INIT_MAX_CARGO = 12;
 	
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
@@ -146,6 +146,22 @@ public class Player extends Ship {
 				i = maxCargo;
 			}
 		}
+	}
+
+	public void removeFromCargo(String itemName) {
+		for(Item i : cargo) {
+			if (i != null && i.getName().equals(itemName)) {
+				removeFromCargo(i);
+				return;
+			}
+		}
+	}
+
+	public boolean hasItem(Item item) {
+		for(Item i : cargo)
+			if(i != null && i.getName().equals(item.getName()))
+				return true;
+		return false;
 	}
 	
 	public void removeFromEquipped(Item item) {
