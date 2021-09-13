@@ -12,6 +12,7 @@
 
 **Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
 - Features to Add
+    - keep pirate villages from spawning right next to merchants/villages?
     - when player clicks buy/sell but can't, display reason
     - more visual differences between merchant and village menus
     - make item visualizer display stats for equipable items
