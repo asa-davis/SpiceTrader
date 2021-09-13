@@ -223,6 +223,10 @@ public class Player extends Ship {
 			damageCooldown = PLAYER_DAMAGE_COOLDOWN;
 		}
 	}
+
+	public void addGold(int i) { gold += i; }
+
+	public void subtractGold(int i) { gold -= i; }
 	
 	public void setDockable(LandEntity dockable) {
 		this.dockable = dockable;
@@ -239,6 +243,8 @@ public class Player extends Ship {
 	public int getCurrCargo() {
 		return currCargo;
 	}
+
+	public boolean isCargoFull() { return !(currCargo < maxCargo); }
 
 	public int getMaxCargo() {
 		return maxCargo;
