@@ -9,17 +9,35 @@ import java.util.ArrayList;
 public class Merchant extends LandEntity {
     private ItemFactory itemFactory;
     private ArrayList<Item> toBuy = new ArrayList<>();
-    int tier;
 
     public Merchant(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
         super(pos, sprite, location, dockHitbox);
         this.itemFactory = itemFactory;
-        this.tier = location.tier;
-        toBuy.add(itemFactory.getGinger());
-        toBuy.add(itemFactory.getCinnamon());
+        addItemsToBuy(location.tier);
+
     }
 
     public ArrayList<Item> getToBuy() {
         return toBuy;
+    }
+
+    private void addItemsToBuy(int tier) {
+        switch(tier) {
+            case 1:
+                toBuy.add(itemFactory.getGinger());
+                toBuy.add(itemFactory.getPeppercorn());
+                toBuy.add(itemFactory.getCinnamon());
+                break;
+            case 2:
+                toBuy.add(itemFactory.getPeppercorn());
+                toBuy.add(itemFactory.getCinnamon());
+                toBuy.add(itemFactory.getCloves());
+                break;
+            case 3:
+                toBuy.add(itemFactory.getCinnamon());
+                toBuy.add(itemFactory.getCloves());
+                toBuy.add(itemFactory.getNutmeg());
+                break;
+        }
     }
 }
