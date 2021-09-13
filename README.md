@@ -12,15 +12,12 @@
 
 **Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
 - Features to Add
+    - when player clicks buy/sell but can't, display reason
+    - more visual differences between merchant and village menus
     - make item visualizer display stats for equipable items
     - pirate wandering
-    - starting area/upgrade shop 
+    - upgrade shops
     - rate of fire stat
-    - trading 
-        - expand on docked menu
-        - add datastructures to Village to hold current trade, inventory, etc.
-        - unique names for villages
-        - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
     - send pirates back to base if you dock, dont pause game
     - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
