@@ -1,3 +1,15 @@
+
+**IntelliJ Setup Instructions**
+- File > New > Project from Version Control
+- Select this repo
+- Select Gradle project and click next a bunch
+- New Run Configuration > Application
+    - JDK: Bundled
+    - Module: SpiceTrader.desktop.main
+    - Main Method: dev.asa.spicetrader.desktop.DesktopLauncher
+    - Working Directory: [clone location]
+
+
 - Features to Add
     - make item visualizer display stats for equipable items
     - pirate wandering
