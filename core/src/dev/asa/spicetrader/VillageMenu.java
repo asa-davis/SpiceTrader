@@ -54,9 +54,10 @@ public class VillageMenu extends Menu {
 				@Override
 				public void onClick() { }
 			});
+			final int finalI = i;
 			buyButton.setOnClick(new OnClickListener() {
 				@Override
-				public void onClick() { }
+				public void onClick() { buyItem(finalI); }
 			});
 			allButtons.add(itemSlot);
 			allButtons.add(buyButton);
@@ -78,6 +79,16 @@ public class VillageMenu extends Menu {
 		itemVis.passMouse(mousePos);
 	}
 
+	private void buyItem(int i) {
+		if(!(village.getToSell().size() > i)) return;
+
+		Item toBuy = village.getToSell().get(i);
+		if(!manager.getPlayer().isCargoFull() && manager.getPlayer().getGold() >= toBuy.getBuyPrice()) {
+			village.getToSell().remove(i);
+			manager.getPlayer().addToCargo(toBuy);
+			manager.getPlayer().subtractGold(toBuy.getBuyPrice());
+		}
+	}
 
 	private void drawItems(SpriteBatch batch) {
 		AtlasRegion coinTexture = manager.getAtlas().findRegion("ui/coin");
