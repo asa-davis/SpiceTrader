@@ -59,6 +59,7 @@ public class Village extends LandEntity {
                         itemFactory.getCinnamon(),
                         itemFactory.getCloves()
                 };
+                break;
             case 3:
                 itemOptions = new Item[] {
                         itemFactory.getCloves(),

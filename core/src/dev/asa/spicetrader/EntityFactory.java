@@ -71,6 +71,10 @@ public class EntityFactory {
 		Sprite cannonBallSprite = atlas.createSprite("ships/cannon_ball");
 		Player player = new Player(playerStartPos, playerSprites, cannonBallSprite, map);
 
+		player.addToCargo(itemFactory.getGinger());
+		player.addToCargo(itemFactory.getGinger());
+		player.addToCargo(itemFactory.getGinger());
+
 		return player;
 	}
 	

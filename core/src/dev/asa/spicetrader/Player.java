@@ -6,14 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 public class Player extends Ship {
 	
 	//starting stats
-	private static int INIT_HULL = 12;
+	private static int INIT_HULL = 5;
 	//these are in view mode and must be converted before they are applied
-	private static int INIT_MAX_SPEED = 5;
-	private static int INIT_ACCEL = 5;
-	private static int INIT_TURNING = 5;
-	private static int INIT_DAMAGE = 3;
-	private static int INIT_RANGE = 3;
-	private static int INIT_MAX_CARGO = 12;
+	private static int INIT_MAX_SPEED = 2;
+	private static int INIT_ACCEL = 2;
+	private static int INIT_TURNING = 2;
+	private static int INIT_DAMAGE = 2;
+	private static int INIT_RANGE = 2;
+	private static int INIT_MAX_CARGO = 3;
 	
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
@@ -69,8 +69,8 @@ public class Player extends Ship {
 		
 		damageCooldown = 0;
 		
-		gold = 10000;
-		cannonBalls = 1000;
+		gold = 0;
+		cannonBalls = 10;
 		
 		maxHull = INIT_HULL;
 		maxCargo = INIT_MAX_CARGO;
