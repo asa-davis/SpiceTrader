@@ -2,7 +2,8 @@
 **IntelliJ Setup Instructions**
 - File > New > Project from Version Control
 - Select this repo
-- Select Gradle project and click next a bunch
+- Select import as eclipse project and click next 
+- When prompted, click the load Gradle build button in the popup on the bottom right.
 - New Run Configuration > Application
     - JDK: Bundled
     - Module: SpiceTrader.desktop.main
