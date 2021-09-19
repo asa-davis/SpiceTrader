@@ -16,6 +16,7 @@ public class EntityFactory {
 	private SpiceTraderMap map;
 	private TextureAtlas atlas;
 	private List<LandEntityLocation> landEntityLocations;
+	private List<LandEntityLocation> takenLandEntityLocations;
 	private Vector2 screenCenter;
 	private float maxDist;
 	private float minDist;
@@ -27,6 +28,7 @@ public class EntityFactory {
 		this.screenCenter = screenCenter;
 		this.itemFactory = itemFactory;
 		landEntityLocations = getValidVillageLocations();
+		takenLandEntityLocations = new ArrayList<>();
 		calcMinMaxDist();
 		calcLocationTiers();
 	}
@@ -97,6 +99,7 @@ public class EntityFactory {
 			LandEntityLocation nextLocation = landEntityLocations.get(Utils.randInt(0, landEntityLocations.size() - 1));
 			landEntities.add(makeVillage(nextLocation));
 			landEntityLocations.remove(nextLocation);
+			takenLandEntityLocations.add(nextLocation);
 		}
 		
 		System.out.println("Generated " + maxNumVillages / villageRatio + " landEntities.");
@@ -113,6 +116,7 @@ public class EntityFactory {
 			LandEntityLocation nextLocation = landEntityLocations.get(Utils.randInt(0, landEntityLocations.size() - 1));
 			merchants.add(makeMerchant(nextLocation));
 			landEntityLocations.remove(nextLocation);
+			takenLandEntityLocations.add(nextLocation);
 		}
 
 		System.out.println("Generated " + maxNumMerchants / merchantRatio + " merchants.");
@@ -120,8 +124,11 @@ public class EntityFactory {
 	}
 	
 	//fills in remaining village locations with pirate villages, more frequent the farther from center.
-	public List<PirateVillage> createPirateVillages(float minProb, float maxProb) {
+	public List<PirateVillage> createPirateVillages(float minProb, float maxProb, int minDistFromFriendlies) {
 		List<PirateVillage> pirateVillages = new ArrayList<PirateVillage>();
+
+		//remove locations that are too close to villages/merchants/shops
+		removeLocationsCloseToFriendlies(minDistFromFriendlies);
 
 		int count = 0;
 		//for each location, scale it's distance from center into a probability of a pirate village forming there. 
@@ -225,6 +232,18 @@ public class EntityFactory {
 		}
 		return validLandEntityLocations;
 	}
+
+	private void removeLocationsCloseToFriendlies(int minDist) {
+		ArrayList<LandEntityLocation> locationsToRemove = new ArrayList<>();
+		for(LandEntityLocation loc : landEntityLocations) {
+			for(LandEntityLocation friendly : takenLandEntityLocations) {
+				float dist = loc.tileOrigin.dst(friendly.tileOrigin);
+				if(dist < minDist)
+					locationsToRemove.add(loc);
+			}
+		}
+		landEntityLocations.removeAll(locationsToRemove);
+	}
 	
 	private Village makeVillage(LandEntityLocation location) {
 		//pick a random village texture for sprite
@@ -296,10 +315,11 @@ public class EntityFactory {
 			this.spawnLocation = spawnLocation;
 			
 			//calc dist from center
-			Vector2 pixelCenter = map.getPixelCoordsFromTile(new Vector2(tileOrigin).add(1, 1));
-			float distX = Math.abs(pixelCenter.x - screenCenter.x);
-			float distY = Math.abs(pixelCenter.y - screenCenter.y);
-			distFromCenter = (float) Math.sqrt((distX * distX) + (distY * distY));
+			distFromCenter = getPixelCenter().dst(screenCenter);
+		}
+
+		public Vector2 getPixelCenter() {
+			return map.getPixelCoordsFromTile(tileOrigin).add(16, 16);
 		}
 	}
 }

@@ -1,20 +1,30 @@
-TODO (5/31/21)
+
+**IntelliJ Setup Instructions**
+- File > New > Project from Version Control
+- Select this repo
+- Select import as eclipse project and click next 
+- When prompted, click the load Gradle build button in the popup on the bottom right.
+- New Run Configuration > Application
+    - JDK: Bundled
+    - Module: SpiceTrader.desktop.main
+    - Main Method: dev.asa.spicetrader.desktop.DesktopLauncher
+    - Working Directory: [clone location]
+
+
+**Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
 - Features to Add
-    - pirate wandering 
-        - two modes: guard and chase
-        - have each pirate village generate a dijkstra map once pointing back to spawn location.
-        - would like to have pirates wander, but this requires too much dijkstra map generation.
-        - Could potentially switch to A* to achieve this at a later date.
-    - cooldown on cannons
-    - trading 
-        - expand on docked menu
-        - add datastructures to Village to hold current trade, inventory, etc.
-        - unique names for villages
-        - clicking on a village you haven't visited yet reveals "unknown village", but if you have visited them, you get more info
+    - keep pirate villages from spawning right next to merchants/villages
+    - keep merchants from spawning right next to villages
+    - open ship menu when player docks and close when they leave
+    - when player clicks buy/sell but can't, display reason
+    - more visual differences between merchant and village menus
+    - make item visualizer display stats for equipable items
+    - pirate wandering
+    - upgrade shops
+    - rate of fire stat
     - send pirates back to base if you dock, dont pause game
     - (IMPORTANT) different map hitboxes for different tile types
     - falling off world death/outer world textures
-    - starting area/upgrade shop
     - sea monsters
     - quest/winning the game (sea monsters)
     - add better pirate death textures
@@ -32,12 +42,14 @@ TODO (5/31/21)
     - biomes
 
 - Fixes/Refactoring
+    - merchants spawning on invalid locations!!
     - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
     - merge village factory class with ent factory. What do we do with village location inner class???
     - fix bug where you can sail underneath pirates
     - replace all instances of MainGame constants being passed as parameters with direct references ie MainGame.CONST_VAR?
     - fix bug where dead pirates board player in the time between when they take a hit and get deleted
-    - fix rare damage flash bug
+    - fix damage flash bug
     - pirates shouldn't come after player when he gets within certain radius of village (then we can remove the code that pauses game when docked)
-    - keep pirate villages from spawning near trading villages
+    - keep pirate villages from spawning near trading villages 
+    - keep villages from spawning on top of trees, or remove trees under village locations
