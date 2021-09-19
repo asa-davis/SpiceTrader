@@ -27,7 +27,7 @@ public class ShopMenu extends TradeMenu {
 
     @Override
     public ArrayList<Item> getInventory() {
-        return null;
+        return shop.getToBuy();
     }
 
     @Override

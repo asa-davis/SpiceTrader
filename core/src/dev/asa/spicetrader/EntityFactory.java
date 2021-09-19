@@ -99,17 +99,22 @@ public class EntityFactory {
 		}
 		
 		System.out.println("Generated " + villages.size() + " villages.");
-		
+
 		return villages;
 	}
 
 	//creates 1/ratio the max number of remaining villages
-	public List<Merchant> createMerchants(int merchantRatio) {
+	public List<Merchant> createMerchants(int merchantRatio, int minDistFromVillages) {
+		//ensure merchants dont spawn right next to villages
+		List<LandEntityLocation> locationsCloseToVillages = removeLocationsCloseToFriendlies(minDistFromVillages);
+
 		List<Merchant> merchants = new ArrayList<Merchant>();
 		List<LandEntityLocation> selectedLocations = selectLandEntityLocations(merchantRatio);
 		for(LandEntityLocation location : selectedLocations) {
 			merchants.add(makeMerchant(location));
 		}
+
+		landEntityLocations.addAll(locationsCloseToVillages);
 
 		System.out.println("Generated " + merchants.size() + " merchants.");
 		return merchants;
@@ -248,7 +253,7 @@ public class EntityFactory {
 		return validLandEntityLocations;
 	}
 
-	private void removeLocationsCloseToFriendlies(int minDist) {
+	private List<LandEntityLocation> removeLocationsCloseToFriendlies(int minDist) {
 		ArrayList<LandEntityLocation> locationsToRemove = new ArrayList<>();
 		for(LandEntityLocation loc : landEntityLocations) {
 			for(LandEntityLocation friendly : takenLandEntityLocations) {
@@ -258,6 +263,7 @@ public class EntityFactory {
 			}
 		}
 		landEntityLocations.removeAll(locationsToRemove);
+		return locationsToRemove;
 	}
 	
 	private Village makeVillage(LandEntityLocation location) {
@@ -283,7 +289,7 @@ public class EntityFactory {
 		Sprite s = atlas.createSprite("village/shop");
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
-		return new Shop(pos, s, location, dockHitbox);
+		return new Shop(pos, s, location, dockHitbox, itemFactory);
 	}
 	
 	private PirateVillage makePirateVillage(LandEntityLocation location) {
