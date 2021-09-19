@@ -34,6 +34,7 @@ public class MainGame extends ApplicationAdapter {
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int VILLAGE_RATIO = 7;							//higher = less villages
 	static final int MERCHANT_RATIO = 10;
+	static final int SHOP_RATIO = 15;
 	static final float MIN_PIRATEVILLAGE_PROBABILITY = 0.1f; 	//probability of pirate villages generating near center of map
 	static final float MAX_PIRATEVILLAGE_PROBABILITY = 0.85f; 	//probability of pirate villages generating near edges of map
 	static final int MIN_DIST_BETWEEN_PIRATE_FRIENDLY = 4;		//min dist in tiles between pirate villages and friendly villages
@@ -109,22 +110,20 @@ public class MainGame extends ApplicationAdapter {
 		//player
 		Player player = entFac.createPlayer();
 		allEnts.add(player);
-		
-		//pirates
-		//for(int i = 0; i < 30; i++) {
-		//	allEnts.add(entFac.createRandPirate());
-		//}
-		
+
 		//landEntities
-		List<LandEntity> landEntities = entFac.createVillages(VILLAGE_RATIO);
+		List<LandEntity> landEntities = new ArrayList<>();
+		landEntities.addAll(entFac.createVillages(VILLAGE_RATIO));
 		landEntities.addAll(entFac.createMerchants(MERCHANT_RATIO));
+		landEntities.addAll(entFac.createShops(SHOP_RATIO));
 		landEntities.addAll(entFac.createPirateVillages(MIN_PIRATEVILLAGE_PROBABILITY, MAX_PIRATEVILLAGE_PROBABILITY, MIN_DIST_BETWEEN_PIRATE_FRIENDLY));
 		allEnts.addAll(landEntities);
 		map.addVillages(landEntities);
 
 		//menus
 		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
-		
+
+		//entity manager
 		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera);
 		entManager.addAll(allEnts);
 		

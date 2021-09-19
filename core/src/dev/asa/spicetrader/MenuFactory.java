@@ -11,35 +11,30 @@ public class MenuFactory {
 				
 		if(menuType.equals("BoardedMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/game_over_menu_background");
-			
-			int topGap = 128;
-			float x = (manager.getScreenSize().x / 2) - (backgroundTexture.getRegionWidth() / 2);
-			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
-			pos = new Vector2(x, y);
+			pos = getCenterMenuPos(manager, backgroundTexture);
 			
 			return new BoardedMenu(manager, pos, backgroundTexture);
 		}
 		
 		else if(menuType.equals("VillageMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
-			
-			int topGap = 128;
-			float x = (manager.getScreenSize().x / 2) - (backgroundTexture.getRegionWidth() / 2);
-			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
-			pos = new Vector2(x, y);
+			pos = getCenterMenuPos(manager, backgroundTexture);
 			
 			return new VillageMenu(manager, pos, backgroundTexture);
 		}
 
 		else if(menuType.equals("MerchantMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
-
-			int topGap = 128;
-			float x = (manager.getScreenSize().x / 2) - (backgroundTexture.getRegionWidth() / 2);
-			float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
-			pos = new Vector2(x, y);
+			pos = getCenterMenuPos(manager, backgroundTexture);
 
 			return new MerchantMenu(manager, pos, backgroundTexture);
+		}
+
+		else if(menuType.equals("ShopMenu")) {
+			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
+			pos = getCenterMenuPos(manager, backgroundTexture);
+
+			return new ShopMenu(manager, pos, backgroundTexture);
 		}
 		
 		else if(menuType.equals("HUDMenu")) {
@@ -57,6 +52,13 @@ public class MenuFactory {
 		}
 		
 		return null;
+	}
+
+	private static Vector2 getCenterMenuPos(MenuManager manager, AtlasRegion backgroundTexture) {
+		int topGap = 128;
+		float x = (manager.getScreenSize().x / 2) - (backgroundTexture.getRegionWidth() / 2);
+		float y = manager.getScreenSize().y - backgroundTexture.getRegionHeight() - topGap;
+		return new Vector2(x, y);
 	}
 	
 }

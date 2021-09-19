@@ -91,36 +91,51 @@ public class EntityFactory {
 	//}
 	
 	//creates 1/ratio the max number of villages
-	public List<LandEntity> createVillages(int villageRatio) {
-		List<LandEntity> landEntities = new ArrayList<LandEntity>();
-		
-		int maxNumVillages = landEntityLocations.size();
-		for(int i = 0; i < maxNumVillages / villageRatio; i++) {
-			LandEntityLocation nextLocation = landEntityLocations.get(Utils.randInt(0, landEntityLocations.size() - 1));
-			landEntities.add(makeVillage(nextLocation));
-			landEntityLocations.remove(nextLocation);
-			takenLandEntityLocations.add(nextLocation);
+	public List<Village> createVillages(int villageRatio) {
+		List<Village> villages = new ArrayList<>();
+		List<LandEntityLocation> selectedLocations = selectLandEntityLocations(villageRatio);
+		for(LandEntityLocation location : selectedLocations) {
+			villages.add(makeVillage(location));
 		}
 		
-		System.out.println("Generated " + maxNumVillages / villageRatio + " landEntities.");
+		System.out.println("Generated " + villages.size() + " villages.");
 		
-		return landEntities;
+		return villages;
 	}
 
 	//creates 1/ratio the max number of remaining villages
 	public List<Merchant> createMerchants(int merchantRatio) {
 		List<Merchant> merchants = new ArrayList<Merchant>();
+		List<LandEntityLocation> selectedLocations = selectLandEntityLocations(merchantRatio);
+		for(LandEntityLocation location : selectedLocations) {
+			merchants.add(makeMerchant(location));
+		}
 
-		int maxNumMerchants = landEntityLocations.size();
-		for(int i = 0; i < maxNumMerchants / merchantRatio; i++) {
+		System.out.println("Generated " + merchants.size() + " merchants.");
+		return merchants;
+	}
+
+	public List<Shop> createShops(int shopRatio) {
+		List<Shop> shops = new ArrayList<>();
+		List<LandEntityLocation> selectedLocations = selectLandEntityLocations(shopRatio);
+		for(LandEntityLocation location : selectedLocations) {
+			shops.add(makeShop(location));
+		}
+
+		System.out.println("Generated " + shops.size() + " shops.");
+		return shops;
+	}
+
+	private List<LandEntityLocation> selectLandEntityLocations(int ratio) {
+		List<LandEntityLocation> selected = new ArrayList<>();
+		int maxNum = landEntityLocations.size() / ratio;
+		for(int i = 0; i < maxNum; i++) {
 			LandEntityLocation nextLocation = landEntityLocations.get(Utils.randInt(0, landEntityLocations.size() - 1));
-			merchants.add(makeMerchant(nextLocation));
+			selected.add(nextLocation);
 			landEntityLocations.remove(nextLocation);
 			takenLandEntityLocations.add(nextLocation);
 		}
-
-		System.out.println("Generated " + maxNumMerchants / merchantRatio + " merchants.");
-		return merchants;
+		return selected;
 	}
 	
 	//fills in remaining village locations with pirate villages, more frequent the farther from center.
@@ -262,6 +277,13 @@ public class EntityFactory {
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
 		return new Merchant(pos, s, location, dockHitbox, itemFactory);
+	}
+
+	private Shop makeShop(LandEntityLocation location) {
+		Sprite s = atlas.createSprite("village/shop");
+		Vector2 pos = makeVillagePos(location, s);
+		Polygon dockHitbox = makeDockHitbox(location);
+		return new Shop(pos, s, location, dockHitbox);
 	}
 	
 	private PirateVillage makePirateVillage(LandEntityLocation location) {
