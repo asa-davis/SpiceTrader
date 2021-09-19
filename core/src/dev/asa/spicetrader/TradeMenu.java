@@ -16,6 +16,7 @@ public abstract class TradeMenu extends Menu {
 	private ItemVisualizer itemVis;
 	private List<Button> allButtons;
 	private List<Vector2> itemPosList;
+	private boolean closeShipMenuOnClose;
 
 	public TradeMenu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture) {
 		super(manager, pos, backgroundTexture, true);
@@ -27,6 +28,15 @@ public abstract class TradeMenu extends Menu {
 		itemPosList = new ArrayList<>();
 
 		setupUI();
+		closeShipMenuOnClose = !manager.isShipMenuOpen();
+		manager.openShipMenu();
+	}
+
+	@Override
+	public void close() {
+		super.close();
+		if(closeShipMenuOnClose)
+			manager.closeShipMenu();
 	}
 
 	public abstract Array<AtlasRegion> getTradeButtonTexture();

@@ -67,6 +67,10 @@ public class MenuManager {
 	public void openMenu(Menu m) {
 		menusToOpen.add(m);
 	}
+
+	public boolean isShipMenuOpen() {
+		return activeMenus.contains(shipMenu);
+	}
 	
 	public void closeMenu(Menu m) {
 		menusToClose.add(m);
@@ -109,6 +113,16 @@ public class MenuManager {
 			closeMenu(shipMenu);
 		else
 			openMenu(shipMenu);
+	}
+
+	public void openShipMenu() {
+		if(!activeMenus.contains(shipMenu))
+			openMenu(shipMenu);
+	}
+
+	public void closeShipMenu() {
+		if(activeMenus.contains(shipMenu))
+			closeMenu(shipMenu);
 	}
 
 	public MainGame getGame() {
