@@ -7,14 +7,14 @@ import java.util.ArrayList;
 
 public class Shop extends LandEntity {
     private ItemFactory itemFactory;
-    private ArrayList<Item> toBuy = new ArrayList<>();
+    private ArrayList<Item> toSell = new ArrayList<>();
 
     public Shop(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
         super(pos, sprite, location, dockHitbox);
         this.itemFactory = itemFactory;
     }
 
-    public ArrayList<Item> getToBuy() {
-        return toBuy;
+    public ArrayList<Item> getToSell() {
+        return toSell;
     }
 }

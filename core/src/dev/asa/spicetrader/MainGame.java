@@ -29,7 +29,7 @@ public class MainGame extends ApplicationAdapter {
 	static final float ZOOM_LEVEL = 3;	//use 3 for gameplay
 	
 	//map settings
-	static final int MAP_SIZE = 400; //400 seems pretty good for games.
+	static final int MAP_SIZE = 100; //400 seems pretty good for games.
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int VILLAGE_RATIO = 7;							//higher = less villages

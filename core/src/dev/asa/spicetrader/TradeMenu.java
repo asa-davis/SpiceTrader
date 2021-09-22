@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class TradeMenu extends Menu {
+public abstract class TradeMenu extends PopupMenu {
 
 	private ItemVisualizer itemVis;
-	private List<Button> allButtons;
 	private List<Vector2> itemPosList;
 	private boolean closeShipMenuOnClose;
 
@@ -23,11 +22,9 @@ public abstract class TradeMenu extends Menu {
 
 		Array<AtlasRegion> nametag = manager.getAtlas().findRegions("ui/nametag");
 		itemVis = new ItemVisualizer(manager.getFont(0), nametag.get(0), nametag.get(1));
-
-		allButtons = new ArrayList<>();
 		itemPosList = new ArrayList<>();
+		addItemTradeButtons();
 
-		setupUI();
 		closeShipMenuOnClose = !manager.isShipMenuOpen();
 		manager.openShipMenu();
 	}
@@ -59,19 +56,7 @@ public abstract class TradeMenu extends Menu {
 		itemVis.passMouse(mousePos);
 	}
 
-	private void setupUI() {
-		//create leave button
-		Array<AtlasRegion> leaveButtonTextures = manager.getAtlas().findRegions("ui/leave_button");
-		Vector2 leaveButtonPos = new Vector2(this.getPos().x + ((this.getSize().x/2)- (leaveButtonTextures.get(0).getRegionWidth()/2)), this.getPos().y + 32);
-		Button leaveButton = new Button(leaveButtonTextures, leaveButtonPos);
-		leaveButton.setOnClick(new OnClickListener(){
-			@Override
-			public void onClick() {
-				close();
-			}
-		});
-		allButtons.add(leaveButton);
-
+	private void addItemTradeButtons() {
 		//create item slot buttons and buy buttons
 		int totalButtonRowWidth = 288;
 		for(int i = 0; i < 3; i++) {
@@ -91,11 +76,9 @@ public abstract class TradeMenu extends Menu {
 				@Override
 				public void onClick() { tradeButtonClicked(finalI); }
 			});
-			allButtons.add(itemSlot);
-			allButtons.add(buyButton);
+			addButton(itemSlot);
+			addButton(buyButton);
 		}
-
-		addButtons(allButtons);
 	}
 
 	private void drawItems(SpriteBatch batch) {
@@ -116,16 +99,5 @@ public abstract class TradeMenu extends Menu {
 
 		itemVis.drawBatch(batch);
 		itemVis.clearBatch();
-	}
-	
-	//TEMPORARY: menu contents will drastically change in future
-	public void drawTitle(SpriteBatch batch, String title) {
-		manager.getFont(2).setColor(Color.DARK_GRAY);
-		manager.getFont(2).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 16, this.getSize().x, Align.center, true);
-	}
-	
-	private void drawBody(SpriteBatch batch, String body) {
-		manager.getFont(1).setColor(Color.DARK_GRAY);
-		manager.getFont(1).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
 	}
 }
