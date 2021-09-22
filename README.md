@@ -13,6 +13,7 @@
 
 **Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
 - Features to Add
+    - change leave button to small X in top right
     - keep pirate villages from spawning right next to merchants/villages
     - keep merchants from spawning right next to villages
     - open ship menu when player docks and close when they leave
@@ -42,7 +43,7 @@
     - biomes
 
 - Fixes/Refactoring
-    - merchants spawning on invalid locations!!
+    - Refactor Menu Classes!!!
     - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
     - merge village factory class with ent factory. What do we do with village location inner class???
