@@ -59,6 +59,7 @@ public class ShopMenu extends PopupMenu {
     public void draw(SpriteBatch batch) {
         super.draw(batch);
         drawItems(batch);
+        drawTitle(batch, "Welcome to " + shop.getName());
     }
 
     @Override
@@ -69,12 +70,12 @@ public class ShopMenu extends PopupMenu {
 
     private void addItemTradeButtons() {
         //create item slot buttons and buy buttons
-        int totalButtonColumnHeight = (48 * 3) + (16 * 2);
-        int distBetweenItemSlots = 48 + 16;
-        for(int i = 0; i < 3; i++) {
+        int totalButtonColumnHeight = (48 * 2) + 32;
+        int distBetweenItemSlots = 48 + 32;
+        for(int i = 0; i < 4; i++) {
             Array<TextureAtlas.AtlasRegion> itemSlotButtonTextures = manager.getAtlas().findRegions("ui/item_slot_button");
             Array<TextureAtlas.AtlasRegion> buyButtonTextures = getTradeButtonTexture();
-            Vector2 itemPos = new Vector2(getPos().x + (getSize().x - 184), getPos().y + ((getSize().y / 2) - (totalButtonColumnHeight / 2)) + (i * distBetweenItemSlots));
+            Vector2 itemPos = new Vector2(getPos().x + (getSize().x - 184) - ((i / 2) * 180), getPos().y + ((getSize().y / 2) - (totalButtonColumnHeight / 2)) + ((i % 2) * distBetweenItemSlots));
             itemPosList.add(itemPos);
             Vector2 buyPos = new Vector2(itemPos.x + 48 + 16, itemPos.y);
             Button itemSlot = new Button(itemSlotButtonTextures, itemPos);
@@ -98,7 +99,7 @@ public class ShopMenu extends PopupMenu {
 
         ArrayList<Item> items = getInventory();
         int numItemsToDraw = items.size();
-        if(numItemsToDraw > 3) numItemsToDraw = 3;
+        if(numItemsToDraw > 4) numItemsToDraw = 4;
 
         for(int i = 0; i < numItemsToDraw; i++) {
             itemVis.addToBatch(items.get(i), itemPosList.get(i));
