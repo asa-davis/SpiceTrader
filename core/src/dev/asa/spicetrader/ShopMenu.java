@@ -21,8 +21,9 @@ public class ShopMenu extends TradeMenu {
 
         int numTrades = 5;
         ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
-        for(int i = 0; i < numTrades; i++) {
-            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, shop.getToSell(), 0));
+        addTradeButtonSet(new TradeButtonSet(tradePosList.get(0), TradeType.Buy, shop.getCannonballs(), 0));
+        for(int i = 1; i < numTrades; i++) {
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, shop.getToSell(), i - 1));
         }
     }
 

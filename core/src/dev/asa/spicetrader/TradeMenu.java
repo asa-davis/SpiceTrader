@@ -203,11 +203,21 @@ public abstract class TradeMenu extends Menu {
 			if(!(inventory.size() > itemIndex)) return;
 
 			Item toBuy = inventory.get(itemIndex);
-			if(!manager.getPlayer().isCargoFull() && manager.getPlayer().getGold() >= toBuy.getBuyPrice()) {
-				inventory.remove(itemIndex);
-				manager.getPlayer().addToCargo(toBuy);
+
+			if(manager.getPlayer().getGold() < toBuy.getBuyPrice())
+				return;
+
+			if(toBuy instanceof CannonBallItem) {
+				manager.getPlayer().addCannonball();
 				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
 			}
+
+			if(manager.getPlayer().isCargoFull())
+				return;
+
+			inventory.remove(itemIndex);
+			manager.getPlayer().addToCargo(toBuy);
+			manager.getPlayer().subtractGold(toBuy.getBuyPrice());
 		}
 
 		//player sells item from their inventory
