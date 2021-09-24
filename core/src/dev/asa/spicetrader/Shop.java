@@ -9,15 +9,19 @@ public class Shop extends LandEntity {
     private ItemFactory itemFactory;
     private ArrayList<Item> toSell = new ArrayList<>();
     private ArrayList<Item> cannonballs = new ArrayList<>();
+    private ArrayList<Item> repairs = new ArrayList<>();
 
     public Shop(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
         super(pos, sprite, location, dockHitbox);
         this.itemFactory = itemFactory;
 
         cannonballs.add(itemFactory.getCannonball());
+        repairs.add(itemFactory.getRepairItem());
     }
 
     public ArrayList<Item> getCannonballs() { return cannonballs; }
+
+    public ArrayList<Item> getRepairs() { return repairs; }
 
     public ArrayList<Item> getToSell() {
         return toSell;

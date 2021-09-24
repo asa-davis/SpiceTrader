@@ -213,6 +213,14 @@ public abstract class TradeMenu extends Menu {
 				return;
 			}
 
+			if(toBuy instanceof RepairItem) {
+				if(manager.getPlayer().getCurrHull() == manager.getPlayer().getMaxHull())
+					return;
+				manager.getPlayer().repairHull();
+				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
+				return;
+			}
+
 			if(manager.getPlayer().isCargoFull())
 				return;
 

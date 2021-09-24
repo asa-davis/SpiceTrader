@@ -36,6 +36,8 @@ public class ItemFactory {
 
     public CannonBallItem getCannonball() { return new CannonBallItem(atlas.findRegion("items/Cannonball"), 5); }
 
+    public RepairItem getRepairItem() { return new RepairItem(atlas.findRegion("items/repair"),20); }
+
     public EquipableItem getTestEquippable() {
         Stats testStats = new Stats();
         testStats.range = 5;

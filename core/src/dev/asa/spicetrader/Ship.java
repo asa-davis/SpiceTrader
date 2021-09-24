@@ -266,4 +266,6 @@ public abstract class Ship extends Entity {
 	public int getCurrHull() {
 		return hull;
 	}
+
+	public void repairHull() { hull++; }
  }
