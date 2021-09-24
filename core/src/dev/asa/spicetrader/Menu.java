@@ -3,6 +3,7 @@ package dev.asa.spicetrader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 public abstract class Menu {
@@ -59,5 +61,19 @@ public abstract class Menu {
 	
 	public Vector2 getSize() {
 		return new Vector2(backgroundTexture.getRegionWidth(), backgroundTexture.getRegionHeight());
+	}
+
+	public void drawTitle(SpriteBatch batch, String title, Color color) {
+		manager.getFont(2).setColor(color);
+		manager.getFont(2).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 16, this.getSize().x, Align.center, true);
+	}
+
+	public void drawTitle(SpriteBatch batch, String title) {
+		drawTitle(batch, title, Color.DARK_GRAY);
+	}
+
+	public void drawBody(SpriteBatch batch, String body) {
+		manager.getFont(1).setColor(Color.DARK_GRAY);
+		manager.getFont(1).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
 	}
 }

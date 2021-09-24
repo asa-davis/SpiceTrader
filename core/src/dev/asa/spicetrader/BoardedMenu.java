@@ -36,18 +36,7 @@ public class BoardedMenu extends Menu{
 	@Override
 	public void draw(SpriteBatch batch) {
 		super.draw(batch);
-		drawTitle(batch, "Your ship has been boarded!");
+		drawTitle(batch, "Your ship has been boarded!", Color.FIREBRICK);
 		drawBody(batch, "Pirates have overrun your vessel, murdering you and your crew and looting your cargo. This marks the end of your voyage.");
-	}
-	
-	//TEMPORARY: menu contents will drastically change in future
-	private void drawTitle(SpriteBatch batch, String title) {
-		manager.getFont(2).setColor(Color.FIREBRICK);
-		manager.getFont(2).draw(batch, title, this.getPos().x, this.getPos().y + this.getSize().y - 24, this.getSize().x, Align.center, true);
-	}
-	
-	private void drawBody(SpriteBatch batch, String body) {
-		manager.getFont(1).setColor(Color.DARK_GRAY);
-		manager.getFont(1).draw(batch, body, this.getPos().x + 16, this.getPos().y + this.getSize().y - 64, this.getSize().x - 32, Align.center, true);
 	}
 }
