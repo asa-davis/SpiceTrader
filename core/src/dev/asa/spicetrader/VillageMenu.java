@@ -20,7 +20,7 @@ public class VillageMenu extends TradeMenu {
         int numTrades = 3;
         ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
         for(int i = 0; i < numTrades; i++) {
-            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), 0));
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), i));
         }
     }
 

@@ -210,6 +210,7 @@ public abstract class TradeMenu extends Menu {
 			if(toBuy instanceof CannonBallItem) {
 				manager.getPlayer().addCannonball();
 				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
+				return;
 			}
 
 			if(manager.getPlayer().isCargoFull())
