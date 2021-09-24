@@ -44,6 +44,6 @@ public class ItemFactory {
         testStats.damage = 5;
         testStats.cargo = 4;
         testStats.maxSpeed = -10;
-        return new EquipableItem("Big Cannons", atlas.findRegion("items/ginger"), testStats, 200, 300);
+        return new EquipableItem("Big Cannons", atlas.findRegion("items/upgrade"), testStats, 200, 300);
     }
 }

@@ -17,6 +17,7 @@ public class Shop extends LandEntity {
 
         cannonballs.add(itemFactory.getCannonball());
         repairs.add(itemFactory.getRepairItem());
+        toSell.add(itemFactory.getTestEquippable());
     }
 
     public ArrayList<Item> getCannonballs() { return cannonballs; }
