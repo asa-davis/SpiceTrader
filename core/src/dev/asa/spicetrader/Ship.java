@@ -56,20 +56,20 @@ public abstract class Ship extends Entity {
 		//handle red shading on strike
 		if(strikeCooldown > 0) {
 			strikeCooldown--;
-			if(strikeCooldown > 0)
-				getSprite().setColor(Color.RED);
-			else {
-				getSprite().setColor(Color.WHITE);
+			if(strikeCooldown == 0) {
 				if(hull <= 0) {
 					exists = false;
 				}
 			}
 		}
+		else
+			getSprite().setColor(Color.WHITE);
 	}
 	
 	public void strike(int damage) {
 		hull -= damage;
 		strikeCooldown = 10;
+		getSprite().setColor(Color.RED);
 	}
 	
 	public boolean isDead() {
