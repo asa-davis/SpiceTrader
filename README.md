@@ -41,6 +41,7 @@
     - biomes
 
 - Fixes/Refactoring
+    - pirate movement in general needs a rework...
     - fix pirates sharing goals!!! What happened to this feature?
     - make sure dead pirates don't still exit...
     - fix bug where player increases hull/cargo above limit and then unequips the item losing more stats than they should
