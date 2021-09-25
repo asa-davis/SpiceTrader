@@ -19,9 +19,7 @@
     - open ship menu when player docks and close when they leave
     - when player clicks buy/sell but can't, display reason
     - more visual differences between merchant and village menus
-    - make item visualizer display stats for equipable items
     - pirate wandering
-    - upgrade shops
     - rate of fire stat
     - send pirates back to base if you dock, dont pause game
     - (IMPORTANT) different map hitboxes for different tile types
@@ -43,7 +41,7 @@
     - biomes
 
 - Fixes/Refactoring
-    - Refactor Menu Classes!!!
+    - fix bug where player increases hull/cargo above limit and then unequips the item losing more stats than they should
     - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
     - merge village factory class with ent factory. What do we do with village location inner class???
