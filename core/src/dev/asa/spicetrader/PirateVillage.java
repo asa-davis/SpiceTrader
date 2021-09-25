@@ -49,7 +49,7 @@ public class PirateVillage extends LandEntity {
 				numActivePirates++;
 			}
 		}
-		else 
+		else if(numActivePirates < MAX_ACTIVE_PIRATES)
 			spawnCounter++;
 	}
 	
