@@ -287,6 +287,10 @@ public class Player extends Ship {
 		else 
 			return null;
 	}
+
+	public void addCannonball() {
+		cannonBalls++;
+	}
 	
 	//TODO: Move cannon firing stuff to another class so pirate villages can use it
 	private Vector2 calcBallInitPos() {
