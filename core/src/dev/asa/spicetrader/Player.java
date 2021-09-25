@@ -17,6 +17,7 @@ public class Player extends Ship {
 	
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
+	private static final int TRUE_MAX_HULL = 12;
 	
 	private Item[] cargo;
 	private Item[] equipped;
@@ -182,7 +183,12 @@ public class Player extends Ship {
 
 	private void applyStats(Stats stats) {
 		maxHull = stats.hull;
+		if(maxHull > TRUE_MAX_HULL)
+			maxHull = TRUE_MAX_HULL;
 		maxCargo = stats.cargo;
+		if(maxCargo > TRUE_MAX_CARGO)
+			maxCargo = TRUE_MAX_CARGO;
+
 		cannonDamage = stats.damage;
 		cannonRange = Utils.statToUse(stats.range, 'r');
 		setAccel(Utils.statToUse(stats.accel, 'a'));
