@@ -14,27 +14,27 @@ public class ItemFactory {
 
     //tier 1
     public Item getGinger() {
-        return new Item("Ginger", atlas.findRegion("items/ginger"), 10, 7);
+        return new Item("Ginger", atlas.findRegion("items/ginger"), 10, 5);
     }
 
     //tier 1 and 2
     public Item getPeppercorn() {
-        return new Item("Peppercorn", atlas.findRegion("items/peppercorn"), 15, 10);
+        return new Item("Peppercorn", atlas.findRegion("items/peppercorn"), 25, 10);
     }
 
     //tier 2
     public Item getCinnamon() {
-        return new Item("Cinnamon", atlas.findRegion("items/cinnamon"), 30, 23);
+        return new Item("Cinnamon", atlas.findRegion("items/cinnamon"), 50, 25);
     }
 
     //tier 2
     public Item getCloves() {
-        return new Item("Cloves", atlas.findRegion("items/cloves"), 50, 40);
+        return new Item("Cloves", atlas.findRegion("items/cloves"), 100, 50);
     }
 
     //tier 2 and 3
     public Item getNutmeg() {
-        return new Item("Nutmeg", atlas.findRegion("items/nutmeg"), 100, 80);
+        return new Item("Nutmeg", atlas.findRegion("items/nutmeg"), 200, 100);
     }
 
     public CannonBallItem getCannonball() { return new CannonBallItem(atlas.findRegion("items/Cannonball"), 5); }
