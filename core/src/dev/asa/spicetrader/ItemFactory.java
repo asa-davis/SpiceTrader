@@ -39,7 +39,7 @@ public class ItemFactory {
 
     public CannonBallItem getCannonball() { return new CannonBallItem(atlas.findRegion("items/Cannonball"), 5); }
 
-    public RepairItem getRepairItem() { return new RepairItem(atlas.findRegion("items/repair"),20); }
+    public RepairItem getRepairItem() { return new RepairItem(atlas.findRegion("items/repair"),10); }
 
     //tier 1
     public EquipableItem getCargoExpansion1() {
