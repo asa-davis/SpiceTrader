@@ -15,7 +15,7 @@ public class Village extends LandEntity {
     // number of frames between village item drops
     private static final int ITEM_DROP_INTERVAL = 300;
     private int currItemDropTick = 0;
-    private static final int MAX_NUM_ITEMS = 5;
+    private static final int MAX_NUM_ITEMS = 3;
 
     public Village(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
         super(pos, sprite, location, dockHitbox);
@@ -34,7 +34,7 @@ public class Village extends LandEntity {
             currItemDropTick++;
     }
 
-    // drop random item depening on tier
+    // drop random item depending on tier
     private void dropItem() {
         if(toSell.size() >= MAX_NUM_ITEMS)
             return;
