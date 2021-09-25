@@ -11,7 +11,7 @@ public class Pirate extends Ship{
 	private static int DEFAULT_MAX_SPEED = 2;
 	private static int DEFAULT_ACCEL = 4;
 	private static int DEFAULT_TURNING = 5;
-	private static int DEFAULT_HULL = 3;
+	private static int DEFAULT_HULL = 3; //hull starts at random number between 1 and this
 	
 	//keeps pirate from moving for a few frames after knocking player.
 	private int movementCooldown;
@@ -36,7 +36,7 @@ public class Pirate extends Ship{
 	private MoveMode currMoveMode;
 	
 	public Pirate(Vector2 pos, Sprite sprite, SpiceTraderMap map, float initialDirection, PirateVillage base) {
-		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, DEFAULT_HULL);
+		super(pos, sprite, map, Utils.statToUse(DEFAULT_MAX_SPEED, 'm'), Utils.statToUse(DEFAULT_ACCEL, 'a'), Utils.statToUse(DEFAULT_TURNING, 't'), initialDirection, Utils.randInt(1, DEFAULT_HULL));
 		
 		this.base = base;
 		
