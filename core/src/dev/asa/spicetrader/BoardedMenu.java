@@ -37,6 +37,6 @@ public class BoardedMenu extends Menu{
 	public void draw(SpriteBatch batch) {
 		super.draw(batch);
 		drawTitle(batch, "Your ship has been boarded!", Color.FIREBRICK);
-		drawBody(batch, "Pirates have overrun your vessel, murdering you and your crew and looting your cargo. This marks the end of your voyage.");
+		drawBody(batch, "Pirates have overrun your vessel. This marks the end of your voyage.\n SCORE: " + manager.getPlayer().getScore());
 	}
 }

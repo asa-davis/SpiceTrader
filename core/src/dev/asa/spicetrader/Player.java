@@ -58,6 +58,8 @@ public class Player extends Ship {
 	//this determines the rate at which a player can take damage
 	private final static int PLAYER_DAMAGE_COOLDOWN = 20;
 	private int damageCooldown;
+
+	private int score;
 	
 	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
 		super(pos, playerSprites[INIT_SPRITE], map, Utils.statToUse(INIT_MAX_SPEED, 'm'), Utils.statToUse(INIT_ACCEL, 'a'), Utils.statToUse(INIT_TURNING, 't'), 0, INIT_HULL);
@@ -70,9 +72,10 @@ public class Player extends Ship {
 		
 		damageCooldown = 0;
 		
-		gold = 0;
+		gold = 10;
 		cannonBalls = 10;
-		
+		score = 0;
+
 		maxHull = INIT_HULL;
 		maxCargo = INIT_MAX_CARGO;
 		currCargo = 0;
@@ -279,6 +282,10 @@ public class Player extends Ship {
 	public int getCannonBalls() {
 		return cannonBalls;
 	}
+
+	public int getScore() { return score; }
+
+	public void addScore() { score++; }
 	
 	public Item getItemFromCargo(int i) {
 		if(i < maxCargo)
