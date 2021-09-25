@@ -64,6 +64,12 @@ public class HUDMenu extends Menu {
 		manager.getFont(0).setColor(Color.DARK_GRAY);
 		manager.getFont(0).draw(batch, count, getPos().x + 80, getPos().y + 30);
 	}
+
+	private void drawScore(SpriteBatch batch) {
+		String score = "Score: " + player.getScore();
+		manager.getFont(2).setColor(Color.DARK_GRAY);
+		manager.getFont(2).draw(batch, score, 16, manager.getScreenSize().y - 24);
+	}
 	
 	@Override
 	public void draw(SpriteBatch batch) {
@@ -72,6 +78,7 @@ public class HUDMenu extends Menu {
 		drawCargoBar(batch);
 		drawCoinCount(batch);
 		drawCannonBallCount(batch);
+		drawScore(batch);
 	}
 	
 }

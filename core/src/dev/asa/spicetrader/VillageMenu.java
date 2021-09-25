@@ -16,43 +16,17 @@ public class VillageMenu extends TradeMenu {
         super(manager, pos, backgroundTexture);
 
         village = (Village) manager.getPlayer().getDockable();
-    }
 
-    @Override
-    public Array<TextureAtlas.AtlasRegion> getTradeButtonTexture() {
-        return manager.getAtlas().findRegions("ui/buy_button");
-    }
-
-    @Override
-    public void tradeButtonClicked(int i) {
-        buyItem(i);
-    }
-
-
-    @Override
-    public ArrayList<Item> getInventory() {
-        return village.getToSell();
-    }
-
-    @Override
-    public int getPrice(Item i) {
-        return i.getBuyPrice();
+        int numTrades = 3;
+        ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
+        for(int i = 0; i < numTrades; i++) {
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), i));
+        }
     }
 
     @Override
     public  void draw(SpriteBatch batch) {
         super.draw(batch);
         drawTitle(batch, "Welcome to " + village.getName());
-    }
-
-    private void buyItem(int i) {
-        if(!(village.getToSell().size() > i)) return;
-
-        Item toBuy = village.getToSell().get(i);
-        if(!manager.getPlayer().isCargoFull() && manager.getPlayer().getGold() >= toBuy.getBuyPrice()) {
-            village.getToSell().remove(i);
-            manager.getPlayer().addToCargo(toBuy);
-            manager.getPlayer().subtractGold(toBuy.getBuyPrice());
-        }
     }
 }

@@ -105,8 +105,11 @@ public class EntityManager {
 		for(Entity e : allEntities) {
 			if(e.exists)
 				e.tick();
-			else
+			else {
+				if(e instanceof Pirate)
+					player.addScore();
 				entitiesToRemove.add(e);
+			}
 		}
 		
 		//delete entities which no longer exist

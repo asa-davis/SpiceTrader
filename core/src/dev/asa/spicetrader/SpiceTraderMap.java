@@ -232,6 +232,8 @@ public class SpiceTraderMap {
 	}
 	
 	public int getTileId(int[] tile) {
+		if(tile[0] < 1 || tile[1] < 1 || tile[0] > numCols - 1 || tile[1] > numRows - 1)
+			return 1;
 		return tileIdMap[tile[1]][tile[0]];
 	}
 	

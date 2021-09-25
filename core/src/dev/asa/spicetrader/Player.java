@@ -8,15 +8,16 @@ public class Player extends Ship {
 	//starting stats
 	private static int INIT_HULL = 5;
 	//these are in view mode and must be converted before they are applied
-	private static int INIT_MAX_SPEED = 2;
-	private static int INIT_ACCEL = 2;
+	private static int INIT_MAX_SPEED = 1;
+	private static int INIT_ACCEL = 1;
 	private static int INIT_TURNING = 2;
-	private static int INIT_DAMAGE = 2;
-	private static int INIT_RANGE = 2;
+	private static int INIT_DAMAGE = 1;
+	private static int INIT_RANGE = 1;
 	private static int INIT_MAX_CARGO = 3;
 	
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
+	private static final int TRUE_MAX_HULL = 12;
 	
 	private Item[] cargo;
 	private Item[] equipped;
@@ -57,6 +58,8 @@ public class Player extends Ship {
 	//this determines the rate at which a player can take damage
 	private final static int PLAYER_DAMAGE_COOLDOWN = 20;
 	private int damageCooldown;
+
+	private int score;
 	
 	public Player(Vector2 pos, Sprite[] playerSprites, Sprite cannonBallSprite, SpiceTraderMap map) {
 		super(pos, playerSprites[INIT_SPRITE], map, Utils.statToUse(INIT_MAX_SPEED, 'm'), Utils.statToUse(INIT_ACCEL, 'a'), Utils.statToUse(INIT_TURNING, 't'), 0, INIT_HULL);
@@ -69,9 +72,10 @@ public class Player extends Ship {
 		
 		damageCooldown = 0;
 		
-		gold = 0;
+		gold = 10;
 		cannonBalls = 10;
-		
+		score = 0;
+
 		maxHull = INIT_HULL;
 		maxCargo = INIT_MAX_CARGO;
 		currCargo = 0;
@@ -182,7 +186,12 @@ public class Player extends Ship {
 
 	private void applyStats(Stats stats) {
 		maxHull = stats.hull;
+		if(maxHull > TRUE_MAX_HULL)
+			maxHull = TRUE_MAX_HULL;
 		maxCargo = stats.cargo;
+		if(maxCargo > TRUE_MAX_CARGO)
+			maxCargo = TRUE_MAX_CARGO;
+
 		cannonDamage = stats.damage;
 		cannonRange = Utils.statToUse(stats.range, 'r');
 		setAccel(Utils.statToUse(stats.accel, 'a'));
@@ -273,6 +282,10 @@ public class Player extends Ship {
 	public int getCannonBalls() {
 		return cannonBalls;
 	}
+
+	public int getScore() { return score; }
+
+	public void addScore() { score++; }
 	
 	public Item getItemFromCargo(int i) {
 		if(i < maxCargo)
@@ -286,6 +299,10 @@ public class Player extends Ship {
 			return equipped[i];
 		else 
 			return null;
+	}
+
+	public void addCannonball() {
+		cannonBalls++;
 	}
 	
 	//TODO: Move cannon firing stuff to another class so pirate villages can use it

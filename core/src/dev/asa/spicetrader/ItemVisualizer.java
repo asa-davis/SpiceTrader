@@ -31,7 +31,6 @@ public class ItemVisualizer {
 		this.nameTagMidTexture = nameTagMidTexture;
 		drawBatch = new ArrayList<ItemDrawing>();
 		layout = new GlyphLayout();
-		
 	}
 	
 	public void passMouse(Vector2 mousePos) {
@@ -51,42 +50,78 @@ public class ItemVisualizer {
 		for(ItemDrawing item : drawBatch)
 			item.draw(batch);
 		
-		if(itemHovered != null) 
-			drawNameTag(batch);
+		if(itemHovered != null) {
+			drawItemInfo(batch);
+		}
 	}
-	
-	public void drawItem(SpriteBatch batch, Item item, Vector2 pos) {
+
+	private void drawItem(SpriteBatch batch, Item item, Vector2 pos) {
 		batch.draw(item.getTexture(), pos.x, pos.y);
-		
+
 		Rectangle itemArea = new Rectangle(pos.x, pos.y, item.getTexture().getRegionWidth(), item.getTexture().getRegionHeight());
 		if(itemArea.contains(mousePos)) {
 			itemHovered = item;
 		}
 	}
-	
-	public void drawNameTag(SpriteBatch batch) {
-		Vector2 textPos = new Vector2(mousePos.x + 16, mousePos.y + 10);
-		
-		layout.setText(font, itemHovered.getName());
-		int spaceToFill = (int) layout.width;
-		Vector2 tagPos = new Vector2(textPos.x - 6, textPos.y - layout.height - 3);
-		
-		batch.draw(nameTagEdgeTexture, tagPos.x, tagPos.y);
-		spaceToFill -= 5;
-		tagPos.x += 11;
-		
-		while(spaceToFill > 0) {
-			batch.draw(nameTagMidTexture, tagPos.x, tagPos.y);
-			spaceToFill -= 3;
-			tagPos.x += 3;
+
+	private void drawItemInfo(SpriteBatch batch) {
+		Vector2 tagPos = new Vector2(mousePos.x + 10, mousePos.y + 7 - layout.height);
+
+		if(itemHovered instanceof EquipableItem) {
+			ArrayList<String> textLines = new ArrayList<>();
+			textLines.add(itemHovered.getName());
+			textLines.add("");
+			textLines.addAll(((EquipableItem) itemHovered).getStats().toStringList());
+
+			int width = longestStringWidth(textLines);
+			int i = 0;
+			for(String str : textLines) {
+				drawTextRow(batch, str, tagPos, width);
+				tagPos.y -= 16;
+				i++;
+			}
 		}
-		
-		batch.draw(nameTagEdgeTexture, tagPos.x - 10, tagPos.y);
-		
-		font.setColor(Color.WHITE);
-		font.draw(batch, itemHovered.getName(), textPos.x, textPos.y);
+		else {
+			layout.setText(font, itemHovered.getName());
+			int width = (int) layout.width;
+			drawTextRow(batch, itemHovered.getName(), tagPos, width);
+		}
 	}
-	
+
+	//draws a string in a line with the tag background (height = 16)
+	private void drawTextRow(SpriteBatch batch, String text, Vector2 pos, int width) {
+		Vector2 posCopy = new Vector2(pos);
+		Vector2 textPos = new Vector2(posCopy.x + 6, posCopy.y + 3 + layout.height);
+
+		batch.draw(nameTagEdgeTexture, posCopy.x, posCopy.y);
+		width -= 5;
+		posCopy.x += 11;
+
+		while(width > 0) {
+			batch.draw(nameTagMidTexture, posCopy.x, posCopy.y);
+			width -= 3;
+			posCopy.x += 3;
+		}
+
+		batch.draw(nameTagEdgeTexture, posCopy.x - 10, posCopy.y);
+
+		font.setColor(Color.WHITE);
+		font.draw(batch, text, textPos.x, textPos.y);
+	}
+
+	private int longestStringWidth(ArrayList<String> stringList) {
+		int longestLength = 0;
+		String longestString = "";
+		for(String str : stringList) {
+			if(str.length() > longestLength) {
+				longestLength = str.length();
+				longestString = str;
+			}
+		}
+		layout.setText(font, longestString);
+		return (int) layout.width;
+	}
+
 	private class ItemDrawing {
 		private Item item;
 		private Vector2 pos;

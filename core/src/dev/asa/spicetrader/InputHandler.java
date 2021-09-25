@@ -40,6 +40,8 @@ public class InputHandler {
 				menuManager.openMenu(MenuFactory.createMenu(menuManager, "VillageMenu"));
 			else if(player.getDockable() instanceof Merchant)
 				menuManager.openMenu(MenuFactory.createMenu(menuManager, "MerchantMenu"));
+			else if(player.getDockable() instanceof Shop)
+				menuManager.openMenu(MenuFactory.createMenu(menuManager, "ShopMenu"));
 		} 
 		
 		//movement

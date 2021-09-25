@@ -14,32 +14,12 @@ public class MerchantMenu extends TradeMenu {
         super(manager, pos, backgroundTexture);
 
         merchant = (Merchant) manager.getPlayer().getDockable();
-    }
 
-    @Override
-    public Array<AtlasRegion> getTradeButtonTexture() {
-        return manager.getAtlas().findRegions("ui/sell_button");
-    }
-
-    @Override
-    public void tradeButtonClicked(int i) {
-        if(!(merchant.getToBuy().size() > i)) return;
-
-        Item toBuy = getInventory().get(i);
-        if(manager.getPlayer().hasItem(toBuy)) {
-            manager.getPlayer().removeFromCargo(toBuy.getName());
-            manager.getPlayer().addGold(toBuy.getSellPrice());
+        int numTrades = 3;
+        ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
+        for(int i = 0; i < numTrades; i++) {
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Sell, merchant.getToBuy(), i));
         }
-    }
-
-    @Override
-    public ArrayList<Item> getInventory() {
-        return merchant.getToBuy();
-    }
-
-    @Override
-    public int getPrice(Item i) {
-        return i.getSellPrice();
     }
 
     @Override

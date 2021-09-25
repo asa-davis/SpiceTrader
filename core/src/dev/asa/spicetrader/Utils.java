@@ -102,7 +102,7 @@ public class Utils {
 		BitmapFont[] fonts = new BitmapFont[4];
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Perfect DOS VGA 437 Win.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'()>?";
+		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'()>?+-:";
 
 		parameter.size = 16;
 		fonts[0] = generator.generateFont(parameter);
