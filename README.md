@@ -41,6 +41,7 @@
     - biomes
 
 - Fixes/Refactoring
+    - fix pirates sharing goals!!! What happened to this feature?
     - fix bug where player increases hull/cargo above limit and then unequips the item losing more stats than they should
     - only players should have strike cooldown, not pirates
     - replace all instances of Vector2 being used for tile coords with int[]s. why use floats to store int values??
