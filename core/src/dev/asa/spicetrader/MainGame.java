@@ -29,7 +29,7 @@ public class MainGame extends ApplicationAdapter {
 	static final float ZOOM_LEVEL = 3;	//use 3 for gameplay
 	
 	//map settings
-	static final int MAP_SIZE = 100; //400 seems pretty good for games.
+	static final int MAP_SIZE = 300; //400 seems pretty good for games.
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int VILLAGE_RATIO = 7;							//higher = less villages
@@ -129,7 +129,7 @@ public class MainGame extends ApplicationAdapter {
 		entManager.addAll(allEnts);
 		
 		//input
-		inputHandler = new InputHandler(player, entManager, menuManager, screenSize.y);		
+		inputHandler = new InputHandler(player, entManager, menuManager, screenSize.y);
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class MainGame extends ApplicationAdapter {
 		Gdx.graphics.setTitle("" + Gdx.graphics.getFramesPerSecond());
 		Gdx.gl.glClearColor(0.2f, 0.05f, 0.4f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		//update all game objects
 		map.tick(paused);
 		menuManager.tick();
