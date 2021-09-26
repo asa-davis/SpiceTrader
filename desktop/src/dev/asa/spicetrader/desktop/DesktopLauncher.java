@@ -18,19 +18,19 @@ public class DesktopLauncher {
 		config.width = (int)(1920 * SCREEN_SIZE_RATIO);
 		config.height = (int)(1080 * SCREEN_SIZE_RATIO);
 		config.resizable = false;
-		config.addIcon("icons/app_icon_128.png", FileType.Internal);
-		config.addIcon("icons/app_icon_32.png", FileType.Internal);
-		config.addIcon("icons/app_icon_16.png", FileType.Internal);
+		//config.addIcon("icons/app_icon_128.png", FileType.Internal);
+		//config.addIcon("icons/app_icon_32.png", FileType.Internal);
+		//config.addIcon("icons/app_icon_16.png", FileType.Internal);
 		
 		// Pack all textures into a 'texture atlas'
-		TexturePacker.Settings sets = new TexturePacker.Settings();
-		sets.pot = true;
-		sets.fast = true;
-		sets.combineSubdirectories = true;
-		sets.paddingX = 1;
-		sets.paddingY = 1;
-		sets.edgePadding = true;
-		TexturePacker.process(sets, "raw_textures", "./assets", "textures");
+		//TexturePacker.Settings sets = new TexturePacker.Settings();
+		//sets.pot = true;
+		//sets.fast = true;
+		//sets.combineSubdirectories = true;
+		//sets.paddingX = 1;
+		//sets.paddingY = 1;
+		//sets.edgePadding = true;
+		//TexturePacker.process(sets, "raw_textures", "./assets", "textures");
 		
 		new LwjglApplication(new MainGame(), config);
 	}
