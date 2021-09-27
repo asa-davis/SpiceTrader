@@ -45,6 +45,7 @@
     - biomes
 
 - Fixes/Refactoring
+    - turning and accel are switched in ship menu
     - pirate movement in general needs a rework...
     - fix pirates sharing goals!!! What happened to this feature?
     - make sure dead pirates don't still exit...
