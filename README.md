@@ -31,6 +31,7 @@
     - allow player to destroy pirate bases
     - whitewater trail behind ships
     - Startup screen and loading screen
+    - way to delete items
     
 - Features to Investigate
     - we need something that keeps the player going back and forth between village and merchant for infinite money. Maybe scrap the return to base idea for pirates and have them always wandering or chasing
