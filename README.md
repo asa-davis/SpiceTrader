@@ -33,7 +33,8 @@
     - Startup screen and loading screen
     
 - Features to Investigate
-    - we need something that keeps the player going back and forth between village and merchant for infinite money
+    - we need something that keeps the player going back and forth between village and merchant for infinite money. Maybe scrap the return to base idea for pirates and have them always wandering or chasing
+    - compass in bottom right pointing to the center
     - health bars above enemies
     - customize starting stats at beginning of game, fallout style
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
