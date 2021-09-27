@@ -17,11 +17,7 @@
     - reduce time for villages to spawn spices
 - Features to Add
     - change leave button to small X in top right
-    - keep pirate villages from spawning right next to merchants/villages
-    - keep merchants from spawning right next to villages
-    - open ship menu when player docks and close when they leave
     - when player clicks buy/sell but can't, display reason
-    - more visual differences between merchant and village menus
     - pirate wandering
     - rate of fire stat
     - send pirates back to base if you dock, dont pause game
@@ -30,13 +26,13 @@
     - sea monsters
     - quest/winning the game (sea monsters)
     - add better pirate death textures
+    - allow player to destroy pirate bases
     - whitewater trail behind ships
     - Startup screen and loading screen
     
 - Features to Investigate
     - health bars above enemies
     - customize starting stats at beginning of game, fallout style
-    - randomly generated equippable items, bordlerlands style
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
     - have camera rotate when you turn - would need to change textures to top down only :(
     - rewards for killing pirates
