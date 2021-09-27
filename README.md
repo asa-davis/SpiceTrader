@@ -16,22 +16,24 @@
     - reduce minimum real accel stat
     - increase maximum real max speed stat
     - reduce time for villages to spawn spices
+    
 - Features to Add
     - change leave button to small X in top right
     - when player clicks buy/sell but can't, display reason
-    - pirate wandering
+    - items that add abilities like double shot, maybe a wave (laser) weapon
     - rate of fire stat
+    - pirate wandering
     - send pirates back to base if you dock, dont pause game
-    - (IMPORTANT) different map hitboxes for different tile types
+    - different map hitboxes for different tile types
     - falling off world death/outer world textures
-    - sea monsters
-    - quest/winning the game (sea monsters)
+    - sea monsters/winning the game
     - add better pirate death textures
     - allow player to destroy pirate bases
     - whitewater trail behind ships
     - Startup screen and loading screen
     
 - Features to Investigate
+    - we need something that keeps the player going back and forth between village and merchant for infinite money
     - health bars above enemies
     - customize starting stats at beginning of game, fallout style
     - click approach to cannons: allow player to shoot with mouse as long as shot is within a small arc of cannon direction
