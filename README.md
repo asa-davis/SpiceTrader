@@ -14,6 +14,7 @@
 **Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
 - Balance Changes
     - reduce minimum real accel stat
+    - increase maximum real max speed stat
     - reduce time for villages to spawn spices
 - Features to Add
     - change leave button to small X in top right
