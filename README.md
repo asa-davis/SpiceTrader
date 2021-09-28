@@ -11,7 +11,7 @@
     - Working Directory: [clone location]
 
 
-**Living List of Stuff to Work On - SETUP GITHUB PROJECTS TO TRACK THIS STUFF**
+**Living List of Stuff to Work On**
 - Balance Changes
     - reduce minimum real accel stat
     - increase maximum real max speed stat
