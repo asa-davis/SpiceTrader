@@ -30,13 +30,13 @@ public class InputHandler {
 		Vector2 mousePos = new Vector2(Gdx.input.getX(), screenHeight - Gdx.input.getY());
 		boolean mouseClicked = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
 
-		handleUIControls(mousePos, mouseClicked);
+		boolean menuHovered = handleUIControls(mousePos, mouseClicked);
 		if(!paused) handleMovementControls();
-		if(!paused) handleShootingControls(mousePos, mouseClicked);
+		if(!paused && !menuHovered) handleShootingControls(mousePos, mouseClicked);
 	}
 
-	private void handleUIControls(Vector2 mousePos, boolean mouseClicked) {
-		menuManager.passMouse(mousePos, mouseClicked);
+	private boolean handleUIControls(Vector2 mousePos, boolean mouseClicked) {
+		boolean menuHovered = menuManager.passMouse(mousePos, mouseClicked);
 
 		//docking
 		if(player.getDockable() != null && Gdx.input.isKeyPressed(Input.Keys.F)) {
@@ -47,6 +47,8 @@ public class InputHandler {
 			else if(player.getDockable() instanceof Shop)
 				menuManager.openMenu(MenuFactory.createMenu(menuManager, "ShopMenu"));
 		}
+
+		return menuHovered;
 	}
 
 	private void handleMovementControls() {

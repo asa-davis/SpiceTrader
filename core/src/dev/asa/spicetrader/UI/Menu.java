@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
@@ -15,12 +16,14 @@ public abstract class Menu {
 	private Vector2 pos;
 	private AtlasRegion backgroundTexture;
 	private List<Button> buttons;
+	private Rectangle hitbox;
 	
 	public Menu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture, boolean needsPause) {
 		this.manager = manager;
 		this.needsPause = needsPause;
 		this.pos = pos;
 		this.backgroundTexture = backgroundTexture;
+		hitbox = new Rectangle(pos.x, pos.y, backgroundTexture.getRegionWidth(), backgroundTexture.getRegionHeight());
 		
 		buttons = new ArrayList<Button>();
 	}
@@ -28,11 +31,13 @@ public abstract class Menu {
 	public void close() {
 		manager.closeMenu(this);
 	}
-	
-	public void passMouse(Vector2 mousePos, boolean mouseClicked) {
+
+	//returns true if the menu is being hovered over
+	public boolean passMouse(Vector2 mousePos, boolean mouseClicked) {
 		for(Button b : buttons) {
 			b.passMouse(mousePos, mouseClicked);
 		}
+		return hitbox.contains(mousePos);
 	}
 	
 	public void addButton(Button b) {

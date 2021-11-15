@@ -85,12 +85,13 @@ public abstract class TradeMenu extends Menu {
 	}
 
 	@Override
-	public void passMouse(Vector2 mousePos, boolean mouseClicked) {
-		super.passMouse(mousePos, mouseClicked);
+	public boolean passMouse(Vector2 mousePos, boolean mouseClicked) {
+		boolean hovered = super.passMouse(mousePos, mouseClicked);
 		for(TradeButtonSet tradeButtonSet : tradeButtonSets) {
 			tradeButtonSet.passMouse(mousePos, mouseClicked);
 		}
 		itemVis.passMouse(mousePos);
+		return hovered;
 	}
 
 

@@ -94,11 +94,15 @@ public class MenuManager {
 		}
 		batch.end();
 	}
-	
-	public void passMouse(Vector2 mousePos, boolean mouseClicked) {
+
+	//returns true if any menu is being hovered over
+	public boolean passMouse(Vector2 mousePos, boolean mouseClicked) {
+		boolean anyHovered= false;
 		for(Menu m : activeMenus) {
-			m.passMouse(mousePos, mouseClicked);
+			boolean hovered = m.passMouse(mousePos, mouseClicked);
+			if(hovered) anyHovered = true;
 		}
+		return anyHovered;
 	}
 
 	private void drawDockingPrompt(SpriteBatch batch) {

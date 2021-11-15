@@ -136,8 +136,8 @@ public class ShipMenu extends Menu {
 	}
 	
 	@Override
-	public void passMouse(Vector2 mousePos, boolean mouseClicked) {
-		super.passMouse(mousePos, mouseClicked);
+	public boolean passMouse(Vector2 mousePos, boolean mouseClicked) {
+		boolean hovered = super.passMouse(mousePos, mouseClicked);
 		
 		for(Button b : equipedItemButtons) {
 			b.passMouse(mousePos, mouseClicked);
@@ -148,5 +148,7 @@ public class ShipMenu extends Menu {
 		}
 		
 		itemVis.passMouse(mousePos);
+
+		return hovered;
 	}
 }
