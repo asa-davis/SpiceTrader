@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import dev.asa.spicetrader.MainGame;
 import dev.asa.spicetrader.UI.Menu;
 import dev.asa.spicetrader.UI.MenuFactory;
@@ -209,5 +210,10 @@ public class EntityManager {
 		else if(e instanceof CannonBall) {
 			allCanBalls.remove((CannonBall) e);
 		}
+	}
+
+	public Vector2 screenPosToMapPos(Vector2 screenPos) {
+		Vector3 worldSpace = camera.unproject(new Vector3(screenPos.x, screenPos.y, 0));
+		return new Vector2(worldSpace.x, worldSpace.y);
 	}
 }

@@ -27,18 +27,17 @@ public class InputHandler {
 	}
 	
 	public void process(boolean paused) {
-		this.handleMouseInput();
-		if(!paused) this.handlePlayerControls();
-	}
-	
-	private void handleMouseInput() {
-		//mouse input for menuManager - mousePos needs to be inverted in Y axis for some reason
 		Vector2 mousePos = new Vector2(Gdx.input.getX(), screenHeight - Gdx.input.getY());
 		boolean mouseClicked = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		menuManager.passMouse(mousePos, mouseClicked);
+
+		handleUIControls(mousePos, mouseClicked);
+		if(!paused) handleMovementControls();
+		if(!paused) handleShootingControls(mousePos, mouseClicked);
 	}
-	
-	private void handlePlayerControls() {
+
+	private void handleUIControls(Vector2 mousePos, boolean mouseClicked) {
+		menuManager.passMouse(mousePos, mouseClicked);
+
 		//docking
 		if(player.getDockable() != null && Gdx.input.isKeyPressed(Input.Keys.F)) {
 			if(player.getDockable() instanceof Village)
@@ -47,9 +46,10 @@ public class InputHandler {
 				menuManager.openMenu(MenuFactory.createMenu(menuManager, "MerchantMenu"));
 			else if(player.getDockable() instanceof Shop)
 				menuManager.openMenu(MenuFactory.createMenu(menuManager, "ShopMenu"));
-		} 
-		
-		//movement
+		}
+	}
+
+	private void handleMovementControls() {
 		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
 			player.accelForward();
 		}
@@ -62,8 +62,26 @@ public class InputHandler {
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			player.turnLeft();
 		}
-		
-		//shooting
+	}
+
+	private void handleShootingControls(Vector2 mousePos, boolean mouseClicked) {
+		if(!mouseClicked)
+			return;
+
+		//shooting - todo: don't shoot if mouse is over a menu or a menu is open
+		Vector2 mousePosWorld = entManager.screenPosToMapPos(mousePos);
+		Vector2 mousePosRelativeToPlayer = mousePosWorld.sub(player.getHitCenter());
+		mousePosRelativeToPlayer.y *= -1;
+		float angle = mousePosRelativeToPlayer.angleDeg(player.getHitCenter());
+		angle -= 45;
+		if(angle < 0) angle += 360;
+		CannonBall c = player.fireCannon(angle);;
+		if(c != null)
+			entManager.add(c);
+	}
+
+	//deprecated
+	private void handleShootingControlsOld() {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 			CannonBall c = player.fireCannonLeft();
 			if(c != null)

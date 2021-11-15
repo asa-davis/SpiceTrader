@@ -215,7 +215,16 @@ public class Player extends Ship {
 		statsToView.turning = Utils.statToView(getRotationSpeed(), 't');
 		return statsToView;
 	}
-	
+
+	public CannonBall fireCannon(float angle) {
+		if(cannonBalls <= 0)
+			return null;
+
+		cannonBalls--;
+		CannonBall shot = new CannonBall(calcBallInitPos(), new Sprite(cannonBallSprite), angle, cannonRange, cannonDamage);
+		return shot;
+	}
+
 	public CannonBall fireCannonLeft() {
 		if(cannonBalls > 0) {
 			cannonBalls--;
