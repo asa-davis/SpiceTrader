@@ -41,6 +41,8 @@ public class EntityManager {
 	private Camera camera;
 	
 	private List<Vector2> pirateGoals;
+
+	private float previousPlayerDirection;
 	
 	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera) {
 		this.menuManager = menuManager;
@@ -89,8 +91,12 @@ public class EntityManager {
 		Vector2 playerPos = player.getHitCenter();
 		camera.position.x = playerPos.x;
 		camera.position.y = playerPos.y;
-		//drunk mode
-		//camera.rotate(1, 0, 0, 1);
+
+		if(player.getDirection() != previousPlayerDirection) {
+			float diff = player.getDirection() - previousPlayerDirection;
+			previousPlayerDirection = player.getDirection();
+			camera.rotate(diff, 0, 0, 1);
+		}
 		
 		//check if player is dead
 		if(!player.exists) {
@@ -182,8 +188,10 @@ public class EntityManager {
 
 	public void add(Entity e) {
 		allEntities.add(e);
-		if(e instanceof Player)
+		if(e instanceof Player) {
 			player = (Player) e;
+			previousPlayerDirection = player.getDirection();
+		}
 		if(e instanceof CannonBall)
 			allCanBalls.add((CannonBall) e);
 		if(e instanceof Pirate)
