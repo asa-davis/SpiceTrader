@@ -32,7 +32,8 @@ public class InputHandler {
 
 		boolean menuHovered = handleUIControls(mousePos, mouseClicked);
 		if(!paused) handleMovementControls();
-		if(!paused && !menuHovered) handleShootingControls(mousePos, mouseClicked);
+		//if(!paused && !menuHovered) handleShootingControls(mousePos, mouseClicked);
+		if(!paused) handleShootingControlsOld();
 	}
 
 	private boolean handleUIControls(Vector2 mousePos, boolean mouseClicked) {
