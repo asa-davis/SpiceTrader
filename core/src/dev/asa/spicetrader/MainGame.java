@@ -12,6 +12,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.UI.MenuManager;
+import dev.asa.spicetrader.items.ItemFactory;
+import dev.asa.spicetrader.entities.LandEntity;
+import dev.asa.spicetrader.map.SpiceTraderMap;
+import dev.asa.spicetrader.map.SpiceTraderMapGenerator;
+import dev.asa.spicetrader.entities.Player;
+import dev.asa.spicetrader.entities.Entity;
+import dev.asa.spicetrader.entities.EntityFactory;
+import dev.asa.spicetrader.entities.EntityManager;
 
 public class MainGame extends ApplicationAdapter {
 	
