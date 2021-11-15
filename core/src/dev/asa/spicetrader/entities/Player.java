@@ -19,7 +19,8 @@ public class Player extends Ship {
 	private static int INIT_DAMAGE = 1;
 	private static int INIT_RANGE = 1;
 	private static int INIT_MAX_CARGO = 3;
-	
+	private static int INIT_FIRING_COOLDOWN = 20; //todo: make this a real stat
+
 	//cargo is expandable so we need a constant to know when we can expand it n stuff
 	private static final int TRUE_MAX_CARGO = 12;
 	private static final int TRUE_MAX_HULL = 12;
@@ -39,6 +40,9 @@ public class Player extends Ship {
 	
 	private int cannonDamage;
 	private float cannonRange;
+
+	private int firingCooldown;
+	private int currFiringCooldown;
 	
 	//player playerSprites:
 	//	0 = base ship
@@ -49,7 +53,7 @@ public class Player extends Ship {
 	private Sprite[] playerSprites;
 	private Sprite cannonBallSprite;
 	private final static int INIT_SPRITE = 1;
-	private final static int FIRING_SPRITE_COOLDOWN = 10; 
+	private final static int FIRING_SPRITE_COOLDOWN = 10;
 	
 	//These variables make sure the proper sprite is displayed after firing for the proper number of frames
 	private int firingLeftSpriteCooldown = 0;
@@ -74,19 +78,21 @@ public class Player extends Ship {
 		//initialize stats
 		cannonDamage = INIT_DAMAGE;
 		cannonRange = Utils.statToUse(INIT_RANGE, 'r');
+		maxHull = INIT_HULL;
+		maxCargo = INIT_MAX_CARGO;
+		firingCooldown = INIT_FIRING_COOLDOWN;
 		
 		damageCooldown = 0;
+		currFiringCooldown = 0;
 		
 		gold = 10;
 		cannonBalls = 10;
 		score = 0;
 
-		maxHull = INIT_HULL;
-		maxCargo = INIT_MAX_CARGO;
 		currCargo = 0;
 		currEquipped = 0;
 		maxEquipped = 4;
-		
+
 		cargo = new Item[TRUE_MAX_CARGO];
 		equipped = new Item[maxEquipped];
 		
@@ -99,6 +105,8 @@ public class Player extends Ship {
 		super.tick();
 		
 		calcPlayerFiringSprite();
+		if(currFiringCooldown > 0)
+			currFiringCooldown--;
 		
 		if(getCurrSpeed() > 0)
 			getMap().getPlayerDijkstraMap().calcDijkstraMapToPixelCoords(getHitCenter());
@@ -217,10 +225,11 @@ public class Player extends Ship {
 	}
 
 	public CannonBall fireCannon(float angle) {
-		if(cannonBalls <= 0)
+		if(cannonBalls <= 0 || currFiringCooldown != 0)
 			return null;
 
 		cannonBalls--;
+		currFiringCooldown = firingCooldown;
 		CannonBall shot = new CannonBall(calcBallInitPos(), new Sprite(cannonBallSprite), angle, cannonRange, cannonDamage);
 		return shot;
 	}
