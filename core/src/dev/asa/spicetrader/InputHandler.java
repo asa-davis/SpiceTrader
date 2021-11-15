@@ -1,11 +1,16 @@
 package dev.asa.spicetrader;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.UI.MenuFactory;
+import dev.asa.spicetrader.UI.MenuManager;
+import dev.asa.spicetrader.entities.Merchant;
+import dev.asa.spicetrader.entities.Shop;
+import dev.asa.spicetrader.entities.Village;
+import dev.asa.spicetrader.entities.CannonBall;
+import dev.asa.spicetrader.entities.Player;
+import dev.asa.spicetrader.entities.EntityManager;
 
 public class InputHandler {
 	
