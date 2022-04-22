@@ -3,7 +3,9 @@ package dev.asa.spicetrader.entities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -19,6 +21,8 @@ import dev.asa.spicetrader.entities.Village;
 import dev.asa.spicetrader.map.SpiceTraderMap;
 import dev.asa.spicetrader.entities.Player;
 
+import static com.badlogic.gdx.Gdx.files;
+
 public class EntityFactory {
 	
 	private SpiceTraderMap map;
@@ -29,6 +33,9 @@ public class EntityFactory {
 	private float maxDist;
 	private float minDist;
 	private ItemFactory itemFactory;
+
+	private List<String> names;
+	Random rand;
 	
 	public EntityFactory(SpiceTraderMap map, TextureAtlas atlas, Vector2 screenCenter, ItemFactory itemFactory) {
 		this.map = map;
@@ -39,6 +46,19 @@ public class EntityFactory {
 		takenLandEntityLocations = new ArrayList<>();
 		calcMinMaxDist();
 		calcLocationTiers();
+
+		names = new ArrayList<>();
+		rand = new Random();
+		loadNames();
+	}
+
+	private void loadNames() {
+		FileHandle handle = files.internal("names.txt");
+		String text = handle.readString();
+		String wordsArray[] = text.split("\\r?\\n");
+		for(String word : wordsArray) {
+			names.add(word);
+		}
 	}
 
 	private void calcMinMaxDist() {
@@ -281,23 +301,26 @@ public class EntityFactory {
 
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
+		String name = getRandName() + " Village";
 		
 		//return
-		return new Village(pos, s, location, dockHitbox, itemFactory);
+		return new Village(name, pos, s, location, dockHitbox, itemFactory);
 	}
 
 	private Merchant makeMerchant(LandEntityLocation location) {
 		Sprite s = atlas.createSprite("village/merchant");
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
-		return new Merchant(pos, s, location, dockHitbox, itemFactory);
+		String name = "The merchant " + getRandName();
+		return new Merchant(name, pos, s, location, dockHitbox, itemFactory);
 	}
 
 	private Shop makeShop(LandEntityLocation location) {
 		Sprite s = atlas.createSprite("village/shop");
 		Vector2 pos = makeVillagePos(location, s);
 		Polygon dockHitbox = makeDockHitbox(location);
-		return new Shop(pos, s, location, dockHitbox, itemFactory);
+		String name = getRandName() + "'s shop";
+		return new Shop(name, pos, s, location, dockHitbox, itemFactory);
 	}
 	
 	private PirateVillage makePirateVillage(LandEntityLocation location) {
@@ -310,7 +333,12 @@ public class EntityFactory {
 		Sprite pirateSprite = atlas.createSprite("ships/pirate");
 		
 		//return
-		return new PirateVillage(pos, s, location, dockHitbox, map, pirateSprite);
+		return new PirateVillage("", pos, s, location, dockHitbox, map, pirateSprite);
+	}
+
+	private String getRandName() {
+		int upperbound = names.size();
+		return names.get(rand.nextInt(upperbound));
 	}
 
 	//generate position so that sprite is centered on 2x2 square.

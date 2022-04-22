@@ -24,8 +24,8 @@ public class PirateVillage extends LandEntity {
 
 	private DijkstraMap pathToSpawn;
 	
-	public PirateVillage(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, SpiceTraderMap map, Sprite pirateSprite) {
-		super(pos, sprite, location, dockHitbox);
+	public PirateVillage(String name, Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, SpiceTraderMap map, Sprite pirateSprite) {
+		super(name, pos, sprite, location, dockHitbox);
 		this.map = map;
 		this.pirateSprite = pirateSprite;
 		this.spawnLocation = location.spawnLocation;

@@ -11,10 +11,12 @@ public abstract class LandEntity extends Entity {
 	private Vector2 dockTile;
 	private Polygon dockHitbox;
 	private int tier;
+	private String name;
 
 	
-	public LandEntity(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox) {
+	public LandEntity(String name, Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox) {
 		super(pos, sprite);
+		this.name = name;
 		this.originTile = location.tileOrigin;
 		this.dockTile = location.dockTile;
 		this.dockHitbox = dockHitbox;
@@ -45,6 +47,6 @@ public abstract class LandEntity extends Entity {
 	}
 
 	public String getName() {
-		return "Unnamed Land Entity Tier " + tier;
+		return name;
 	}
 }

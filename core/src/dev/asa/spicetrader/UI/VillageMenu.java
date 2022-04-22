@@ -27,6 +27,6 @@ public class VillageMenu extends TradeMenu {
     @Override
     public  void draw(SpriteBatch batch) {
         super.draw(batch);
-        drawTitle(batch, "Welcome to " + village.getName());
+        drawTitle(batch, village.getName());
     }
 }

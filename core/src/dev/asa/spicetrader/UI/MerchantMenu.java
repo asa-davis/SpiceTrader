@@ -26,6 +26,6 @@ public class MerchantMenu extends TradeMenu {
     @Override
     public void draw(SpriteBatch batch) {
         super.draw(batch);
-        drawTitle(batch, "Welcome to " + merchant.getName());
+        drawTitle(batch, merchant.getName());
     }
 }

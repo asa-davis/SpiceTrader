@@ -30,6 +30,6 @@ public class ShopMenu extends TradeMenu {
     @Override
     public void draw(SpriteBatch batch) {
         super.draw(batch);
-        drawTitle(batch, "Welcome to " + shop.getName());
+        drawTitle(batch, shop.getName());
     }
 }

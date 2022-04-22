@@ -21,8 +21,8 @@ public class Shop extends LandEntity {
     private int currItemDropTick = 0;
     private static final int MAX_NUM_ITEMS = 3;
 
-    public Shop(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
-        super(pos, sprite, location, dockHitbox);
+    public Shop(String name, Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
+        super(name, pos, sprite, location, dockHitbox);
         this.itemFactory = itemFactory;
         this.tier = location.tier;
 
