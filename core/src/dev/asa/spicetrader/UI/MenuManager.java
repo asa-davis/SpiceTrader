@@ -45,8 +45,8 @@ public class MenuManager {
 		menusToClose = new ArrayList<Menu>();
 		menusToOpen = new ArrayList<Menu>();
 		
-		activeMenus.add(MenuFactory.createMenu(this, "HUDMenu"));
-		this.shipMenu = (ShipMenu) MenuFactory.createMenu(this, "ShipMenu");
+		activeMenus.add(MenuFactory.createMenu(this, "HUDMenu", audioManager));
+		this.shipMenu = (ShipMenu) MenuFactory.createMenu(this, "ShipMenu", audioManager);
 	}
 	
 	//handle closing of menus and pausing/resuming of game

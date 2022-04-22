@@ -18,12 +18,14 @@ public class InputHandler {
 	private EntityManager entManager;
 	private float screenHeight;
 	private MenuManager menuManager;
+	private AudioManager audioManager;
 	
-	public InputHandler(Player player, EntityManager entManager, MenuManager menuManager, float screenHeight) {
+	public InputHandler(Player player, EntityManager entManager, MenuManager menuManager, float screenHeight, AudioManager audioManager) {
 		this.player = player;
 		this.entManager = entManager;
 		this.screenHeight = screenHeight;
 		this.menuManager = menuManager;
+		this.audioManager = audioManager;
 	}
 	
 	public void process(boolean paused) {
@@ -42,11 +44,11 @@ public class InputHandler {
 		//docking
 		if(player.getDockable() != null && Gdx.input.isKeyPressed(Input.Keys.F)) {
 			if(player.getDockable() instanceof Village)
-				menuManager.openMenu(MenuFactory.createMenu(menuManager, "VillageMenu"));
+				menuManager.openMenu(MenuFactory.createMenu(menuManager, "VillageMenu", audioManager));
 			else if(player.getDockable() instanceof Merchant)
-				menuManager.openMenu(MenuFactory.createMenu(menuManager, "MerchantMenu"));
+				menuManager.openMenu(MenuFactory.createMenu(menuManager, "MerchantMenu", audioManager));
 			else if(player.getDockable() instanceof Shop)
-				menuManager.openMenu(MenuFactory.createMenu(menuManager, "ShopMenu"));
+				menuManager.openMenu(MenuFactory.createMenu(menuManager, "ShopMenu", audioManager));
 		} 
 		
 		//movement
@@ -65,11 +67,13 @@ public class InputHandler {
 		
 		//shooting
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+			audioManager.cannon(player.getCannonBalls() > 0);
 			CannonBall c = player.fireCannonLeft();
 			if(c != null)
 				entManager.add(c);
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+			audioManager.cannon(player.getCannonBalls() > 0);
 			CannonBall c = player.fireCannonRight();
 			if(c != null)
 				entManager.add(c);

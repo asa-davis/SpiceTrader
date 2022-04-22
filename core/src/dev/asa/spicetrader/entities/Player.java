@@ -13,7 +13,7 @@ public class Player extends Ship {
 	//starting stats
 	private static int INIT_HULL = 5;
 	//these are in view mode and must be converted before they are applied
-	private static int INIT_MAX_SPEED = 1;
+	private static int INIT_MAX_SPEED = 2; // 1
 	private static int INIT_ACCEL = 1;
 	private static int INIT_TURNING = 2;
 	private static int INIT_DAMAGE = 1;

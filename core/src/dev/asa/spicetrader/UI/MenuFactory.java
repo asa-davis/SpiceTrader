@@ -1,11 +1,13 @@
 package dev.asa.spicetrader.UI;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 
 public class MenuFactory {
 
-	public static Menu createMenu(MenuManager manager, String menuType) {
+	public static Menu createMenu(MenuManager manager, String menuType, AudioManager audioManager) {
 		Vector2 pos;
 		AtlasRegion backgroundTexture;
 				
@@ -20,21 +22,21 @@ public class MenuFactory {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			pos = getCenterMenuPos(manager, backgroundTexture);
 			
-			return new VillageMenu(manager, pos, backgroundTexture);
+			return new VillageMenu(manager, pos, backgroundTexture, audioManager);
 		}
 
 		else if(menuType.equals("MerchantMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			pos = getCenterMenuPos(manager, backgroundTexture);
 
-			return new MerchantMenu(manager, pos, backgroundTexture);
+			return new MerchantMenu(manager, pos, backgroundTexture, audioManager);
 		}
 
 		else if(menuType.equals("ShopMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			pos = getCenterMenuPos(manager, backgroundTexture);
 
-			return new ShopMenu(manager, pos, backgroundTexture);
+			return new ShopMenu(manager, pos, backgroundTexture, audioManager);
 		}
 		
 		else if(menuType.equals("HUDMenu")) {

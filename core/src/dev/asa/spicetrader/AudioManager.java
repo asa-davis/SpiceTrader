@@ -1,6 +1,7 @@
 package dev.asa.spicetrader;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 import static com.badlogic.gdx.Gdx.audio;
 import static com.badlogic.gdx.Gdx.files;
@@ -8,7 +9,12 @@ import static com.badlogic.gdx.Gdx.files;
 public class AudioManager {
     private Music ambientOcean;
     private Music ambientVillage;
+
     private Music currSong;
+
+    private Sound cannon;
+    private Sound outOfAmmo;
+    private Sound sale;
 
     private final float ambientMaxVol = 0.3f;
     private final int ambientFadeFrames = 60; // 1 sec fade
@@ -27,8 +33,21 @@ public class AudioManager {
         ambientOcean.setLooping(true);
         ambientVillage.play();
 
+        cannon = audio.newSound(files.internal("audio/soundeffects/cannon.wav"));
+        outOfAmmo = audio.newSound(files.internal("audio/soundeffects/outofammotick.wav"));
+        sale = audio.newSound(files.internal("audio/soundeffects/purchase.wav"));
+
         //currSong = audio.newMusic(files.internal("audio/soundtrack/spice1.ogg"));
         //currSong.play();
+    }
+
+    public void cannon(boolean ammo) {
+        if(ammo)cannon.play(0.4f);
+        else outOfAmmo.play(0.4f);
+    }
+
+    public void sale() {
+        sale.play();
     }
 
     public void tick() {

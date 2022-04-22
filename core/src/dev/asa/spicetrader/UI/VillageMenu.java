@@ -3,6 +3,7 @@ package dev.asa.spicetrader.UI;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.entities.Village;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class VillageMenu extends TradeMenu {
 
     private Village village;
 
-    public VillageMenu(MenuManager manager, Vector2 pos, TextureAtlas.AtlasRegion backgroundTexture) {
+    public VillageMenu(MenuManager manager, Vector2 pos, TextureAtlas.AtlasRegion backgroundTexture, AudioManager audioManager) {
         super(manager, pos, backgroundTexture);
 
         village = (Village) manager.getPlayer().getDockable();
@@ -20,7 +21,7 @@ public class VillageMenu extends TradeMenu {
         int numTrades = 3;
         ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
         for(int i = 0; i < numTrades; i++) {
-            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), i));
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), i, audioManager));
         }
     }
 

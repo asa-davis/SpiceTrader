@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.MainGame;
 import dev.asa.spicetrader.UI.Menu;
 import dev.asa.spicetrader.UI.MenuFactory;
@@ -38,14 +39,16 @@ public class EntityManager {
 	private MainGame game;
 	private SpiceTraderMap map;
 	private Camera camera;
+	private AudioManager audioManager;
 	
 	private List<Vector2> pirateGoals;
 	
-	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera) {
+	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera, AudioManager audioManager) {
 		this.menuManager = menuManager;
 		this.game = game;
 		this.camera = camera;
 		this.map = map;
+		this.audioManager = audioManager;
 		
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
@@ -93,7 +96,7 @@ public class EntityManager {
 		
 		//check if player is dead
 		if(!player.exists) {
-			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
+			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu", audioManager);
 			menuManager.openMenu(boarded);
 			return;
 		}
