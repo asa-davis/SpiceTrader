@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.MainGame;
 import dev.asa.spicetrader.entities.Player;
 
@@ -27,15 +28,17 @@ public class MenuManager {
 	private Vector2 screenSize;
 	private TextureAtlas atlas;
 	private ShipMenu shipMenu;
+	private AudioManager audioManager;
 	
 	//menus need access to these
 	
-	public MenuManager(TextureAtlas atlas, Vector2 screenSize, MainGame game, BitmapFont[] fonts, Player player) {
+	public MenuManager(TextureAtlas atlas, Vector2 screenSize, MainGame game, BitmapFont[] fonts, Player player, AudioManager audioManager) {
 		this.game = game;
 		this.fonts = fonts;
 		this.screenSize = screenSize;
 		this.atlas = atlas;
 		this.player = player;
+		this.audioManager = audioManager;
 		
 		screenMatrix = new Matrix4(new Matrix4().setToOrtho2D(0, 0, screenSize.x, screenSize.y));
 		activeMenus = new ArrayList<Menu>();
@@ -65,6 +68,9 @@ public class MenuManager {
 	}
 	
 	public void openMenu(Menu m) {
+		if(m instanceof TradeMenu)
+			audioManager.dockedAtVillage = true;
+
 		menusToOpen.add(m);
 	}
 
@@ -73,6 +79,9 @@ public class MenuManager {
 	}
 	
 	public void closeMenu(Menu m) {
+		if(m instanceof TradeMenu)
+			audioManager.dockedAtVillage = false;
+
 		menusToClose.add(m);
 	}
 	
