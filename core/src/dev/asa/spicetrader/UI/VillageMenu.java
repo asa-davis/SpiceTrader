@@ -3,6 +3,7 @@ package dev.asa.spicetrader.UI;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.entities.Village;
 
 import java.util.ArrayList;
@@ -27,6 +28,6 @@ public class VillageMenu extends TradeMenu {
     @Override
     public  void draw(SpriteBatch batch) {
         super.draw(batch);
-        drawTitle(batch, "Welcome to " + village.getName());
+        drawTitle(batch, village.getName());
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,6 +22,9 @@ import dev.asa.spicetrader.entities.Player;
 import dev.asa.spicetrader.entities.Entity;
 import dev.asa.spicetrader.entities.EntityFactory;
 import dev.asa.spicetrader.entities.EntityManager;
+
+import static com.badlogic.gdx.Gdx.audio;
+import static com.badlogic.gdx.Gdx.files;
 
 public class MainGame extends ApplicationAdapter {
 	
@@ -38,15 +42,15 @@ public class MainGame extends ApplicationAdapter {
 	static final float ZOOM_LEVEL = 3;	//use 3 for gameplay
 	
 	//map settings
-	static final int MAP_SIZE = 300; //400 seems pretty good for games.
+	static final int MAP_SIZE = 100; // 300 seems pretty good for games.
 	static final int SMOOTHING_ITERATIONS = 5;
 	static final int SEA_LEVEL_OFFSET = 2;
 	static final int VILLAGE_RATIO = 7;							//higher = less villages
 	static final int MERCHANT_RATIO = 5;
 	static final int SHOP_RATIO = 15;
 	static final int MIN_DIST_BETWEEN_VILLAGE_MERCHANT = 8;
-	static final float MIN_PIRATEVILLAGE_PROBABILITY = 0.1f; 	//probability of pirate villages generating near center of map
-	static final float MAX_PIRATEVILLAGE_PROBABILITY = 0.85f; 	//probability of pirate villages generating near edges of map
+	static final float MIN_PIRATEVILLAGE_PROBABILITY = 0.1f; 	// 0.1f probability of pirate villages generating near center of map
+	static final float MAX_PIRATEVILLAGE_PROBABILITY = 0.85f; 	// 0.85f probability of pirate villages generating near edges of map
 	static final int MIN_DIST_BETWEEN_PIRATE_FRIENDLY = 4;		//min dist in tiles between pirate villages and friendly villages
 
 //	--GAME VARIABLES--
@@ -69,7 +73,7 @@ public class MainGame extends ApplicationAdapter {
 	
 	//fonts: smallest to largest
 	private BitmapFont[] fonts;
-	
+
 	@Override
 	public void create () {
 
@@ -131,7 +135,7 @@ public class MainGame extends ApplicationAdapter {
 		map.addVillages(landEntities);
 
 		//menus
-		menuManager = new MenuManager(atlas, screenSize, this, fonts, player); 
+		menuManager = new MenuManager(atlas, screenSize, this, fonts, player);
 
 		//entity manager
 		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera);
@@ -150,6 +154,7 @@ public class MainGame extends ApplicationAdapter {
 		//update all game objects
 		map.tick(paused);
 		menuManager.tick();
+		AudioManager.getInstance().tick();
 		inputHandler.process(paused);
 		entManager.process(paused);
 			
@@ -173,6 +178,7 @@ public class MainGame extends ApplicationAdapter {
 		}
 		batch.dispose();
 		atlas.dispose();
+		AudioManager.getInstance().dispose();
 	}
 	
 	@Override

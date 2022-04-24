@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.items.CannonBallItem;
 import dev.asa.spicetrader.items.Item;
 import dev.asa.spicetrader.items.RepairItem;
@@ -212,6 +213,7 @@ public abstract class TradeMenu extends Menu {
 			if(toBuy instanceof CannonBallItem) {
 				manager.getPlayer().addCannonball();
 				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
+				AudioManager.getInstance().sale();
 				return;
 			}
 
@@ -220,6 +222,7 @@ public abstract class TradeMenu extends Menu {
 					return;
 				manager.getPlayer().repairHull();
 				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
+				AudioManager.getInstance().sale();
 				return;
 			}
 
@@ -229,6 +232,7 @@ public abstract class TradeMenu extends Menu {
 			inventory.remove(itemIndex);
 			manager.getPlayer().addToCargo(toBuy);
 			manager.getPlayer().subtractGold(toBuy.getBuyPrice());
+			AudioManager.getInstance().sale();
 		}
 
 		//player sells item from their inventory
@@ -239,6 +243,7 @@ public abstract class TradeMenu extends Menu {
 			if(manager.getPlayer().hasItem(toSell)) {
 				manager.getPlayer().removeFromCargo(toSell.getName());
 				manager.getPlayer().addGold(toSell.getSellPrice());
+				AudioManager.getInstance().sale();
 			}
 		}
 	}

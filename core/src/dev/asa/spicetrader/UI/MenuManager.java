@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.MainGame;
 import dev.asa.spicetrader.entities.Player;
 
@@ -65,6 +66,9 @@ public class MenuManager {
 	}
 	
 	public void openMenu(Menu m) {
+		if(m instanceof TradeMenu)
+			AudioManager.getInstance().enterVillage();
+
 		menusToOpen.add(m);
 	}
 
@@ -73,6 +77,9 @@ public class MenuManager {
 	}
 	
 	public void closeMenu(Menu m) {
+		if(m instanceof TradeMenu)
+			AudioManager.getInstance().leaveVillage();
+
 		menusToClose.add(m);
 	}
 	

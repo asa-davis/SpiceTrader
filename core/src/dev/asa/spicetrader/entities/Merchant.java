@@ -12,11 +12,10 @@ public class Merchant extends LandEntity {
     private ItemFactory itemFactory;
     private ArrayList<Item> toBuy = new ArrayList<>();
 
-    public Merchant(Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
-        super(pos, sprite, location, dockHitbox);
+    public Merchant(String name, Vector2 pos, Sprite sprite, EntityFactory.LandEntityLocation location, Polygon dockHitbox, ItemFactory itemFactory) {
+        super(name, pos, sprite, location, dockHitbox);
         this.itemFactory = itemFactory;
         addItemsToBuy(location.tier);
-
     }
 
     public ArrayList<Item> getToBuy() {

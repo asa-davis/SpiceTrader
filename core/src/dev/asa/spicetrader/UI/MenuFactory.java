@@ -1,7 +1,9 @@
 package dev.asa.spicetrader.UI;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 
 public class MenuFactory {
 

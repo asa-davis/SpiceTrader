@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.Utils;
 import dev.asa.spicetrader.map.DijkstraMap;
 import dev.asa.spicetrader.map.SpiceTraderMap;
@@ -57,6 +58,7 @@ public class Pirate extends Ship{
 		super.tick();
 
 		currMoveMode = calcCurrMoveMode();
+
 		currGoal = getNextMove();
 
 		//check if pirate can still move
@@ -70,12 +72,15 @@ public class Pirate extends Ship{
 	}
 
 	private MoveMode calcCurrMoveMode() {
-		if(pathToSpawn.almostOutOfRange(getHitCenter()))
+		if(pathToSpawn.almostOutOfRange(getHitCenter())) {
 			return MoveMode.RETURN;
-		if(pathToPlayer.inRange(getHitCenter()))
+		}
+		if(pathToPlayer.inRange(getHitCenter())) {
 			return MoveMode.CHASE;
-		else
+		}
+		else {
 			return MoveMode.WANDER;
+		}
 	}
 
 	private Vector2 getNextMove() {

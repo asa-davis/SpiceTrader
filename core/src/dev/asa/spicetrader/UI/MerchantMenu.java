@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import java.util.ArrayList;
 
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.entities.Merchant;
 
 // Player can sell any of items in the Merchant's toBuy list
@@ -26,6 +27,6 @@ public class MerchantMenu extends TradeMenu {
     @Override
     public void draw(SpriteBatch batch) {
         super.draw(batch);
-        drawTitle(batch, "Welcome to " + merchant.getName());
+        drawTitle(batch, merchant.getName());
     }
 }

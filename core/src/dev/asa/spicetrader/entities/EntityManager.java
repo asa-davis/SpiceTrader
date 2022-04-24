@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import dev.asa.spicetrader.AudioManager;
 import dev.asa.spicetrader.MainGame;
 import dev.asa.spicetrader.UI.Menu;
 import dev.asa.spicetrader.UI.MenuFactory;
