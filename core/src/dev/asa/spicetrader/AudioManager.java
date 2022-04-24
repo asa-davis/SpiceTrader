@@ -30,6 +30,7 @@ public class AudioManager {
     private boolean pauseBetweenSongs;
 
     private final int numSongs = 6;
+    private int lastSong = -1;
 
     private boolean dockedAtVillage;
 
@@ -120,6 +121,10 @@ public class AudioManager {
 
     private void loadRandomSong() {
         int songNum = rand.nextInt(numSongs) + 1;
+        while(songNum == lastSong) {
+            songNum = rand.nextInt(numSongs) + 1;
+        }
+        lastSong = songNum;
         currSong = audio.newMusic(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
         currSong.setVolume(0);
         currSong.play();
