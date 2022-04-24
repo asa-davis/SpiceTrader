@@ -26,7 +26,9 @@ public class AudioManager {
     private Music currSongDummy;
     private Sound currSong;
     private long currSongId;
-    private float currPitch;
+    private float currSongPitch;
+
+    private int chaseCounter;
 
     private final float soundtrackVol = 0.5f;
     private final int framesBetweenSongs = 120; // 270 good
@@ -67,6 +69,9 @@ public class AudioManager {
         pauseBetweenSongs = true;
 
         dockedAtVillage = false;
+
+        currSongPitch = 1f;
+        chaseCounter = 0;
     }
 
     public void cannon(boolean ammo) {
@@ -88,6 +93,18 @@ public class AudioManager {
         dockedAtVillage = false;
         currSongDummy.play();
         currSong.resume();
+    }
+
+    public void chase() {
+        chaseCounter++;
+        if(chaseCounter == 1)
+            currSong.setPitch(currSongId, 1.5f);
+    }
+
+    public void unchase() {
+        if(chaseCounter > 0) chaseCounter--;
+        if(chaseCounter == 0)
+            currSong.setPitch(currSongId, 1f);
     }
 
     public void tick() {
