@@ -110,13 +110,10 @@ public abstract class TradeMenu extends Menu {
 
 		private TradeType tradeType;
 
-		private AudioManager audioManager;
-
-		public TradeButtonSet(Vector2 pos, TradeType tradeType, ArrayList<Item> inventory, int itemIndex, AudioManager audioManager) {
+		public TradeButtonSet(Vector2 pos, TradeType tradeType, ArrayList<Item> inventory, int itemIndex) {
 			this.inventory = inventory;
 			this.itemIndex = itemIndex;
 			this.tradeType = tradeType;
-			this.audioManager = audioManager;
 
 			Array<AtlasRegion> tradeButtonTextures = setTradeButtonTextures();
 			tradeButton = makeTradeButton(pos, tradeButtonTextures);
@@ -216,7 +213,7 @@ public abstract class TradeMenu extends Menu {
 			if(toBuy instanceof CannonBallItem) {
 				manager.getPlayer().addCannonball();
 				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
-				audioManager.sale();
+				AudioManager.getInstance().sale();
 				return;
 			}
 
@@ -225,7 +222,7 @@ public abstract class TradeMenu extends Menu {
 					return;
 				manager.getPlayer().repairHull();
 				manager.getPlayer().subtractGold(toBuy.getBuyPrice());
-				audioManager.sale();
+				AudioManager.getInstance().sale();
 				return;
 			}
 
@@ -235,7 +232,7 @@ public abstract class TradeMenu extends Menu {
 			inventory.remove(itemIndex);
 			manager.getPlayer().addToCargo(toBuy);
 			manager.getPlayer().subtractGold(toBuy.getBuyPrice());
-			audioManager.sale();
+			AudioManager.getInstance().sale();
 		}
 
 		//player sells item from their inventory
@@ -246,7 +243,7 @@ public abstract class TradeMenu extends Menu {
 			if(manager.getPlayer().hasItem(toSell)) {
 				manager.getPlayer().removeFromCargo(toSell.getName());
 				manager.getPlayer().addGold(toSell.getSellPrice());
-				audioManager.sale();
+				AudioManager.getInstance().sale();
 			}
 		}
 	}

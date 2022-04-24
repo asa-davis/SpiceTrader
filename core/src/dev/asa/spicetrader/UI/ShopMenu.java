@@ -12,7 +12,7 @@ public class ShopMenu extends TradeMenu {
     private Shop shop;
 
 
-    public ShopMenu(MenuManager manager, Vector2 pos, TextureAtlas.AtlasRegion backgroundTexture, AudioManager audioManager) {
+    public ShopMenu(MenuManager manager, Vector2 pos, TextureAtlas.AtlasRegion backgroundTexture) {
         super(manager, pos, backgroundTexture);
 
         shop = (Shop) manager.getPlayer().getDockable();
@@ -20,11 +20,11 @@ public class ShopMenu extends TradeMenu {
         int numTrades = 5;
         ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
 
-        addTradeButtonSet(new TradeButtonSet(tradePosList.get(0), TradeType.Buy, shop.getCannonballs(), 0, audioManager));
-        addTradeButtonSet(new TradeButtonSet(tradePosList.get(1), TradeType.Buy, shop.getRepairs(), 0, audioManager));
+        addTradeButtonSet(new TradeButtonSet(tradePosList.get(0), TradeType.Buy, shop.getCannonballs(), 0));
+        addTradeButtonSet(new TradeButtonSet(tradePosList.get(1), TradeType.Buy, shop.getRepairs(), 0));
 
         for(int i = 2; i < numTrades; i++) {
-            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, shop.getToSell(), i - 2, audioManager));
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, shop.getToSell(), i - 2));
         }
     }
 

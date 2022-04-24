@@ -13,7 +13,7 @@ public class VillageMenu extends TradeMenu {
 
     private Village village;
 
-    public VillageMenu(MenuManager manager, Vector2 pos, TextureAtlas.AtlasRegion backgroundTexture, AudioManager audioManager) {
+    public VillageMenu(MenuManager manager, Vector2 pos, TextureAtlas.AtlasRegion backgroundTexture) {
         super(manager, pos, backgroundTexture);
 
         village = (Village) manager.getPlayer().getDockable();
@@ -21,7 +21,7 @@ public class VillageMenu extends TradeMenu {
         int numTrades = 3;
         ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
         for(int i = 0; i < numTrades; i++) {
-            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), i, audioManager));
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Buy, village.getToSell(), i));
         }
     }
 

@@ -39,16 +39,14 @@ public class EntityManager {
 	private MainGame game;
 	private SpiceTraderMap map;
 	private Camera camera;
-	private AudioManager audioManager;
 	
 	private List<Vector2> pirateGoals;
 	
-	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera, AudioManager audioManager) {
+	public EntityManager(boolean showHitboxes, MenuManager menuManager, MainGame game, SpiceTraderMap map, Camera camera) {
 		this.menuManager = menuManager;
 		this.game = game;
 		this.camera = camera;
 		this.map = map;
-		this.audioManager = audioManager;
 		
 		allEntities = new ArrayList<Entity>();
 		allCanBalls = new ArrayList<CannonBall>();
@@ -96,7 +94,7 @@ public class EntityManager {
 		
 		//check if player is dead
 		if(!player.exists) {
-			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu", audioManager);
+			Menu boarded = MenuFactory.createMenu(menuManager, "BoardedMenu");
 			menuManager.openMenu(boarded);
 			return;
 		}

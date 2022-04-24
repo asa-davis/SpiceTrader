@@ -1,5 +1,6 @@
 package dev.asa.spicetrader;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
@@ -9,12 +10,12 @@ import static com.badlogic.gdx.Gdx.audio;
 import static com.badlogic.gdx.Gdx.files;
 
 public class AudioManager {
-    private Sound cannon;
-    private Sound outOfAmmo;
-    private Sound sale;
+    private final Sound cannon;
+    private final Sound outOfAmmo;
+    private final Sound sale;
 
-    private Music ambientOcean;
-    private Music ambientVillage;
+    private final Music ambientOcean;
+    private final Music ambientVillage;
 
     private final int ambientFadeFrames = 60; // 1 sec fade
     private final float ambientOceanMaxVol = 0.3f;
@@ -32,13 +33,21 @@ public class AudioManager {
     private int songBreakCounter;
     private boolean pauseBetweenSongs;
 
-    private int numSongs = 6;
+    private final int numSongs = 6;
 
     private boolean dockedAtVillage;
 
     Random rand;
 
-    public AudioManager() {
+    private static AudioManager instance = null;
+
+    public static AudioManager getInstance() {
+        if(instance == null)
+            instance = new AudioManager();
+        return instance;
+    }
+
+    private AudioManager() {
         ambientOcean = audio.newMusic(files.internal("audio/ambient/ocean.ogg"));
         ambientOcean.setVolume(ambientOceanMaxVol);
         ambientOcean.setLooping(true);

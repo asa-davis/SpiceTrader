@@ -7,7 +7,7 @@ import dev.asa.spicetrader.AudioManager;
 
 public class MenuFactory {
 
-	public static Menu createMenu(MenuManager manager, String menuType, AudioManager audioManager) {
+	public static Menu createMenu(MenuManager manager, String menuType) {
 		Vector2 pos;
 		AtlasRegion backgroundTexture;
 				
@@ -22,21 +22,21 @@ public class MenuFactory {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			pos = getCenterMenuPos(manager, backgroundTexture);
 			
-			return new VillageMenu(manager, pos, backgroundTexture, audioManager);
+			return new VillageMenu(manager, pos, backgroundTexture);
 		}
 
 		else if(menuType.equals("MerchantMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			pos = getCenterMenuPos(manager, backgroundTexture);
 
-			return new MerchantMenu(manager, pos, backgroundTexture, audioManager);
+			return new MerchantMenu(manager, pos, backgroundTexture);
 		}
 
 		else if(menuType.equals("ShopMenu")) {
 			backgroundTexture = manager.getAtlas().findRegion("ui/docked_menu");
 			pos = getCenterMenuPos(manager, backgroundTexture);
 
-			return new ShopMenu(manager, pos, backgroundTexture, audioManager);
+			return new ShopMenu(manager, pos, backgroundTexture);
 		}
 		
 		else if(menuType.equals("HUDMenu")) {

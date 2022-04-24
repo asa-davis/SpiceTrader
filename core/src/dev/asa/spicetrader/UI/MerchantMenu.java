@@ -12,7 +12,7 @@ import dev.asa.spicetrader.entities.Merchant;
 public class MerchantMenu extends TradeMenu {
     private Merchant merchant;
 
-    public MerchantMenu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture, AudioManager audioManager) {
+    public MerchantMenu(MenuManager manager, Vector2 pos, AtlasRegion backgroundTexture) {
         super(manager, pos, backgroundTexture);
 
         merchant = (Merchant) manager.getPlayer().getDockable();
@@ -20,7 +20,7 @@ public class MerchantMenu extends TradeMenu {
         int numTrades = 3;
         ArrayList<Vector2> tradePosList = makeTradeButtonSetRowPos(numTrades);
         for(int i = 0; i < numTrades; i++) {
-            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Sell, merchant.getToBuy(), i, audioManager));
+            addTradeButtonSet(new TradeButtonSet(tradePosList.get(i), TradeType.Sell, merchant.getToBuy(), i));
         }
     }
 

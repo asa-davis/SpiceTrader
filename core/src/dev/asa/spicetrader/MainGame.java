@@ -74,9 +74,6 @@ public class MainGame extends ApplicationAdapter {
 	//fonts: smallest to largest
 	private BitmapFont[] fonts;
 
-	//sounds
-	private AudioManager audioManager;
-
 	@Override
 	public void create () {
 
@@ -137,18 +134,15 @@ public class MainGame extends ApplicationAdapter {
 		allEnts.addAll(landEntities);
 		map.addVillages(landEntities);
 
-		//sound
-		audioManager = new AudioManager();
-
 		//menus
-		menuManager = new MenuManager(atlas, screenSize, this, fonts, player, audioManager);
+		menuManager = new MenuManager(atlas, screenSize, this, fonts, player);
 
 		//entity manager
-		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera, audioManager);
+		entManager = new EntityManager(SHOW_HITBOXES, menuManager, this, map, camera);
 		entManager.addAll(allEnts);
 		
 		//input
-		inputHandler = new InputHandler(player, entManager, menuManager, screenSize.y, audioManager);
+		inputHandler = new InputHandler(player, entManager, menuManager, screenSize.y);
 	}
 
 	@Override
@@ -160,7 +154,7 @@ public class MainGame extends ApplicationAdapter {
 		//update all game objects
 		map.tick(paused);
 		menuManager.tick();
-		audioManager.tick();
+		AudioManager.getInstance().tick();
 		inputHandler.process(paused);
 		entManager.process(paused);
 			
@@ -184,7 +178,7 @@ public class MainGame extends ApplicationAdapter {
 		}
 		batch.dispose();
 		atlas.dispose();
-		audioManager.dispose();
+		AudioManager.getInstance().dispose();
 	}
 	
 	@Override
