@@ -67,14 +67,12 @@ public class InputHandler {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
 			AudioManager.getInstance().cannon(player.getCannonBalls() > 0);
 			CannonBall c = player.fireCannonLeft();
-			AudioManager.getInstance().chase();
 			if(c != null)
 				entManager.add(c);
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
 			AudioManager.getInstance().cannon(player.getCannonBalls() > 0);
 			CannonBall c = player.fireCannonRight();
-			AudioManager.getInstance().unchase();
 			if(c != null)
 				entManager.add(c);
 		}

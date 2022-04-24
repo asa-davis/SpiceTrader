@@ -16,22 +16,16 @@ public class AudioManager {
 
     private final Music ambientOcean;
     private final Music ambientVillage;
-
     private final int ambientFadeFrames = 60; // 1 sec fade
-    private final float ambientOceanMaxVol = 0.3f;
-    private final float ambientVillageMaxVol = 0.2f;
-    private final float ambientOceanFadeInc = ambientOceanMaxVol / ambientFadeFrames;
-    private final float ambientVillageFadeInc = ambientVillageMaxVol / ambientFadeFrames;
+    private final float ambientMaxVol = 0.3f;
+    private final float ambientFadeInc = ambientMaxVol / ambientFadeFrames;
 
-    private Music currSongDummy;
-    private Sound currSong;
-    private long currSongId;
-    private float currSongPitch;
-
-    private int chaseCounter;
-
-    private final float soundtrackVol = 0.5f;
-    private final int framesBetweenSongs = 120; // 270 good
+    private Music currSong;
+    private final int soundtrackFadeFrames = 180;
+    private final float soundtrackMaxVol = 0.65f;
+    private final float soundtrackMinVol = 0.1f;
+    private final float soundtrackFadeInc = (soundtrackMaxVol - soundtrackMinVol) / soundtrackFadeFrames;
+    private final int framesBetweenSongs = 270;
     private int songBreakCounter;
     private boolean pauseBetweenSongs;
 
@@ -51,7 +45,7 @@ public class AudioManager {
 
     private AudioManager() {
         ambientOcean = audio.newMusic(files.internal("audio/ambient/ocean.ogg"));
-        ambientOcean.setVolume(ambientOceanMaxVol);
+        ambientOcean.setVolume(ambientMaxVol);
         ambientOcean.setLooping(true);
         ambientOcean.play();
 
@@ -69,9 +63,6 @@ public class AudioManager {
         pauseBetweenSongs = true;
 
         dockedAtVillage = false;
-
-        currSongPitch = 1f;
-        chaseCounter = 0;
     }
 
     public void cannon(boolean ammo) {
@@ -85,43 +76,31 @@ public class AudioManager {
 
     public void enterVillage() {
         dockedAtVillage = true;
-        currSongDummy.pause();
-        currSong.pause();
     }
 
     public void leaveVillage() {
         dockedAtVillage = false;
-        currSongDummy.play();
-        currSong.resume();
-    }
-
-    public void chase() {
-        chaseCounter++;
-        if(chaseCounter == 1)
-            currSong.setPitch(currSongId, 1.5f);
-    }
-
-    public void unchase() {
-        if(chaseCounter > 0) chaseCounter--;
-        if(chaseCounter == 0)
-            currSong.setPitch(currSongId, 1f);
     }
 
     public void tick() {
-        // fade village to max, and ocean to zero
+        // fade village to max, and ocean to zero, soundtrack to zero
         if(dockedAtVillage) {
-            if(ambientVillage.getVolume() < ambientVillageMaxVol)
-                ambientVillage.setVolume(ambientVillage.getVolume() + ambientVillageFadeInc);
-            if(ambientOcean.getVolume() >= (0 + ambientOceanFadeInc))
-                ambientOcean.setVolume(ambientOcean.getVolume() - ambientOceanFadeInc);
+            if (ambientVillage.getVolume() < ambientMaxVol)
+                ambientVillage.setVolume(ambientVillage.getVolume() + ambientFadeInc);
+            if (ambientOcean.getVolume() >= (0 + ambientFadeInc))
+                ambientOcean.setVolume(ambientOcean.getVolume() - ambientFadeInc);
+            if (currSong != null && currSong.getVolume() >= (soundtrackMinVol + soundtrackFadeInc))
+                currSong.setVolume(currSong.getVolume() - soundtrackFadeInc);
         }
 
-        // fade ocean to max, and village to zero
+        // fade ocean to max, and village to zero, soundtrack to max
         else {
-            if(ambientOcean.getVolume() < ambientOceanMaxVol)
-                ambientOcean.setVolume(ambientOcean.getVolume() + ambientOceanFadeInc);
-            if(ambientVillage.getVolume() >= (0 + ambientVillageFadeInc))
-                ambientVillage.setVolume(ambientVillage.getVolume() - ambientVillageFadeInc);
+            if (ambientOcean.getVolume() < ambientMaxVol)
+                ambientOcean.setVolume(ambientOcean.getVolume() + ambientFadeInc);
+            if (currSong != null && currSong.getVolume() < soundtrackMaxVol)
+                currSong.setVolume(currSong.getVolume() + soundtrackFadeInc);
+            if (ambientVillage.getVolume() >= (0 + ambientFadeInc))
+                ambientVillage.setVolume(ambientVillage.getVolume() - ambientFadeInc);
         }
 
         if(pauseBetweenSongs) {
@@ -134,18 +113,16 @@ public class AudioManager {
             }
         }
 
-        if(currSongDummy != null && (!currSongDummy.isPlaying() && !dockedAtVillage)) {
+        if(currSong != null && !currSong.isPlaying()) {
             pauseBetweenSongs = true;
         }
     }
 
     private void loadRandomSong() {
         int songNum = rand.nextInt(numSongs) + 1;
-        currSong = audio.newSound(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
-        currSongDummy = audio.newMusic(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
-        currSongId = currSong.play(soundtrackVol);
-        currSongDummy.play();
-        currSongDummy.setVolume(0);
+        currSong = audio.newMusic(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
+        currSong.setVolume(0);
+        currSong.play();
     }
 
     public void dispose() {

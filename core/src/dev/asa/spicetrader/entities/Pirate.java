@@ -57,16 +57,7 @@ public class Pirate extends Ship{
 	public void tick() {
 		super.tick();
 
-		// if move mode has switched to or from chase, let audiomanager know
-		MoveMode nextMoveMode = calcCurrMoveMode();
-		if(currMoveMode != MoveMode.CHASE && nextMoveMode == MoveMode.CHASE) {
-			AudioManager.getInstance().chase();
-		}
-		else if(currMoveMode == MoveMode.CHASE && nextMoveMode != MoveMode.CHASE) {
-			AudioManager.getInstance().unchase();
-		}
-		currMoveMode = nextMoveMode;
-
+		currMoveMode = calcCurrMoveMode();
 
 		currGoal = getNextMove();
 
