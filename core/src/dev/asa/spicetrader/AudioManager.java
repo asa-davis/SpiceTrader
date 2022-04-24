@@ -9,36 +9,38 @@ import static com.badlogic.gdx.Gdx.audio;
 import static com.badlogic.gdx.Gdx.files;
 
 public class AudioManager {
-    private Music ambientOcean;
-    private Music ambientVillage;
-
-    private Music currSong;
-
     private Sound cannon;
     private Sound outOfAmmo;
     private Sound sale;
 
-    private final int ambientFadeFrames = 60; // 1 sec fade
-    private final float ambientMaxVol = 0.3f;
-    private final float ambientFadeInc = ambientMaxVol / ambientFadeFrames;
+    private Music ambientOcean;
+    private Music ambientVillage;
 
-    private final int soundtrackFadeFrames = 180;
-    private final float soundtrackMaxVol = 0.65f;
-    private final float soundtrackMinVol = 0.1f;
-    private final float soundtrackFadeInc = (soundtrackMaxVol - soundtrackMinVol) / soundtrackFadeFrames;
-    private final int framesBetweenSongs = 270;
+    private final int ambientFadeFrames = 60; // 1 sec fade
+    private final float ambientOceanMaxVol = 0.3f;
+    private final float ambientVillageMaxVol = 0.2f;
+    private final float ambientOceanFadeInc = ambientOceanMaxVol / ambientFadeFrames;
+    private final float ambientVillageFadeInc = ambientVillageMaxVol / ambientFadeFrames;
+
+    private Music currSongDummy;
+    private Sound currSong;
+    private long currSongId;
+    private float currPitch;
+
+    private final float soundtrackVol = 0.5f;
+    private final int framesBetweenSongs = 120; // 270 good
     private int songBreakCounter;
     private boolean pauseBetweenSongs;
 
     private int numSongs = 6;
 
-    public boolean dockedAtVillage;
+    private boolean dockedAtVillage;
 
     Random rand;
 
     public AudioManager() {
         ambientOcean = audio.newMusic(files.internal("audio/ambient/ocean.ogg"));
-        ambientOcean.setVolume(ambientMaxVol);
+        ambientOcean.setVolume(ambientOceanMaxVol);
         ambientOcean.setLooping(true);
         ambientOcean.play();
 
@@ -64,29 +66,36 @@ public class AudioManager {
     }
 
     public void sale() {
-        sale.play(0.4f);
+        sale.play(0.3f);
+    }
+
+    public void enterVillage() {
+        dockedAtVillage = true;
+        currSongDummy.pause();
+        currSong.pause();
+    }
+
+    public void leaveVillage() {
+        dockedAtVillage = false;
+        currSongDummy.play();
+        currSong.resume();
     }
 
     public void tick() {
-        System.out.println(ambientVillage.getVolume());
-        // fade village to max, and ocean to zero, soundtrack to zero
+        // fade village to max, and ocean to zero
         if(dockedAtVillage) {
-            if(ambientVillage.getVolume() < ambientMaxVol)
-                ambientVillage.setVolume(ambientVillage.getVolume() + ambientFadeInc);
-            if(ambientOcean.getVolume() >= (0 + ambientFadeInc))
-                ambientOcean.setVolume(ambientOcean.getVolume() - ambientFadeInc);
-            if(currSong != null && currSong.getVolume() >= (soundtrackMinVol + soundtrackFadeInc))
-                currSong.setVolume(currSong.getVolume() - soundtrackFadeInc);
+            if(ambientVillage.getVolume() < ambientVillageMaxVol)
+                ambientVillage.setVolume(ambientVillage.getVolume() + ambientVillageFadeInc);
+            if(ambientOcean.getVolume() >= (0 + ambientOceanFadeInc))
+                ambientOcean.setVolume(ambientOcean.getVolume() - ambientOceanFadeInc);
         }
 
-        // fade ocean to max, and village to zero, soundtrack to max
+        // fade ocean to max, and village to zero
         else {
-            if(ambientOcean.getVolume() < ambientMaxVol)
-                ambientOcean.setVolume(ambientOcean.getVolume() + ambientFadeInc);
-            if(currSong != null && currSong.getVolume() < soundtrackMaxVol)
-                currSong.setVolume(currSong.getVolume() + soundtrackFadeInc);
-            if(ambientVillage.getVolume() >= (0 + ambientFadeInc))
-                ambientVillage.setVolume(ambientVillage.getVolume() - ambientFadeInc);
+            if(ambientOcean.getVolume() < ambientOceanMaxVol)
+                ambientOcean.setVolume(ambientOcean.getVolume() + ambientOceanFadeInc);
+            if(ambientVillage.getVolume() >= (0 + ambientVillageFadeInc))
+                ambientVillage.setVolume(ambientVillage.getVolume() - ambientVillageFadeInc);
         }
 
         if(pauseBetweenSongs) {
@@ -99,16 +108,18 @@ public class AudioManager {
             }
         }
 
-        if(currSong != null && !currSong.isPlaying()) {
+        if(currSongDummy != null && (!currSongDummy.isPlaying() && !dockedAtVillage)) {
             pauseBetweenSongs = true;
         }
     }
 
     private void loadRandomSong() {
         int songNum = rand.nextInt(numSongs) + 1;
-        currSong = audio.newMusic(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
-        currSong.setVolume(0);
-        currSong.play();
+        currSong = audio.newSound(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
+        currSongDummy = audio.newMusic(files.internal("audio/soundtrack/spice" + songNum + ".wav"));
+        currSongId = currSong.play(soundtrackVol);
+        currSongDummy.play();
+        currSongDummy.setVolume(0);
     }
 
     public void dispose() {

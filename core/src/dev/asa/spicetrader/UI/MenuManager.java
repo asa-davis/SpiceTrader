@@ -69,7 +69,7 @@ public class MenuManager {
 	
 	public void openMenu(Menu m) {
 		if(m instanceof TradeMenu)
-			audioManager.dockedAtVillage = true;
+			audioManager.enterVillage();
 
 		menusToOpen.add(m);
 	}
@@ -80,7 +80,7 @@ public class MenuManager {
 	
 	public void closeMenu(Menu m) {
 		if(m instanceof TradeMenu)
-			audioManager.dockedAtVillage = false;
+			audioManager.leaveVillage();
 
 		menusToClose.add(m);
 	}
